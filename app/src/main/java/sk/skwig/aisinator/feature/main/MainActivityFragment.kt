@@ -1,10 +1,10 @@
-package sk.skwig.aisinator
+package sk.skwig.aisinator.feature.main
 
-import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import sk.skwig.aisinator.R
 
 /**
  * A placeholder fragment containing a simple view.

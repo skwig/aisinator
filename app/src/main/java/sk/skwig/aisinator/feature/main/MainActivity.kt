@@ -1,4 +1,4 @@
-package sk.skwig.aisinator
+package sk.skwig.aisinator.feature.main
 
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 
 import kotlinx.android.synthetic.main.activity_main.*
+import sk.skwig.aisinator.R
 
 class MainActivity : AppCompatActivity() {
 
