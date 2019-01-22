@@ -34,6 +34,10 @@ class MainActivityFragment : BaseFragment<MainViewModel, FragmentMainBinding>() 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.fab.setOnClickListener {
+            viewModel.doFoo()
+        }
+
         viewModel.also {
             // subscribe
         }
