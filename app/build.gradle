@@ -1,0 +1,93 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    dataBinding {
+        enabled = true
+    }
+
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "sk.skwig.aisinator"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    def appcompat_version = '1.0.0-beta01'
+    def picasso_version = "2.71828"
+    def retrofit_version = "2.4.0"
+    def moshi_version = "1.6.0"
+    def moshi_lazy_adapters_version = "2.2"
+    def architecture_components_version = '2.0.0-beta01'
+    def room_version = '2.0.0-beta01'
+    def dagger_version = "2.16"
+    def okhttp_version = "3.10.0"
+
+    kapt 'androidx.databinding:databinding-compiler:1.0.0-beta01'
+
+    // appcompat
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
+    implementation "com.google.android.material:material:$appcompat_version"
+    implementation "androidx.legacy:legacy-support-v4:$appcompat_version"
+    implementation "androidx.recyclerview:recyclerview:$appcompat_version"
+
+    // picasso
+    implementation "com.squareup.picasso:picasso:$picasso_version"
+
+    // okhttp
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.5.0'
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+
+    // retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
+
+    // moshi
+    implementation "com.squareup.moshi:moshi:$moshi_version"
+    implementation "com.serjltt.moshi:moshi-lazy-adapters:$moshi_lazy_adapters_version"
+
+    // rx
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.16'
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
+    implementation 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.1.1'
+    implementation 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
+
+    // architecture components
+    implementation "androidx.lifecycle:lifecycle-runtime:$architecture_components_version"
+    implementation "androidx.lifecycle:lifecycle-extensions:$architecture_components_version"
+    kapt "androidx.lifecycle:lifecycle-compiler:$architecture_components_version"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    // dagger
+    implementation "com.google.dagger:dagger:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    implementation "com.google.dagger:dagger-android:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
+}
