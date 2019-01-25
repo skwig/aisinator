@@ -1,11 +1,13 @@
 package sk.skwig.aisinator.di
 
+import android.preference.PreferenceManager
 import dagger.Component
 import sk.skwig.aisinator.AisinatorApp
 import sk.skwig.aisinator.di.builder.ActivityBuilderModule
 import sk.skwig.aisinator.di.builder.FragmentBuilderModule
-import sk.skwig.aisinator.feature.authentication.AuthenticationManager
-import sk.skwig.aisinator.feature.authentication.di.AuthenticationModule
+import sk.skwig.aisinator.feature.auth.di.AuthModule
+import sk.skwig.aisinator.feature.course.di.CourseModule
+import sk.skwig.aisinator.feature.settings.di.SettingsModule
 import javax.inject.Singleton
 
 @Singleton
@@ -15,8 +17,9 @@ import javax.inject.Singleton
         ViewModelModule::class,
         NetworkModule::class,
 
-        TempModule::class,
-        AuthenticationModule::class,
+        AuthModule::class,
+        CourseModule::class,
+        SettingsModule::class,
 
         ActivityBuilderModule::class,
         FragmentBuilderModule::class

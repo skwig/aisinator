@@ -9,6 +9,8 @@ import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import sk.skwig.aisinator.feature.auth.AuthEventBus
+import sk.skwig.aisinator.feature.auth.AuthTimedOutException
 import java.net.CookieManager
 import javax.inject.Singleton
 
@@ -32,8 +34,21 @@ class NetworkModule {
                 return response
             }
 
-            return response.newBuilder().addHeader(sessionCookie.name, sessionCookie.value)
+            return response.newBuilder()
+                .addHeader(sessionCookie.name, sessionCookie.value)
                 .build()
+        }
+    }
+
+    class AuthInterceptor(private val authEventBus: AuthEventBus) : Interceptor {
+
+        override fun intercept(chain: Interceptor.Chain): Response {
+            val response = chain.proceed(chain.request())
+            if (response.code() == 403) {
+                authEventBus.onAuthTimedOut()
+                throw AuthTimedOutException()
+            }
+            return response
         }
     }
 
@@ -49,11 +64,16 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(sessionInterceptor: SessionInterceptor, loggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
+    fun provideOkHttpClient(
+        sessionInterceptor: SessionInterceptor,
+        authInterceptor: AuthInterceptor,
+        loggingInterceptor: HttpLoggingInterceptor
+    ): OkHttpClient {
         return OkHttpClient.Builder()
             .cookieJar(sessionInterceptor.cookieJar)
             .addInterceptor(loggingInterceptor)
             .addInterceptor(sessionInterceptor)
+            .addInterceptor(authInterceptor)
             .build()
     }
 
@@ -68,5 +88,11 @@ class NetworkModule {
     @Singleton
     fun provideSessionInterceptor(): SessionInterceptor {
         return SessionInterceptor()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthInterceptor(authEventBus: AuthEventBus): AuthInterceptor {
+        return AuthInterceptor(authEventBus)
     }
 }
