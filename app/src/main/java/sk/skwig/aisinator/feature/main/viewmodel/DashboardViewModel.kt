@@ -48,13 +48,13 @@ class DashboardViewModel @Inject constructor(
 //                Log.d("matej", "$it")
 //            }
 
-        disposable += courseRepository.getActiveCourses()
-            .map { it.first() }
-            .flatMap { courseRepository.getCoursework(it) }
-            .subscribe({
-                Log.d("matej", "$it")
-            }, {
-                Log.e("matej", "$it")
-            })
+//        disposable += courseRepository.getActiveCourses()
+//            .map { it.first() }
+//            .flatMap { courseRepository.getCoursework(it) }
+//            .subscribe({
+//                Log.d("matej", "$it")
+//            }, {
+//                Log.e("matej", "$it")
+//            })
     }
 }

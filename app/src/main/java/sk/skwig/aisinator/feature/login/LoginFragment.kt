@@ -2,6 +2,7 @@ package sk.skwig.aisinator.feature.login
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,23 +37,34 @@ class LoginFragment : BaseFragment<LoginViewModel, FragmentLoginBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.loginButton.setOnClickListener {
+            viewModel.onLogin(binding.login.text.toString(), binding.password.text.toString())
+        }
+
         viewModel.also {
             // subscribe
             it.state
                 .subscribe({
 
+                    Log.d("matej","LoginFragment.state $it")
+
                     binding.loadingOverlay.visibility =
                             if (it == LoginViewModel.State.LOADING) View.VISIBLE else View.GONE
 
                     when (it) {
-                        LoginViewModel.State.ERROR -> Toast.makeText(context, "Failed to log in", Toast.LENGTH_LONG).show()
+                        LoginViewModel.State.ERROR -> Toast.makeText(
+                            context,
+                            "Failed to log in",
+                            Toast.LENGTH_LONG
+                        ).show()
                         LoginViewModel.State.SUCCESS -> {
                             Toast.makeText(context, "Logged in successfully", Toast.LENGTH_SHORT).show()
-                            fragmentManager?.popBackStack()
+                            navController.popBackStack() // TODO: spravna navigacia
                         }
                     }
 
                 }, Timber::e)
         }
+
     }
 }
