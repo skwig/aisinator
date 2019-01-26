@@ -2,13 +2,17 @@ package sk.skwig.aisinator.di.builder
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
-import sk.skwig.aisinator.feature.main.MainActivityFragment
+import sk.skwig.aisinator.feature.login.LoginFragment
+import sk.skwig.aisinator.feature.main.DashboardFragment
 
 @Module
 abstract class FragmentBuilderModule {
 
     @ContributesAndroidInjector
-    abstract fun contributeMainActivityFragment(): MainActivityFragment
+    abstract fun contributeMainActivityFragment(): DashboardFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeLoginFragment(): LoginFragment
 //
 //    @ContributesAndroidInjector
 //    abstract fun contributeReservationFragment(): ReservationFragment

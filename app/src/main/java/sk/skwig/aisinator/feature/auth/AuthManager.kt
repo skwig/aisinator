@@ -46,7 +46,7 @@ class AuthManager(
             }
 
         disposable += authEventBus.events
-            .filter { it == AuthenticationTimedOut }
+            .filter { it == AuthEvent.TimedOut }
             .subscribe({
                 TODO("Handle auth time out (do reauth)")
             }, Timber::e)

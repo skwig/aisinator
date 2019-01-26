@@ -38,18 +38,21 @@ class LoginFragment : BaseFragment<LoginViewModel, FragmentLoginBinding>() {
 
         viewModel.also {
             // subscribe
-            it.state.subscribe({
-                when (it) {
-                    LoginViewModel.State.INITIAL -> binding.loadingOverlay.visibility = View.VISIBLE
-                    LoginViewModel.State.LOADING -> binding.loadingOverlay.visibility = View.GONE
-                    LoginViewModel.State.ERROR -> Toast.makeText(context, "Failed to log in", Toast.LENGTH_LONG).show()
-                    LoginViewModel.State.SUCCESS -> {
-                        Toast.makeText(context, "Logged in successfully", Toast.LENGTH_SHORT).show()
-                        fragmentManager?.popBackStack()
-                    }
-                }
+            it.state
+                .subscribe({
 
-            }, Timber::e)
+                    binding.loadingOverlay.visibility =
+                            if (it == LoginViewModel.State.LOADING) View.VISIBLE else View.GONE
+
+                    when (it) {
+                        LoginViewModel.State.ERROR -> Toast.makeText(context, "Failed to log in", Toast.LENGTH_LONG).show()
+                        LoginViewModel.State.SUCCESS -> {
+                            Toast.makeText(context, "Logged in successfully", Toast.LENGTH_SHORT).show()
+                            fragmentManager?.popBackStack()
+                        }
+                    }
+
+                }, Timber::e)
         }
     }
 }

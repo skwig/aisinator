@@ -1,5 +1,8 @@
 package sk.skwig.aisinator.feature.auth
 
-sealed class AuthenticationEvent
+sealed class AuthEvent {
 
-object AuthenticationTimedOut : AuthenticationEvent()
+    object TimedOut : AuthEvent()
+    object LoginNeeded : AuthEvent()
+
+}

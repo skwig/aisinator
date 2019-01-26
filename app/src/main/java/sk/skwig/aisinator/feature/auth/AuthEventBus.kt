@@ -5,13 +5,17 @@ import io.reactivex.Observable
 
 class AuthEventBus {
 
-    private val eventRelay = PublishRelay.create<AuthenticationEvent>()
+    private val eventRelay = PublishRelay.create<AuthEvent>()
 
-    val events: Observable<AuthenticationEvent>
+    val events: Observable<AuthEvent>
         get() = eventRelay
 
     fun onAuthTimedOut() {
-        eventRelay.accept(AuthenticationTimedOut)
+        eventRelay.accept(AuthEvent.TimedOut)
+    }
+
+    fun onLoginNeeded() {
+        eventRelay.accept(AuthEvent.LoginNeeded)
     }
 }
 

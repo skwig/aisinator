@@ -86,10 +86,14 @@ dependencies {
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     kapt "com.google.dagger:dagger-android-support:$dagger_version"
 
-
     // jsoup
     implementation 'org.jsoup:jsoup:1.11.3'
+
     implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    // navigation
+    implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0-alpha11'
+    implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0-alpha11'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

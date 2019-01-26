@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainActivityFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="sk.skwig.aisinator.feature.login.LoginFragment"
+        android:label="LoginFragment"/>
+    <fragment
+        android:id="@+id/mainActivityFragment"
+        android:name="sk.skwig.aisinator.feature.main.DashboardFragment"
+        android:label="MainActivityFragment" />
+    <action
+        android:id="@+id/action_global_loginFragment"
+        app:destination="@id/loginFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@+id/nav_graph" />
+</navigation>
