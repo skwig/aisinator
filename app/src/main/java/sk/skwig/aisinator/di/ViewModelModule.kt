@@ -9,6 +9,7 @@ import sk.skwig.aisinator.MainViewModel
 import sk.skwig.aisinator.feature.dashboard.viewmodel.DashboardViewModel
 import sk.skwig.aisinator.di.util.ViewModelFactory
 import sk.skwig.aisinator.di.util.ViewModelKey
+import sk.skwig.aisinator.feature.dashboard.viewmodel.ActiveCoursesViewModel
 import sk.skwig.aisinator.feature.login.viewmodel.LoginViewModel
 
 @Module
@@ -28,6 +29,12 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(LoginViewModel::class)
     abstract fun bindLoginViewModel(loginViewModel: LoginViewModel): ViewModel
+
+    // TODO: spravit si macro na generovanie tohoto
+    @Binds
+    @IntoMap
+    @ViewModelKey(ActiveCoursesViewModel::class)
+    abstract fun bindActiveCoursesViewModel(activeCoursesViewModel: ActiveCoursesViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory

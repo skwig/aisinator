@@ -2,6 +2,7 @@ package sk.skwig.aisinator.common
 
 import android.content.Context
 import android.os.Bundle
+import android.view.View
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
@@ -28,8 +29,8 @@ abstract class BaseFragment<VM : ViewModel, B : ViewDataBinding> : Fragment() {
         super.onAttach(context)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         navController = findNavController()
     }
 }

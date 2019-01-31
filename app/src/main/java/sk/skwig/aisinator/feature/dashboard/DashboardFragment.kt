@@ -6,10 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.AndroidSupportInjection
-import sk.skwig.aisinator.R
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
 import sk.skwig.aisinator.common.BaseFragment
 import sk.skwig.aisinator.databinding.FragmentDashboardBinding
+import sk.skwig.aisinator.feature.dashboard.viewmodel.ActiveCoursesViewModel
 import sk.skwig.aisinator.feature.dashboard.viewmodel.DashboardViewModel
 import timber.log.Timber
 
@@ -18,6 +22,11 @@ import timber.log.Timber
  */
 class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBinding>() {
 
+
+    lateinit var activeCoursesViewModel: ActiveCoursesViewModel
+
+    private lateinit var activeCoursesAdapter: CourseAdapter
+
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -25,18 +34,39 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(DashboardViewModel::class.java).also {
-//            it.showLogin.subscribe({ navController.navigate(R.id.action_global_loginFragment) }, Timber::e)
-        }
+
+        // TODO: subscriby do onViewCreated
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(DashboardViewModel::class.java).also {}
+        activeCoursesViewModel = ViewModelProviders.of(this, viewModelFactory).get(ActiveCoursesViewModel::class.java)
+            .also {
+                disposable += it.state
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeBy(
+                        onNext = {
+                            when (it) {
+                                is ActiveCoursesViewModel.ViewState.Normal -> activeCoursesAdapter.submitList(it.activeCourses)
+                            }
+                        },
+                        onError = Timber::e
+                    )
+            }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentDashboardBinding.inflate(layoutInflater, container, false)
+
+        activeCoursesAdapter = CourseAdapter()
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.layoutActiveCourses.apply {
+            courseRecycler.adapter = activeCoursesAdapter
+            courseRecycler.layoutManager = LinearLayoutManager(context)
+        }
 
         binding.fab.setOnClickListener {
             //            viewModel.doFoo()

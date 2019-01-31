@@ -9,6 +9,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import sk.skwig.aisinator.feature.settings.SettingsManager
+import sk.skwig.aisinator.util.replayLast
 import timber.log.Timber
 
 private const val AUTH_HEADER = "UISAuth"
@@ -60,7 +61,7 @@ class AuthManager(
                 settingsManager.password = it.second.password
             }
             .map { it.first }
-            .replay(1)
+            .replayLast()
             .refCount()
             .doOnNext {
                 Log.d("matej", "Auth: [$it]")

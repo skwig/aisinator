@@ -28,7 +28,7 @@ class MainActivity : BaseActivity<MainViewModel, sk.skwig.aisinator.databinding.
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java).also {
             disposable += it.showLoginScreen
                 .subscribeBy(
-                    onNext = { navController.navigate(R.id.action_global_loginFragment) },
+                    onNext = { navController.navigate(R.id.action_global_loginFragment) /*TODO: notifikovat cez intent ze zly login (a dat napr prazdny password field)*/ },
                     onError = Timber::e
                 )
         }
