@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.feature.main
+package sk.skwig.aisinator.feature.dashboard
 
 import android.content.Context
 import android.os.Bundle
@@ -10,7 +10,7 @@ import dagger.android.support.AndroidSupportInjection
 import sk.skwig.aisinator.R
 import sk.skwig.aisinator.common.BaseFragment
 import sk.skwig.aisinator.databinding.FragmentDashboardBinding
-import sk.skwig.aisinator.feature.main.viewmodel.DashboardViewModel
+import sk.skwig.aisinator.feature.dashboard.viewmodel.DashboardViewModel
 import timber.log.Timber
 
 /**
@@ -26,7 +26,7 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(DashboardViewModel::class.java).also {
-            it.showLogin.subscribe({ navController.navigate(R.id.action_global_loginFragment) }, Timber::e)
+//            it.showLogin.subscribe({ navController.navigate(R.id.action_global_loginFragment) }, Timber::e)
         }
     }
 

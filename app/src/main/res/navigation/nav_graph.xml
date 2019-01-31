@@ -10,7 +10,7 @@
         android:label="LoginFragment"/>
     <fragment
         android:id="@+id/mainActivityFragment"
-        android:name="sk.skwig.aisinator.feature.main.DashboardFragment"
+        android:name="sk.skwig.aisinator.feature.dashboard.DashboardFragment"
         android:label="MainActivityFragment" />
     <action
         android:id="@+id/action_global_loginFragment"

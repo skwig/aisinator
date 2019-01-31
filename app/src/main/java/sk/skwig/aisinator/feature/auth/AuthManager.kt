@@ -4,6 +4,7 @@ import android.util.Log
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
@@ -13,7 +14,7 @@ import timber.log.Timber
 private const val AUTH_HEADER = "UISAuth"
 
 class AuthManager(
-    private val authEventBus: AuthEventBus,
+    private val authMessageBus: AuthMessageBus,
     private val authApi: AuthApi,
     private val settingsManager: SettingsManager
 ) {
@@ -27,12 +28,32 @@ class AuthManager(
     val authentication: Observable<Authentication>
 
     init {
-        authentication = loginDataRelay
+
+        val settingsFoo = Observable.just(Unit)
+            .flatMap {
+                if (settingsManager.hasLoginCredentials) {
+                    Observable.just(LoginData(settingsManager.login, settingsManager.password))
+                } else {
+                    authMessageBus.onLoginNeeded()
+                    Observable.never()
+                }
+            }
+
+        authentication = Observable.merge(loginDataRelay, settingsFoo)
             .flatMapSingle { loginData ->
                 authApi
                     .login(loginData.login, loginData.password)
                     .subscribeOn(Schedulers.io())
-                    .map { Authentication(AUTH_HEADER, it.headers()[AUTH_HEADER]!!) to loginData }
+                    .flatMap {
+                        val headerValue = it.headers()[AUTH_HEADER]
+                        if (headerValue != null) {
+                            Single.just(Authentication(AUTH_HEADER, headerValue))
+                        } else {
+                            authMessageBus.onLoginNeeded()
+                            Single.never()
+                        }
+                    }
+                    .map { it to loginData }
             }
             .doOnNext {
                 settingsManager.login = it.second.login
@@ -45,7 +66,7 @@ class AuthManager(
                 Log.d("matej", "Auth: [$it]")
             }
 
-        disposable += authEventBus.events
+        disposable += authMessageBus.events
             .filter { it == AuthEvent.TimedOut }
             .subscribe({
                 TODO("Handle auth time out (do reauth)")

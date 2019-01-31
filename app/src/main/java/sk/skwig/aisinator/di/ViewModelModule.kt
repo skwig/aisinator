@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import sk.skwig.aisinator.feature.main.viewmodel.DashboardViewModel
+import sk.skwig.aisinator.MainViewModel
+import sk.skwig.aisinator.feature.dashboard.viewmodel.DashboardViewModel
 import sk.skwig.aisinator.di.util.ViewModelFactory
 import sk.skwig.aisinator.di.util.ViewModelKey
 import sk.skwig.aisinator.feature.login.viewmodel.LoginViewModel
@@ -15,8 +16,13 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
+    @ViewModelKey(MainViewModel::class)
+    abstract fun bindMainViewModel(mainViewModel: MainViewModel): ViewModel
+
+    @Binds
+    @IntoMap
     @ViewModelKey(DashboardViewModel::class)
-    abstract fun bindMainViewModel(mainViewModel: DashboardViewModel): ViewModel
+    abstract fun bindDashboardViewModel(dashboardViewModel: DashboardViewModel): ViewModel
 
     @Binds
     @IntoMap

@@ -68,6 +68,8 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
     implementation 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.1.1'
     implementation 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
+    implementation 'com.f2prateek.rx.preferences2:rx-preferences:2.0.0'
+    implementation "com.github.akarnokd:rxjava2-extensions:0.20.5"
 
     // architecture components
     implementation "androidx.lifecycle:lifecycle-runtime:$architecture_components_version"

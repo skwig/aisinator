@@ -3,7 +3,7 @@ package sk.skwig.aisinator.di.builder
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import sk.skwig.aisinator.feature.login.LoginFragment
-import sk.skwig.aisinator.feature.main.DashboardFragment
+import sk.skwig.aisinator.feature.dashboard.DashboardFragment
 
 @Module
 abstract class FragmentBuilderModule {

@@ -1,20 +1,37 @@
 package sk.skwig.aisinator
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
+import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
+import sk.skwig.aisinator.common.BaseActivity
+import timber.log.Timber
 
-import kotlinx.android.synthetic.main.activity_main.*
-import sk.skwig.aisinator.R
+class MainActivity : BaseActivity<MainViewModel, sk.skwig.aisinator.databinding.ActivityMainBinding>() {
 
-class MainActivity : AppCompatActivity() {
+    // TODO: skusit cez findFragment
+    override val navController: NavController
+        get() = supportFragmentManager
+            .fragments
+            .first()
+            .findNavController()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 //        setSupportActionBar(toolbar)
+
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java).also {
+            disposable += it.showLoginScreen
+                .subscribeBy(
+                    onNext = { navController.navigate(R.id.action_global_loginFragment) },
+                    onError = Timber::e
+                )
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

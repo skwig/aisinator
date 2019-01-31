@@ -9,7 +9,7 @@ import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import sk.skwig.aisinator.feature.auth.AuthEventBus
+import sk.skwig.aisinator.feature.auth.AuthMessageBus
 import sk.skwig.aisinator.feature.auth.AuthTimedOutException
 import java.net.CookieManager
 import javax.inject.Singleton
@@ -40,12 +40,12 @@ class NetworkModule {
         }
     }
 
-    class AuthInterceptor(private val authEventBus: AuthEventBus) : Interceptor {
+    class AuthInterceptor(private val authMessageBus: AuthMessageBus) : Interceptor {
 
         override fun intercept(chain: Interceptor.Chain): Response {
             val response = chain.proceed(chain.request())
             if (response.code() == 403) {
-                authEventBus.onAuthTimedOut()
+                authMessageBus.onAuthTimedOut()
                 throw AuthTimedOutException()
             }
             return response
@@ -92,7 +92,7 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideAuthInterceptor(authEventBus: AuthEventBus): AuthInterceptor {
-        return AuthInterceptor(authEventBus)
+    fun provideAuthInterceptor(authMessageBus: AuthMessageBus): AuthInterceptor {
+        return AuthInterceptor(authMessageBus)
     }
 }

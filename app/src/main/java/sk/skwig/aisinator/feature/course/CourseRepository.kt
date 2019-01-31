@@ -3,7 +3,6 @@ package sk.skwig.aisinator.feature.course
 import android.util.Log
 import sk.skwig.aisinator.feature.auth.AuthManager
 import sk.skwig.aisinator.util.toDocument
-import timber.log.Timber
 
 class CourseRepository(
     private val authManager: AuthManager,

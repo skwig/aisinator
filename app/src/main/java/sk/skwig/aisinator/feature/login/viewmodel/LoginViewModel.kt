@@ -22,7 +22,7 @@ class LoginViewModel @Inject constructor(private val authManager: AuthManager) :
     init {
         disposable += authManager.authentication
             .map { State.SUCCESS }
-            .onErrorReturnItem(State.ERROR)
+            .onErrorReturn { Log.e("matej", "fizz", it);State.ERROR }
             .subscribe(stateRelay)
     }
 

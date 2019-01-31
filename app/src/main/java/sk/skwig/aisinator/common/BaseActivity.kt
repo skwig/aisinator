@@ -1,35 +1,29 @@
 package sk.skwig.aisinator.common
 
-import android.content.Context
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ViewDataBinding
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
-import dagger.android.support.AndroidSupportInjection
+import dagger.android.AndroidInjection
 import io.reactivex.disposables.CompositeDisposable
 import sk.skwig.aisinator.di.util.ViewModelFactory
 import javax.inject.Inject
 
-abstract class BaseFragment<VM : ViewModel, B : ViewDataBinding> : Fragment() {
+abstract class BaseActivity<VM : ViewModel, B : ViewDataBinding> : AppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
     lateinit var viewModel: VM
     lateinit var binding: B
-    lateinit var navController: NavController
+
+    abstract val navController: NavController
 
     protected val disposable = CompositeDisposable()
 
-    override fun onAttach(context: Context?) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
-        navController = findNavController()
     }
 }

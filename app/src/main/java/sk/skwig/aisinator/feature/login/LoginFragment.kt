@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.rxkotlin.subscribeBy
 import sk.skwig.aisinator.common.BaseFragment
 import sk.skwig.aisinator.databinding.FragmentLoginBinding
 import sk.skwig.aisinator.feature.login.viewmodel.LoginViewModel
@@ -44,26 +45,28 @@ class LoginFragment : BaseFragment<LoginViewModel, FragmentLoginBinding>() {
         viewModel.also {
             // subscribe
             it.state
-                .subscribe({
+                .subscribeBy(
+                    onNext = {
 
-                    Log.d("matej","LoginFragment.state $it")
+                        Log.d("matej", "LoginFragment.state $it")
 
-                    binding.loadingOverlay.visibility =
-                            if (it == LoginViewModel.State.LOADING) View.VISIBLE else View.GONE
+                        binding.loadingOverlay.visibility =
+                                if (it == LoginViewModel.State.LOADING) View.VISIBLE else View.GONE
 
-                    when (it) {
-                        LoginViewModel.State.ERROR -> Toast.makeText(
-                            context,
-                            "Failed to log in",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        LoginViewModel.State.SUCCESS -> {
-                            Toast.makeText(context, "Logged in successfully", Toast.LENGTH_SHORT).show()
-                            navController.popBackStack() // TODO: spravna navigacia
+                        when (it) {
+                            LoginViewModel.State.ERROR -> Toast.makeText(
+                                context,
+                                "Failed to log in",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            LoginViewModel.State.SUCCESS -> {
+                                Toast.makeText(context, "Logged in successfully", Toast.LENGTH_SHORT).show()
+                                navController.popBackStack() // TODO: spravna navigacia
+                            }
                         }
-                    }
-
-                }, Timber::e)
+                    },
+                    onError = Timber::e
+                )
         }
 
     }
