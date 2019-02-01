@@ -14,16 +14,25 @@ class CourseRepository(
     // TODO: sql cachovanie
     fun getActiveCourses() =
         authManager.authentication
-            .doOnNext { Log.d("matej","CourseRepository.getActiveCourses") }
+            .doOnNext { Log.d("matej","CourseRepository.getDeadlines") }
             .flatMapSingle { courseApi.getActiveCourses(it.cookie) }
             .map { htmlParser.parseActiveCourses(it.toDocument()) }
     // replay last z nejakeho dovodu zabrani pustenie requestu onSubscribe. treba refcount alebo nieco? ako inak cachovat & sharovat ak to neni refcountom?
 //            .replayLast()
+//            .refCount()
+//            .share()
 
     fun getCoursework(course: Course) =
         authManager.authentication
             .doOnNext { Log.d("matej","CourseRepository.getCoursework") }
             .flatMapSingle { courseApi.getCoursework(it.cookie, course = course.id) }
             .map { htmlParser.parseCoursework(it.toDocument()) }
+
+    fun getCourseworkDeadlines() =
+        authManager.authentication
+            .doOnNext { Log.d("matej","CourseRepository.getCoursework") }
+            .flatMapSingle { courseApi.getCourseworkSubmissions(it.cookie) }
+            .map { htmlParser.parseCourseworkDeadlines(it.toDocument()) }
+//            .map { it.filter { it.isOpen } }
 
 }

@@ -14,6 +14,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import sk.skwig.aisinator.common.BaseFragment
 import sk.skwig.aisinator.databinding.FragmentDashboardBinding
 import sk.skwig.aisinator.feature.dashboard.viewmodel.ActiveCoursesViewModel
+import sk.skwig.aisinator.feature.dashboard.viewmodel.CourseworkDeadlinesViewModel
 import sk.skwig.aisinator.feature.dashboard.viewmodel.DashboardViewModel
 import timber.log.Timber
 
@@ -24,8 +25,10 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
 
 
     lateinit var activeCoursesViewModel: ActiveCoursesViewModel
+    lateinit var courseworkDeadlinesViewModel: CourseworkDeadlinesViewModel
 
     private lateinit var activeCoursesAdapter: CourseAdapter
+    private lateinit var deadlinesAdapter: DeadlineAdapter
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
@@ -50,12 +53,29 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
                         onError = Timber::e
                     )
             }
+
+        courseworkDeadlinesViewModel =
+                ViewModelProviders.of(this, viewModelFactory).get(CourseworkDeadlinesViewModel::class.java)
+                    .also {
+                        disposable += it.state
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeBy(
+                                onNext = {
+                                    when (it) {
+                                        is CourseworkDeadlinesViewModel.ViewState.Normal -> deadlinesAdapter.submitList(it.deadlines)
+                                    }
+                                },
+                                onError = Timber::e
+                            )
+                    }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentDashboardBinding.inflate(layoutInflater, container, false)
 
         activeCoursesAdapter = CourseAdapter()
+        deadlinesAdapter = DeadlineAdapter()
 
         return binding.root
     }
@@ -66,6 +86,11 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
         binding.layoutActiveCourses.apply {
             courseRecycler.adapter = activeCoursesAdapter
             courseRecycler.layoutManager = LinearLayoutManager(context)
+        }
+
+        binding.layoutDeadlines.apply {
+            deadlineRecycler.adapter = deadlinesAdapter
+            deadlineRecycler.layoutManager = LinearLayoutManager(context)
         }
 
         binding.fab.setOnClickListener {

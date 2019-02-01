@@ -11,12 +11,6 @@ private const val COOKIE_HEADER = "Cookie"
 
 interface CourseApi {
 
-    @GET("auth/student/moje_studium.pl")
-    fun myStudy(
-        @Header(COOKIE_HEADER) sessionCookie: String,
-        @Query("_m") neviem: Long = 3110
-    ): Single<Response<ResponseBody>>
-
     @GET("auth/student/list.pl")
     fun getActiveCourses(
         @Header(COOKIE_HEADER) sessionCookie: String,
@@ -32,5 +26,12 @@ interface CourseApi {
         @Query("predmet") course: Long,
         @Query("zobraz_prubezne") show: Long = 1
     ): Single<ResponseBody>
+
+    @GET("auth/student/odevzdavarny.pl")
+    fun getCourseworkSubmissions(
+        @Header(COOKIE_HEADER) sessionCookie: String,
+        @Query("studium") study: Long = 151408,
+        @Query("obdobi") term: Long = 526
+    ):Single<ResponseBody>
 
 }
