@@ -24,6 +24,7 @@ class DeadlineAdapter : RecyclerView.Adapter<DeadlineViewHolder>() {
         holder.binding.apply {
             tagText.text = item.course.tag
             nameText.text = item.name
+            deadlineText.text = item.deadline
         }
     }
 

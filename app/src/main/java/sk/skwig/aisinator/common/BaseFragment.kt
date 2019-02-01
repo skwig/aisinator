@@ -24,7 +24,7 @@ abstract class BaseFragment<VM : ViewModel, B : ViewDataBinding> : Fragment() {
 
     protected val disposable = CompositeDisposable()
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
     }

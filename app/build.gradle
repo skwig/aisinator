@@ -97,6 +97,9 @@ dependencies {
     implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0-alpha11'
     implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0-alpha11'
 
+    // material components
+    implementation 'com.google.android.material:material:1.1.0-alpha03'
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     testImplementation 'junit:junit:4.12'
