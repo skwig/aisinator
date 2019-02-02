@@ -7,10 +7,23 @@ import sk.skwig.aisinator.databinding.ItemDeadlineBinding
 import sk.skwig.aisinator.feature.course.CourseworkDeadline
 import sk.skwig.aisinator.util.layoutInflater
 import sk.skwig.aisinator.util.setAll
+import com.chauthai.swipereveallayout.ViewBinderHelper
+import android.os.Bundle
+import android.util.Log
+import com.chauthai.swipereveallayout.SwipeRevealLayout
+import sk.skwig.aisinator.MySwipeRevealLayout
+import sk.skwig.aisinator.MyViewBinderHelper
+
 
 class DeadlineAdapter : RecyclerView.Adapter<DeadlineViewHolder>() {
 
+    private val viewBinderHelper = MyViewBinderHelper()
+
     private val data = mutableListOf<CourseworkDeadline>()
+
+    init {
+        viewBinderHelper.setOpenOnlyOne(true)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeadlineViewHolder {
         return ItemDeadlineBinding.inflate(parent.layoutInflater, parent, false)
@@ -21,11 +34,20 @@ class DeadlineAdapter : RecyclerView.Adapter<DeadlineViewHolder>() {
 
     override fun onBindViewHolder(holder: DeadlineViewHolder, position: Int) {
         val item = data[position]
+        viewBinderHelper.bind(holder.binding.swipeRevealLayout, item.id.toString());
         holder.binding.apply {
             tagText.text = item.course.tag
             nameText.text = item.name
             deadlineText.text = item.deadline
         }
+    }
+
+    fun saveStates(outState: Bundle) {
+        viewBinderHelper.saveStates(outState)
+    }
+
+    fun restoreStates(inState: Bundle) {
+        viewBinderHelper.restoreStates(inState)
     }
 
     fun submitList(courses: List<CourseworkDeadline>) {
