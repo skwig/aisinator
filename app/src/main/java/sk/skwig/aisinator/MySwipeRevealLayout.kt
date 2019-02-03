@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
@@ -21,6 +20,31 @@ import com.chauthai.swipereveallayout.ViewBinderHelper
 
 @SuppressLint("RtlHardcoded")
 class MySwipeRevealLayout : ViewGroup {
+
+    companion object {
+        // These states are used only for ViewBindHelper
+        val STATE_CLOSE = 0
+        val STATE_CLOSING = 1
+        val STATE_OPEN = 2
+        val STATE_OPENING = 3
+        val STATE_DRAGGING = 4
+
+        private val DEFAULT_MIN_FLING_VELOCITY = 300 // dp per second
+        private val DEFAULT_MIN_DIST_REQUEST_DISALLOW_PARENT = 1 // dp
+
+        val DRAG_EDGE_LEFT = 0x1
+        val DRAG_EDGE_RIGHT = 0x1 shl 1
+
+        /**
+         * The secondary view will be under the main view.
+         */
+        val MODE_NORMAL = 0
+
+        /**
+         * The secondary view will stick the edge of the main view.
+         */
+        val MODE_SAME_LEVEL = 1
+    }
 
     private lateinit var mainView: View
     private lateinit var revealedView: View
@@ -116,8 +140,6 @@ class MySwipeRevealLayout : ViewGroup {
         get() = when (dragEdge) {
             DRAG_EDGE_LEFT -> mainClosedRect.left + revealedView.width
             DRAG_EDGE_RIGHT -> mainClosedRect.left - revealedView.width
-            DRAG_EDGE_TOP -> mainClosedRect.left
-            DRAG_EDGE_BOTTOM -> mainClosedRect.left
             else -> 0
         }
 
@@ -125,14 +147,12 @@ class MySwipeRevealLayout : ViewGroup {
         get() = when (dragEdge) {
             DRAG_EDGE_LEFT -> mainClosedRect.top
             DRAG_EDGE_RIGHT -> mainClosedRect.top
-            DRAG_EDGE_TOP -> mainClosedRect.top + revealedView.height
-            DRAG_EDGE_BOTTOM -> mainClosedRect.top - revealedView.height
             else -> 0
         }
 
     private val secOpenLeft: Int
         get() {
-            if (mMode == MODE_NORMAL || dragEdge == DRAG_EDGE_BOTTOM || dragEdge == DRAG_EDGE_TOP) {
+            if (mMode == MODE_NORMAL) {
                 return revealedCloseRect.left
             }
 
@@ -149,11 +169,7 @@ class MySwipeRevealLayout : ViewGroup {
                 return revealedCloseRect.top
             }
 
-            return if (dragEdge == DRAG_EDGE_TOP) {
-                revealedCloseRect.top + revealedView.height
-            } else {
-                revealedCloseRect.top - revealedView.height
-            }
+            return revealedCloseRect.top - revealedView.height
         }
 
     private val mGestureListener = object : GestureDetector.SimpleOnGestureListener() {
@@ -214,24 +230,6 @@ class MySwipeRevealLayout : ViewGroup {
                         mainClosedRect.right - mainView.right
                     )
                 }
-
-                DRAG_EDGE_TOP -> {
-                    val pivotBottom = mainClosedRect.top + revealedView.height
-
-                    return Math.min(
-                        mainView.bottom - pivotBottom,
-                        pivotBottom - mainView.top
-                    )
-                }
-
-                DRAG_EDGE_BOTTOM -> {
-                    val pivotTop = mainClosedRect.bottom - revealedView.height
-
-                    return Math.min(
-                        mainClosedRect.bottom - mainView.bottom,
-                        mainView.bottom - pivotTop
-                    )
-                }
             }
 
             return 0
@@ -245,11 +243,7 @@ class MySwipeRevealLayout : ViewGroup {
         }
 
     private val halfwayPivotVertical: Int
-        get() = if (dragEdge == DRAG_EDGE_TOP) {
-            mainClosedRect.top + revealedView.height / 2
-        } else {
-            mainClosedRect.bottom - revealedView.height / 2
-        }
+        get() = mainClosedRect.bottom - revealedView.height / 2
 
     private val mDragHelperCallback = object : ViewDragHelper.Callback() {
 
@@ -257,8 +251,6 @@ class MySwipeRevealLayout : ViewGroup {
             get() = when (dragEdge) {
                 DRAG_EDGE_LEFT -> (mainView.left - mainClosedRect.left).toFloat() / revealedView.width
                 DRAG_EDGE_RIGHT -> (mainClosedRect.left - mainView.left).toFloat() / revealedView.width
-                DRAG_EDGE_TOP -> (mainView.top - mainClosedRect.top).toFloat() / revealedView.height
-                DRAG_EDGE_BOTTOM -> (mainClosedRect.top - mainView.top).toFloat() / revealedView.height
                 else -> 0f
             }
 
@@ -273,19 +265,7 @@ class MySwipeRevealLayout : ViewGroup {
         }
 
         override fun clampViewPositionVertical(child: View, top: Int, dy: Int): Int {
-            when (dragEdge) {
-                DRAG_EDGE_TOP -> return Math.max(
-                    Math.min(top, mainClosedRect.top + revealedView.height),
-                    mainClosedRect.top
-                )
-
-                DRAG_EDGE_BOTTOM -> return Math.max(
-                    Math.min(top, mainClosedRect.top),
-                    mainClosedRect.top - revealedView.height
-                )
-
-                else -> return child.top
-            }
+            return child.top
         }
 
         override fun clampViewPositionHorizontal(child: View, left: Int, dx: Int): Int {
@@ -332,30 +312,6 @@ class MySwipeRevealLayout : ViewGroup {
                         open(true)
                     }
                 }
-
-                DRAG_EDGE_TOP -> if (velUpExceeded) {
-                    close(true)
-                } else if (velDownExceeded) {
-                    open(true)
-                } else {
-                    if (mainView.top < pivotVertical) {
-                        close(true)
-                    } else {
-                        open(true)
-                    }
-                }
-
-                DRAG_EDGE_BOTTOM -> if (velUpExceeded) {
-                    open(true)
-                } else if (velDownExceeded) {
-                    close(true)
-                } else {
-                    if (mainView.bottom < pivotVertical) {
-                        open(true)
-                    } else {
-                        close(true)
-                    }
-                }
             }
         }
 
@@ -367,14 +323,9 @@ class MySwipeRevealLayout : ViewGroup {
             }
 
             val edgeStartLeft = dragEdge == DRAG_EDGE_RIGHT && edgeFlags == ViewDragHelper.EDGE_LEFT
-
             val edgeStartRight = dragEdge == DRAG_EDGE_LEFT && edgeFlags == ViewDragHelper.EDGE_RIGHT
 
-            val edgeStartTop = dragEdge == DRAG_EDGE_BOTTOM && edgeFlags == ViewDragHelper.EDGE_TOP
-
-            val edgeStartBottom = dragEdge == DRAG_EDGE_TOP && edgeFlags == ViewDragHelper.EDGE_BOTTOM
-
-            if (edgeStartLeft || edgeStartRight || edgeStartTop || edgeStartBottom) {
+            if (edgeStartLeft || edgeStartRight) {
                 mDragHelper!!.captureChildView(mainView, pointerId)
             }
         }
@@ -536,13 +487,15 @@ class MySwipeRevealLayout : ViewGroup {
             val matchParentWidth = childParams.width == ViewGroup.LayoutParams.MATCH_PARENT
 
             if (matchParentHeight) {
+                // TODO: account for margins
                 measuredChildHeight = maxBottom - minTop
-                childParams!!.height = measuredChildHeight
+                childParams.height = measuredChildHeight
             }
 
             if (matchParentWidth) {
+                // TODO: account for margins
                 measuredChildWidth = maxRight - minLeft
-                childParams!!.width = measuredChildWidth
+                childParams.width = measuredChildWidth
             }
 
             when (dragEdge) {
@@ -558,20 +511,6 @@ class MySwipeRevealLayout : ViewGroup {
                     top = Math.min(paddingTop, maxBottom)
                     right = Math.min(measuredChildWidth + paddingLeft, maxRight)
                     bottom = Math.min(measuredChildHeight + paddingTop, maxBottom)
-                }
-
-                DRAG_EDGE_TOP -> {
-                    left = Math.min(paddingLeft, maxRight)
-                    top = Math.min(paddingTop, maxBottom)
-                    right = Math.min(measuredChildWidth + paddingLeft, maxRight)
-                    bottom = Math.min(measuredChildHeight + paddingTop, maxBottom)
-                }
-
-                DRAG_EDGE_BOTTOM -> {
-                    left = Math.min(paddingLeft, maxRight)
-                    top = Math.max(b - measuredChildHeight - paddingBottom - t, minTop)
-                    right = Math.min(measuredChildWidth + paddingLeft, maxRight)
-                    bottom = Math.max(b - paddingBottom - t, minTop)
                 }
             }
 
@@ -589,8 +528,6 @@ class MySwipeRevealLayout : ViewGroup {
             when (dragEdge) {
                 DRAG_EDGE_LEFT -> revealedView.offsetLeftAndRight(-revealedView.width)
                 DRAG_EDGE_RIGHT -> revealedView.offsetLeftAndRight(revealedView.width)
-                DRAG_EDGE_TOP -> revealedView.offsetTopAndBottom(-revealedView.height)
-                DRAG_EDGE_BOTTOM -> revealedView.offsetTopAndBottom(revealedView.height)
             }
         }
 
@@ -918,41 +855,4 @@ class MySwipeRevealLayout : ViewGroup {
         return (dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).toInt()
     }
 
-    companion object {
-        // These states are used only for ViewBindHelper
-        val STATE_CLOSE = 0
-        val STATE_CLOSING = 1
-        val STATE_OPEN = 2
-        val STATE_OPENING = 3
-        val STATE_DRAGGING = 4
-
-        private val DEFAULT_MIN_FLING_VELOCITY = 300 // dp per second
-        private val DEFAULT_MIN_DIST_REQUEST_DISALLOW_PARENT = 1 // dp
-
-        val DRAG_EDGE_LEFT = 0x1
-        val DRAG_EDGE_RIGHT = 0x1 shl 1
-        val DRAG_EDGE_TOP = 0x1 shl 2
-        val DRAG_EDGE_BOTTOM = 0x1 shl 3
-
-        /**
-         * The secondary view will be under the main view.
-         */
-        val MODE_NORMAL = 0
-
-        /**
-         * The secondary view will stick the edge of the main view.
-         */
-        val MODE_SAME_LEVEL = 1
-
-        fun getStateString(state: Int): String {
-            return when (state) {
-                STATE_CLOSE -> "state_close"
-                STATE_CLOSING -> "state_closing"
-                STATE_OPEN -> "state_open"
-                STATE_OPENING -> "state_opening"
-                STATE_DRAGGING -> "state_dragging"
-                else -> "undefined"
-            }
-        }
-    }
 }
