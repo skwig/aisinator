@@ -2,8 +2,6 @@ package sk.skwig.aisinator
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Resources
-import android.content.res.TypedArray
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.util.DisplayMetrics
@@ -17,38 +15,22 @@ import androidx.core.view.ViewCompat
 import androidx.customview.widget.ViewDragHelper
 import com.chauthai.swipereveallayout.ViewBinderHelper
 
+// TODO: pridat dalsie stavy? nech open ked je za openom (ide swipe prec) "nezatvara" (dava poziciu na open, cize "zavrie") - aj dist to closest edge
+// TODO: ked detekuje drag nadol tak sa to prerusi, aj ked mna vertikalny dragt nezaujima
+// TODO: detekovat swipe?
+
 @SuppressLint("RtlHardcoded")
 class MySwipeRevealLayout : ViewGroup {
 
-    /**
-     * Main view is the view which is shown when the layout is closed.
-     */
-    private lateinit var mMainView: View
+    private lateinit var mainView: View
+    private lateinit var revealedView: View
+    private lateinit var backgroundView: View
 
-    /**
-     * Secondary view is the view which is shown when the layout is opened.
-     */
-    private lateinit var mSecondaryView: View
+    private val mainClosedRect = Rect()
+    private val mainOpenRect = Rect()
 
-    /**
-     * The rectangle position of the main view when the layout is closed.
-     */
-    private val mRectMainClose = Rect()
-
-    /**
-     * The rectangle position of the main view when the layout is opened.
-     */
-    private val mRectMainOpen = Rect()
-
-    /**
-     * The rectangle position of the secondary view when the layout is closed.
-     */
-    private val mRectSecClose = Rect()
-
-    /**
-     * The rectangle position of the secondary view when the layout is opened.
-     */
-    private val mRectSecOpen = Rect()
+    private val revealedCloseRect = Rect()
+    private val revealedOpenRect = Rect()
 
     /**
      * The minimum distance (px) to the closest drag edge that the SwipeRevealLayout
@@ -131,54 +113,46 @@ class MySwipeRevealLayout : ViewGroup {
 
 
     private val mainOpenLeft: Int
-        get() {
-            return when (dragEdge) {
-                DRAG_EDGE_LEFT -> mRectMainClose.left + mSecondaryView.width
-                DRAG_EDGE_RIGHT -> mRectMainClose.left - mSecondaryView.width
-                DRAG_EDGE_TOP -> mRectMainClose.left
-                DRAG_EDGE_BOTTOM -> mRectMainClose.left
-                else -> 0
-            }
+        get() = when (dragEdge) {
+            DRAG_EDGE_LEFT -> mainClosedRect.left + revealedView.width
+            DRAG_EDGE_RIGHT -> mainClosedRect.left - revealedView.width
+            DRAG_EDGE_TOP -> mainClosedRect.left
+            DRAG_EDGE_BOTTOM -> mainClosedRect.left
+            else -> 0
         }
 
     private val mainOpenTop: Int
-        get() {
-            when (dragEdge) {
-                DRAG_EDGE_LEFT -> return mRectMainClose.top
-
-                DRAG_EDGE_RIGHT -> return mRectMainClose.top
-
-                DRAG_EDGE_TOP -> return mRectMainClose.top + mSecondaryView.height
-
-                DRAG_EDGE_BOTTOM -> return mRectMainClose.top - mSecondaryView.height
-
-                else -> return 0
-            }
+        get() = when (dragEdge) {
+            DRAG_EDGE_LEFT -> mainClosedRect.top
+            DRAG_EDGE_RIGHT -> mainClosedRect.top
+            DRAG_EDGE_TOP -> mainClosedRect.top + revealedView.height
+            DRAG_EDGE_BOTTOM -> mainClosedRect.top - revealedView.height
+            else -> 0
         }
 
     private val secOpenLeft: Int
         get() {
             if (mMode == MODE_NORMAL || dragEdge == DRAG_EDGE_BOTTOM || dragEdge == DRAG_EDGE_TOP) {
-                return mRectSecClose.left
+                return revealedCloseRect.left
             }
 
             return if (dragEdge == DRAG_EDGE_LEFT) {
-                mRectSecClose.left + mSecondaryView.width
+                revealedCloseRect.left + revealedView.width
             } else {
-                mRectSecClose.left - mSecondaryView.width
+                revealedCloseRect.left - revealedView.width
             }
         }
 
     private val secOpenTop: Int
         get() {
             if (mMode == MODE_NORMAL || dragEdge == DRAG_EDGE_LEFT || dragEdge == DRAG_EDGE_RIGHT) {
-                return mRectSecClose.top
+                return revealedCloseRect.top
             }
 
             return if (dragEdge == DRAG_EDGE_TOP) {
-                mRectSecClose.top + mSecondaryView.height
+                revealedCloseRect.top + revealedView.height
             } else {
-                mRectSecClose.top - mSecondaryView.height
+                revealedCloseRect.top - revealedView.height
             }
         }
 
@@ -224,38 +198,38 @@ class MySwipeRevealLayout : ViewGroup {
         get() {
             when (dragEdge) {
                 DRAG_EDGE_LEFT -> {
-                    val pivotRight = mRectMainClose.left + mSecondaryView.width
+                    val pivotRight = mainClosedRect.left + revealedView.width
 
                     return Math.min(
-                        mMainView.left - mRectMainClose.left,
-                        pivotRight - mMainView.left
+                        mainView.left - mainClosedRect.left,
+                        pivotRight - mainView.left
                     )
                 }
 
                 DRAG_EDGE_RIGHT -> {
-                    val pivotLeft = mRectMainClose.right - mSecondaryView.width
+                    val pivotLeft = mainClosedRect.right - revealedView.width
 
                     return Math.min(
-                        mMainView.right - pivotLeft,
-                        mRectMainClose.right - mMainView.right
+                        mainView.right - pivotLeft,
+                        mainClosedRect.right - mainView.right
                     )
                 }
 
                 DRAG_EDGE_TOP -> {
-                    val pivotBottom = mRectMainClose.top + mSecondaryView.height
+                    val pivotBottom = mainClosedRect.top + revealedView.height
 
                     return Math.min(
-                        mMainView.bottom - pivotBottom,
-                        pivotBottom - mMainView.top
+                        mainView.bottom - pivotBottom,
+                        pivotBottom - mainView.top
                     )
                 }
 
                 DRAG_EDGE_BOTTOM -> {
-                    val pivotTop = mRectMainClose.bottom - mSecondaryView.height
+                    val pivotTop = mainClosedRect.bottom - revealedView.height
 
                     return Math.min(
-                        mRectMainClose.bottom - mMainView.bottom,
-                        mMainView.bottom - pivotTop
+                        mainClosedRect.bottom - mainView.bottom,
+                        mainView.bottom - pivotTop
                     )
                 }
             }
@@ -265,33 +239,27 @@ class MySwipeRevealLayout : ViewGroup {
 
     private val halfwayPivotHorizontal: Int
         get() = if (dragEdge == DRAG_EDGE_LEFT) {
-            mRectMainClose.left + mSecondaryView.width / 2
+            mainClosedRect.left + revealedView.width / 2
         } else {
-            mRectMainClose.right - mSecondaryView.width / 2
+            mainClosedRect.right - revealedView.width / 2
         }
 
     private val halfwayPivotVertical: Int
         get() = if (dragEdge == DRAG_EDGE_TOP) {
-            mRectMainClose.top + mSecondaryView.height / 2
+            mainClosedRect.top + revealedView.height / 2
         } else {
-            mRectMainClose.bottom - mSecondaryView.height / 2
+            mainClosedRect.bottom - revealedView.height / 2
         }
 
     private val mDragHelperCallback = object : ViewDragHelper.Callback() {
 
         private val slideOffset: Float
-            get() {
-                when (dragEdge) {
-                    DRAG_EDGE_LEFT -> return (mMainView.left - mRectMainClose.left).toFloat() / mSecondaryView.width
-
-                    DRAG_EDGE_RIGHT -> return (mRectMainClose.left - mMainView.left).toFloat() / mSecondaryView.width
-
-                    DRAG_EDGE_TOP -> return (mMainView.top - mRectMainClose.top).toFloat() / mSecondaryView.height
-
-                    DRAG_EDGE_BOTTOM -> return (mRectMainClose.top - mMainView.top).toFloat() / mSecondaryView.height
-
-                    else -> return 0f
-                }
+            get() = when (dragEdge) {
+                DRAG_EDGE_LEFT -> (mainView.left - mainClosedRect.left).toFloat() / revealedView.width
+                DRAG_EDGE_RIGHT -> (mainClosedRect.left - mainView.left).toFloat() / revealedView.width
+                DRAG_EDGE_TOP -> (mainView.top - mainClosedRect.top).toFloat() / revealedView.height
+                DRAG_EDGE_BOTTOM -> (mainClosedRect.top - mainView.top).toFloat() / revealedView.height
+                else -> 0f
             }
 
         override fun tryCaptureView(child: View, pointerId: Int): Boolean {
@@ -300,20 +268,20 @@ class MySwipeRevealLayout : ViewGroup {
             if (isDragLocked)
                 return false
 
-            mDragHelper!!.captureChildView(mMainView, pointerId)
+            mDragHelper!!.captureChildView(mainView, pointerId)
             return false
         }
 
         override fun clampViewPositionVertical(child: View, top: Int, dy: Int): Int {
             when (dragEdge) {
                 DRAG_EDGE_TOP -> return Math.max(
-                    Math.min(top, mRectMainClose.top + mSecondaryView.height),
-                    mRectMainClose.top
+                    Math.min(top, mainClosedRect.top + revealedView.height),
+                    mainClosedRect.top
                 )
 
                 DRAG_EDGE_BOTTOM -> return Math.max(
-                    Math.min(top, mRectMainClose.top),
-                    mRectMainClose.top - mSecondaryView.height
+                    Math.min(top, mainClosedRect.top),
+                    mainClosedRect.top - revealedView.height
                 )
 
                 else -> return child.top
@@ -321,18 +289,12 @@ class MySwipeRevealLayout : ViewGroup {
         }
 
         override fun clampViewPositionHorizontal(child: View, left: Int, dx: Int): Int {
-            Log.d("matej", "clampViewPositionHorizontal() called with: child = [$child], left = [$left], dx = [$dx]")
             return when (dragEdge) {
-                DRAG_EDGE_RIGHT -> //Math.max(
-                    Math.min(left, mRectMainClose.left)//,
-//                    mRectMainClose.left - mSecondaryView.width
-//                )
-
+                DRAG_EDGE_RIGHT -> Math.min(left, mainClosedRect.left)
                 DRAG_EDGE_LEFT -> Math.max(
-                    Math.min(left, mRectMainClose.left + mSecondaryView.width),
-                    mRectMainClose.left
+                    Math.min(left, mainClosedRect.left + revealedView.width),
+                    mainClosedRect.left
                 )
-
                 else -> child.left
             }
         }
@@ -352,7 +314,7 @@ class MySwipeRevealLayout : ViewGroup {
                 } else if (velLeftExceeded) {
                     open(true)
                 } else {
-                    if (mMainView.right < pivotHorizontal) {
+                    if (mainView.right < pivotHorizontal) {
                         open(true)
                     } else {
                         close(true)
@@ -364,7 +326,7 @@ class MySwipeRevealLayout : ViewGroup {
                 } else if (velLeftExceeded) {
                     close(true)
                 } else {
-                    if (mMainView.left < pivotHorizontal) {
+                    if (mainView.left < pivotHorizontal) {
                         close(true)
                     } else {
                         open(true)
@@ -376,7 +338,7 @@ class MySwipeRevealLayout : ViewGroup {
                 } else if (velDownExceeded) {
                     open(true)
                 } else {
-                    if (mMainView.top < pivotVertical) {
+                    if (mainView.top < pivotVertical) {
                         close(true)
                     } else {
                         open(true)
@@ -388,7 +350,7 @@ class MySwipeRevealLayout : ViewGroup {
                 } else if (velDownExceeded) {
                     close(true)
                 } else {
-                    if (mMainView.bottom < pivotVertical) {
+                    if (mainView.bottom < pivotVertical) {
                         open(true)
                     } else {
                         close(true)
@@ -413,7 +375,7 @@ class MySwipeRevealLayout : ViewGroup {
             val edgeStartBottom = dragEdge == DRAG_EDGE_TOP && edgeFlags == ViewDragHelper.EDGE_BOTTOM
 
             if (edgeStartLeft || edgeStartRight || edgeStartTop || edgeStartBottom) {
-                mDragHelper!!.captureChildView(mMainView, pointerId)
+                mDragHelper!!.captureChildView(mainView, pointerId)
             }
         }
 
@@ -421,25 +383,25 @@ class MySwipeRevealLayout : ViewGroup {
             super.onViewPositionChanged(changedView, left, top, dx, dy)
             if (mMode == MODE_SAME_LEVEL) {
                 if (dragEdge == DRAG_EDGE_LEFT || dragEdge == DRAG_EDGE_RIGHT) {
-                    mSecondaryView.offsetLeftAndRight(dx)
+                    revealedView.offsetLeftAndRight(dx)
                 } else {
-                    mSecondaryView.offsetTopAndBottom(dy)
+                    revealedView.offsetTopAndBottom(dy)
                 }
             }
 
-            val isMoved = mMainView.left != mLastMainLeft || mMainView.top != mLastMainTop
+            val isMoved = mainView.left != mLastMainLeft || mainView.top != mLastMainTop
             if (mSwipeListener != null && isMoved) {
-                if (mMainView.left == mRectMainClose.left && mMainView.top == mRectMainClose.top) {
+                if (mainView.left == mainClosedRect.left && mainView.top == mainClosedRect.top) {
                     mSwipeListener!!.onClosed(this@MySwipeRevealLayout)
-                } else if (mMainView.left == mRectMainOpen.left && mMainView.top == mRectMainOpen.top) {
+                } else if (mainView.left == mainOpenRect.left && mainView.top == mainOpenRect.top) {
                     mSwipeListener!!.onOpened(this@MySwipeRevealLayout)
                 } else {
                     mSwipeListener!!.onSlide(this@MySwipeRevealLayout, slideOffset)
                 }
             }
 
-            mLastMainLeft = mMainView.left
-            mLastMainTop = mMainView.top
+            mLastMainLeft = mainView.left
+            mLastMainTop = mainView.top
             ViewCompat.postInvalidateOnAnimation(this@MySwipeRevealLayout)
         }
 
@@ -454,13 +416,13 @@ class MySwipeRevealLayout : ViewGroup {
 
                     // drag edge is left or right
                     if (dragEdge == DRAG_EDGE_LEFT || dragEdge == DRAG_EDGE_RIGHT) {
-                        if (mMainView.left == mRectMainClose.left) {
+                        if (mainView.left == mainClosedRect.left) {
                             mState = STATE_CLOSE
                         } else {
                             mState = STATE_OPEN
                         }
                     } else {
-                        if (mMainView.top == mRectMainClose.top) {
+                        if (mainView.top == mainClosedRect.top) {
                             mState = STATE_CLOSE
                         } else {
                             mState = STATE_OPEN
@@ -478,37 +440,20 @@ class MySwipeRevealLayout : ViewGroup {
         fun onDragStateChanged(state: Int)
     }
 
-    /**
-     * Listener for monitoring events about swipe layout.
-     */
     interface SwipeListener {
-        /**
-         * Called when the main view becomes completely closed.
-         */
         fun onClosed(view: MySwipeRevealLayout)
 
-        /**
-         * Called when the main view becomes completely opened.
-         */
         fun onOpened(view: MySwipeRevealLayout)
 
-        /**
-         * Called when the main view's position changes.
-         * @param slideOffset The new offset of the main view within its range, from 0-1
-         */
         fun onSlide(view: MySwipeRevealLayout, slideOffset: Float)
     }
 
-    /**
-     * No-op stub for [com.chauthai.swipereveallayout.SwipeRevealLayout.SwipeListener]. If you only want ot implement a subset
-     * of the listener methods, you can extend this instead of implement the full interface.
-     */
-    class SimpleSwipeListener : com.chauthai.swipereveallayout.SwipeRevealLayout.SwipeListener {
-        override fun onClosed(view: com.chauthai.swipereveallayout.SwipeRevealLayout) {}
+    class SimpleSwipeListener : SwipeListener {
+        override fun onClosed(view: MySwipeRevealLayout) {}
 
-        override fun onOpened(view: com.chauthai.swipereveallayout.SwipeRevealLayout) {}
+        override fun onOpened(view: MySwipeRevealLayout) {}
 
-        override fun onSlide(view: com.chauthai.swipereveallayout.SwipeRevealLayout, slideOffset: Float) {}
+        override fun onSlide(view: MySwipeRevealLayout, slideOffset: Float) {}
     }
 
     constructor(context: Context) : super(context) {
@@ -519,7 +464,9 @@ class MySwipeRevealLayout : ViewGroup {
         init(context, attrs)
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        init(context, attrs)
+    }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         mGestureDetector!!.onTouchEvent(event)
@@ -551,14 +498,13 @@ class MySwipeRevealLayout : ViewGroup {
     override fun onFinishInflate() {
         super.onFinishInflate()
 
-        // TODO: pridat treti child (background)
-
-        // get views
-        if (childCount >= 2) {
-            mSecondaryView = getChildAt(0)
-            mMainView = getChildAt(1)
-        } else if (childCount == 1) {
-            mMainView = getChildAt(0)
+        when (val i = childCount) {
+            3 -> {
+                backgroundView = getChildAt(0)
+                revealedView = getChildAt(1)
+                mainView = getChildAt(2)
+            }
+            else -> throw IllegalStateException("Invalid MySwipeRevealLayout child count : $i")
         }
     }
 
@@ -571,14 +517,10 @@ class MySwipeRevealLayout : ViewGroup {
         for (index in 0 until childCount) {
             val child = getChildAt(index)
 
-            var left: Int
-            var right: Int
-            var top: Int
-            var bottom: Int
-            bottom = 0
-            top = bottom
-            right = top
-            left = right
+            var left = 0
+            var right = 0
+            var top = 0
+            var bottom = 0
 
             val minLeft = paddingLeft
             val maxRight = Math.max(r - paddingRight - l, 0)
@@ -589,16 +531,9 @@ class MySwipeRevealLayout : ViewGroup {
             var measuredChildWidth = child.measuredWidth
 
             // need to take account if child size is match_parent
-            val childParams = child.layoutParams
-            var matchParentHeight = false
-            var matchParentWidth = false
-
-            if (childParams != null) {
-                matchParentHeight = childParams.height == ViewGroup.LayoutParams.MATCH_PARENT || childParams.height ==
-                        ViewGroup.LayoutParams.FILL_PARENT
-                matchParentWidth = childParams.width == ViewGroup.LayoutParams.MATCH_PARENT || childParams.width ==
-                        ViewGroup.LayoutParams.FILL_PARENT
-            }
+            val childParams = child.layoutParams as MarginLayoutParams
+            val matchParentHeight = childParams.height == ViewGroup.LayoutParams.MATCH_PARENT
+            val matchParentWidth = childParams.width == ViewGroup.LayoutParams.MATCH_PARENT
 
             if (matchParentHeight) {
                 measuredChildHeight = maxBottom - minTop
@@ -640,23 +575,22 @@ class MySwipeRevealLayout : ViewGroup {
                 }
             }
 
-            child.layout(left, top, right, bottom)
+            // TODO: popracovat na marginoch, nech funguju spravne
+            child.layout(
+                left + childParams.leftMargin,
+                top + childParams.topMargin,
+                right - childParams.rightMargin,
+                bottom - childParams.bottomMargin
+            )
         }
 
         // taking account offset when mode is SAME_LEVEL
         if (mMode == MODE_SAME_LEVEL) {
             when (dragEdge) {
-                DRAG_EDGE_LEFT -> mSecondaryView.offsetLeftAndRight(-mSecondaryView
-                    .width)
-
-                DRAG_EDGE_RIGHT -> mSecondaryView.offsetLeftAndRight(mSecondaryView
-                    .width)
-
-                DRAG_EDGE_TOP -> mSecondaryView.offsetTopAndBottom(-mSecondaryView
-                    .height)
-
-                DRAG_EDGE_BOTTOM -> mSecondaryView.offsetTopAndBottom(mSecondaryView
-                    .height)
+                DRAG_EDGE_LEFT -> revealedView.offsetLeftAndRight(-revealedView.width)
+                DRAG_EDGE_RIGHT -> revealedView.offsetLeftAndRight(revealedView.width)
+                DRAG_EDGE_TOP -> revealedView.offsetTopAndBottom(-revealedView.height)
+                DRAG_EDGE_BOTTOM -> revealedView.offsetTopAndBottom(revealedView.height)
             }
         }
 
@@ -668,8 +602,8 @@ class MySwipeRevealLayout : ViewGroup {
             close(false)
         }
 
-        mLastMainLeft = mMainView.left
-        mLastMainTop = mMainView.top
+        mLastMainLeft = mainView.left
+        mLastMainTop = mainView.top
 
         mOnLayoutCount++
     }
@@ -764,6 +698,10 @@ class MySwipeRevealLayout : ViewGroup {
         }
     }
 
+    override fun generateLayoutParams(attrs: AttributeSet?): LayoutParams {
+        return MarginLayoutParams(context, attrs)
+    }
+
     /**
      * Open the panel to show the secondary view
      * @param animation true to animate the open motion. [com.chauthai.swipereveallayout.SwipeRevealLayout.SwipeListener] won't be
@@ -775,7 +713,7 @@ class MySwipeRevealLayout : ViewGroup {
 
         if (animation) {
             mState = STATE_OPENING
-            mDragHelper!!.smoothSlideViewTo(mMainView, mRectMainOpen.left, mRectMainOpen.top)
+            mDragHelper!!.smoothSlideViewTo(mainView, mainOpenRect.left, mainOpenRect.top)
 
             if (mDragStateChangeListener != null) {
                 mDragStateChangeListener!!.onDragStateChanged(mState)
@@ -784,18 +722,18 @@ class MySwipeRevealLayout : ViewGroup {
             mState = STATE_OPEN
             mDragHelper!!.abort()
 
-            mMainView.layout(
-                mRectMainOpen.left,
-                mRectMainOpen.top,
-                mRectMainOpen.right,
-                mRectMainOpen.bottom
+            mainView.layout(
+                mainOpenRect.left,
+                mainOpenRect.top,
+                mainOpenRect.right,
+                mainOpenRect.bottom
             )
 
-            mSecondaryView.layout(
-                mRectSecOpen.left,
-                mRectSecOpen.top,
-                mRectSecOpen.right,
-                mRectSecOpen.bottom
+            revealedView.layout(
+                revealedOpenRect.left,
+                revealedOpenRect.top,
+                revealedOpenRect.right,
+                revealedOpenRect.bottom
             )
         }
 
@@ -813,7 +751,7 @@ class MySwipeRevealLayout : ViewGroup {
 
         if (animation) {
             mState = STATE_CLOSING
-            mDragHelper!!.smoothSlideViewTo(mMainView, mRectMainClose.left, mRectMainClose.top)
+            mDragHelper!!.smoothSlideViewTo(mainView, mainClosedRect.left, mainClosedRect.top)
 
             if (mDragStateChangeListener != null) {
                 mDragStateChangeListener!!.onDragStateChanged(mState)
@@ -823,18 +761,18 @@ class MySwipeRevealLayout : ViewGroup {
             mState = STATE_CLOSE
             mDragHelper!!.abort()
 
-            mMainView.layout(
-                mRectMainClose.left,
-                mRectMainClose.top,
-                mRectMainClose.right,
-                mRectMainClose.bottom
+            mainView.layout(
+                mainClosedRect.left,
+                mainClosedRect.top,
+                mainClosedRect.right,
+                mainClosedRect.bottom
             )
 
-            mSecondaryView.layout(
-                mRectSecClose.left,
-                mRectSecClose.top,
-                mRectSecClose.right,
-                mRectSecClose.bottom
+            revealedView.layout(
+                revealedCloseRect.left,
+                revealedCloseRect.top,
+                revealedCloseRect.right,
+                revealedCloseRect.bottom
             )
         }
 
@@ -874,35 +812,35 @@ class MySwipeRevealLayout : ViewGroup {
 
     private fun initRects() {
         // close position of main view
-        mRectMainClose.set(
-            mMainView.left,
-            mMainView.top,
-            mMainView.right,
-            mMainView.bottom
+        mainClosedRect.set(
+            mainView.left,
+            mainView.top,
+            mainView.right,
+            mainView.bottom
         )
 
         // close position of secondary view
-        mRectSecClose.set(
-            mSecondaryView.left,
-            mSecondaryView.top,
-            mSecondaryView.right,
-            mSecondaryView.bottom
+        revealedCloseRect.set(
+            revealedView.left,
+            revealedView.top,
+            revealedView.right,
+            revealedView.bottom
         )
 
         // open position of the main view
-        mRectMainOpen.set(
+        mainOpenRect.set(
             mainOpenLeft,
             mainOpenTop,
-            mainOpenLeft + mMainView.width,
-            mainOpenTop + mMainView.height
+            mainOpenLeft + mainView.width,
+            mainOpenTop + mainView.height
         )
 
         // open position of the secondary view
-        mRectSecOpen.set(
+        revealedOpenRect.set(
             secOpenLeft,
             secOpenTop,
-            secOpenLeft + mSecondaryView.width,
-            secOpenTop + mSecondaryView.height
+            secOpenLeft + revealedView.width,
+            secOpenTop + revealedView.height
         )
     }
 
@@ -914,8 +852,8 @@ class MySwipeRevealLayout : ViewGroup {
         val x = ev.x
         val y = ev.y
 
-        val withinVertical = mMainView.top <= y && y <= mMainView.bottom
-        val withinHorizontal = mMainView.left <= x && x <= mMainView.right
+        val withinVertical = mainView.top <= y && y <= mainView.bottom
+        val withinHorizontal = mainView.left <= x && x <= mainView.right
 
         return withinVertical && withinHorizontal
     }
@@ -1007,18 +945,13 @@ class MySwipeRevealLayout : ViewGroup {
         val MODE_SAME_LEVEL = 1
 
         fun getStateString(state: Int): String {
-            when (state) {
-                STATE_CLOSE -> return "state_close"
-
-                STATE_CLOSING -> return "state_closing"
-
-                STATE_OPEN -> return "state_open"
-
-                STATE_OPENING -> return "state_opening"
-
-                STATE_DRAGGING -> return "state_dragging"
-
-                else -> return "undefined"
+            return when (state) {
+                STATE_CLOSE -> "state_close"
+                STATE_CLOSING -> "state_closing"
+                STATE_OPEN -> "state_open"
+                STATE_OPENING -> "state_opening"
+                STATE_DRAGGING -> "state_dragging"
+                else -> "undefined"
             }
         }
     }

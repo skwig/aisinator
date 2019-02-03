@@ -36,6 +36,10 @@ class DeadlineAdapter : RecyclerView.Adapter<DeadlineViewHolder>() {
         val item = data[position]
         viewBinderHelper.bind(holder.binding.swipeRevealLayout, item.id.toString());
         holder.binding.apply {
+//            holder.binding.card.setOnLongClickListener {
+//                (it.parent as MySwipeRevealLayout).open(true)
+//                false
+//            }
             tagText.text = item.course.tag
             nameText.text = item.name
             deadlineText.text = item.deadline
