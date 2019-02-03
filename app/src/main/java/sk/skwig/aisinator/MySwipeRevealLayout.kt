@@ -8,7 +8,7 @@ import android.util.DisplayMetrics
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewCompat
 import androidx.customview.widget.ViewDragHelper
@@ -18,7 +18,7 @@ import com.chauthai.swipereveallayout.ViewBinderHelper
 // TODO: detekovat swipe? -> pridat aj min dismiss velocity
 
 @SuppressLint("RtlHardcoded")
-class MySwipeRevealLayout : ViewGroup {
+class MySwipeRevealLayout : FrameLayout {
 
     companion object {
         // These states are used only for ViewBindHelper
@@ -365,69 +365,10 @@ class MySwipeRevealLayout : ViewGroup {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         mAborted = false
 
-        for (index in 0 until childCount) {
-            val child = getChildAt(index)
-
-            var left = 0
-            var right = 0
-            var top = 0
-            var bottom = 0
-
-            val minLeft = paddingLeft
-            val maxRight = Math.max(r - paddingRight - l, 0)
-            val minTop = paddingTop
-            val maxBottom = Math.max(b - paddingBottom - t, 0)
-
-            var measuredChildHeight = child.measuredHeight
-            var measuredChildWidth = child.measuredWidth
-
-            // need to take account if child size is match_parent
-            val childParams = child.layoutParams as MarginLayoutParams
-            val matchParentHeight = childParams.height == ViewGroup.LayoutParams.MATCH_PARENT
-            val matchParentWidth = childParams.width == ViewGroup.LayoutParams.MATCH_PARENT
-
-            if (matchParentHeight) {
-                // TODO: account for margins
-                measuredChildHeight = maxBottom - minTop
-                childParams.height = measuredChildHeight
-            }
-
-            if (matchParentWidth) {
-                // TODO: account for margins
-                measuredChildWidth = maxRight - minLeft
-                childParams.width = measuredChildWidth
-            }
-
-            when (dragEdge) {
-                DRAG_EDGE_RIGHT -> {
-                    left = Math.max(r - measuredChildWidth - paddingRight - l, minLeft)
-                    top = Math.min(paddingTop, maxBottom)
-                    right = Math.max(r - paddingRight - l, minLeft)
-                    bottom = Math.min(measuredChildHeight + paddingTop, maxBottom)
-                }
-
-                DRAG_EDGE_LEFT -> {
-                    left = Math.min(paddingLeft, maxRight)
-                    top = Math.min(paddingTop, maxBottom)
-                    right = Math.min(measuredChildWidth + paddingLeft, maxRight)
-                    bottom = Math.min(measuredChildHeight + paddingTop, maxBottom)
-                }
-            }
-
-            // TODO: popracovat na marginoch, nech funguju spravne
-            child.layout(
-                left + childParams.leftMargin,
-                top + childParams.topMargin,
-                right - childParams.rightMargin,
-                bottom - childParams.bottomMargin
-            )
-        }
+        super.onLayout(changed, left, top, right, bottom)
 
         // taking account offset when mode is SAME_LEVEL
         if (mMode == MODE_SAME_LEVEL) {
@@ -451,98 +392,10 @@ class MySwipeRevealLayout : ViewGroup {
         mOnLayoutCount++
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var widthMeasureSpec = widthMeasureSpec
-        var heightMeasureSpec = heightMeasureSpec
-        if (childCount < 2) {
-            throw RuntimeException("Layout must have two children")
-        }
-
-        val params = layoutParams
-
-        val widthMode = View.MeasureSpec.getMode(widthMeasureSpec)
-        val heightMode = View.MeasureSpec.getMode(heightMeasureSpec)
-
-        var desiredWidth = 0
-        var desiredHeight = 0
-
-        // first find the largest child
-        for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            measureChild(child, widthMeasureSpec, heightMeasureSpec)
-            desiredWidth = Math.max(child.measuredWidth, desiredWidth)
-            desiredHeight = Math.max(child.measuredHeight, desiredHeight)
-        }
-        // create new measure spec using the largest child width
-        widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(desiredWidth, widthMode)
-        heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(desiredHeight, heightMode)
-
-        val measuredWidth = View.MeasureSpec.getSize(widthMeasureSpec)
-        val measuredHeight = View.MeasureSpec.getSize(heightMeasureSpec)
-
-        for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            val childParams = child.layoutParams
-
-            if (childParams != null) {
-                if (childParams.height == ViewGroup.LayoutParams.MATCH_PARENT) {
-                    child.minimumHeight = measuredHeight
-                }
-
-                if (childParams.width == ViewGroup.LayoutParams.MATCH_PARENT) {
-                    child.minimumWidth = measuredWidth
-                }
-            }
-
-            measureChild(child, widthMeasureSpec, heightMeasureSpec)
-            desiredWidth = Math.max(child.measuredWidth, desiredWidth)
-            desiredHeight = Math.max(child.measuredHeight, desiredHeight)
-        }
-
-        // taking accounts of padding
-        desiredWidth += paddingLeft + paddingRight
-        desiredHeight += paddingTop + paddingBottom
-
-        // adjust desired width
-        if (widthMode == View.MeasureSpec.EXACTLY) {
-            desiredWidth = measuredWidth
-        } else {
-            if (params.width == ViewGroup.LayoutParams.MATCH_PARENT) {
-                desiredWidth = measuredWidth
-            }
-
-            if (widthMode == View.MeasureSpec.AT_MOST) {
-                desiredWidth = if (desiredWidth > measuredWidth) measuredWidth else desiredWidth
-            }
-        }
-
-        // adjust desired height
-        if (heightMode == View.MeasureSpec.EXACTLY) {
-            desiredHeight = measuredHeight
-        } else {
-            if (params.height == ViewGroup.LayoutParams.MATCH_PARENT) {
-                desiredHeight = measuredHeight
-            }
-
-            if (heightMode == View.MeasureSpec.AT_MOST) {
-                desiredHeight = if (desiredHeight > measuredHeight) measuredHeight else desiredHeight
-            }
-        }
-
-        setMeasuredDimension(desiredWidth, desiredHeight)
-    }
-
     override fun computeScroll() {
         if (mDragHelper.continueSettling(true)) {
             ViewCompat.postInvalidateOnAnimation(this)
         }
-    }
-
-    override fun generateLayoutParams(attrs: AttributeSet?): LayoutParams {
-        return MarginLayoutParams(context, attrs)
     }
 
     /**

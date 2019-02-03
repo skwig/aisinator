@@ -20,7 +20,9 @@
             app:cardBackgroundColor="#0000ff"
             app:cardElevation="0dp" />
 
+        <!--TODO: fixnut layoutovanie nech netreba gravity-->
         <LinearLayout
+            android:layout_gravity="right"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="8dp"
