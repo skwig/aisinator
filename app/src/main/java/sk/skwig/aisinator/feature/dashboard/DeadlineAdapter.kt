@@ -40,6 +40,25 @@ class DeadlineAdapter : RecyclerView.Adapter<DeadlineViewHolder>() {
 //                (it.parent as MySwipeRevealLayout).open(true)
 //                false
 //            }
+//            holder.binding.swipeRevealLayout.setDragStateChangeListener(object : MySwipeRevealLayout.DragStateChangeListener {
+//                override fun onDragStateChanged(state: Int) {
+//                    Log.d("matej", "onDragStateChanged() called with: state = [$state]")
+//                }
+//            })
+//
+//            holder.binding.swipeRevealLayout.setSwipeListener(object : MySwipeRevealLayout.SwipeListener {
+//                override fun onClosed(view: MySwipeRevealLayout) {
+//                    Log.d("matej", "onClosed() called with: view = [$view]")
+//                }
+//
+//                override fun onOpened(view: MySwipeRevealLayout) {
+//                    Log.d("matej", "onOpened() called with: view = [$view]")
+//                }
+//
+//                override fun onSlide(view: MySwipeRevealLayout, slideOffset: Float) {
+//                    Log.d("matej", "onSlide() called with: view = [$view], slideOffset = [$slideOffset]")
+//                }
+//            })
             tagText.text = item.course.tag
             nameText.text = item.name
             deadlineText.text = item.deadline

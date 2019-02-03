@@ -15,8 +15,7 @@ import androidx.customview.widget.ViewDragHelper
 import com.chauthai.swipereveallayout.ViewBinderHelper
 
 // TODO: pridat dalsie stavy? nech open ked je za openom (ide swipe prec) "nezatvara" (dava poziciu na open, cize "zavrie") - aj dist to closest edge
-// TODO: ked detekuje drag nadol tak sa to prerusi, aj ked mna vertikalny dragt nezaujima
-// TODO: detekovat swipe?
+// TODO: detekovat swipe? -> pridat aj min dismiss velocity
 
 @SuppressLint("RtlHardcoded")
 class MySwipeRevealLayout : ViewGroup {
@@ -53,7 +52,7 @@ class MySwipeRevealLayout : ViewGroup {
     private val mainClosedRect = Rect()
     private val mainOpenRect = Rect()
 
-    private val revealedCloseRect = Rect()
+    private val revealedClosedRect = Rect()
     private val revealedOpenRect = Rect()
 
     /**
@@ -115,8 +114,8 @@ class MySwipeRevealLayout : ViewGroup {
     private var mPrevX = -1f
     private var mPrevY = -1f
 
-    private var mDragHelper: ViewDragHelper? = null
-    private var mGestureDetector: GestureDetectorCompat? = null
+    private lateinit var mDragHelper: ViewDragHelper
+    private lateinit var mGestureDetector: GestureDetectorCompat
 
     private var mDragStateChangeListener: DragStateChangeListener? = null // only used for ViewBindHelper
     private var mSwipeListener: SwipeListener? = null
@@ -135,49 +134,10 @@ class MySwipeRevealLayout : ViewGroup {
     val isClosed: Boolean
         get() = mState == STATE_CLOSE
 
-
-    private val mainOpenLeft: Int
-        get() = when (dragEdge) {
-            DRAG_EDGE_LEFT -> mainClosedRect.left + revealedView.width
-            DRAG_EDGE_RIGHT -> mainClosedRect.left - revealedView.width
-            else -> 0
-        }
-
-    private val mainOpenTop: Int
-        get() = when (dragEdge) {
-            DRAG_EDGE_LEFT -> mainClosedRect.top
-            DRAG_EDGE_RIGHT -> mainClosedRect.top
-            else -> 0
-        }
-
-    private val secOpenLeft: Int
-        get() {
-            if (mMode == MODE_NORMAL) {
-                return revealedCloseRect.left
-            }
-
-            return if (dragEdge == DRAG_EDGE_LEFT) {
-                revealedCloseRect.left + revealedView.width
-            } else {
-                revealedCloseRect.left - revealedView.width
-            }
-        }
-
-    private val secOpenTop: Int
-        get() {
-            if (mMode == MODE_NORMAL || dragEdge == DRAG_EDGE_LEFT || dragEdge == DRAG_EDGE_RIGHT) {
-                return revealedCloseRect.top
-            }
-
-            return revealedCloseRect.top - revealedView.height
-        }
-
     private val mGestureListener = object : GestureDetector.SimpleOnGestureListener() {
-        internal var hasDisallowed = false
 
         override fun onDown(e: MotionEvent): Boolean {
             mIsScrolling = false
-            hasDisallowed = false
             return true
         }
 
@@ -188,52 +148,10 @@ class MySwipeRevealLayout : ViewGroup {
 
         override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
             mIsScrolling = true
-
-            if (parent != null) {
-                val shouldDisallow: Boolean
-
-                if (!hasDisallowed) {
-                    shouldDisallow = distToClosestEdge >= mMinDistRequestDisallowParent
-                    if (shouldDisallow) {
-                        hasDisallowed = true
-                    }
-                } else {
-                    shouldDisallow = true
-                }
-
-                // disallow parent to intercept touch event so that the layout will work
-                // properly on RecyclerView or view that handles scroll gesture.
-                parent.requestDisallowInterceptTouchEvent(shouldDisallow)
-            }
-
+            parent.requestDisallowInterceptTouchEvent(true)
             return false
         }
     }
-
-    private val distToClosestEdge: Int
-        get() {
-            when (dragEdge) {
-                DRAG_EDGE_LEFT -> {
-                    val pivotRight = mainClosedRect.left + revealedView.width
-
-                    return Math.min(
-                        mainView.left - mainClosedRect.left,
-                        pivotRight - mainView.left
-                    )
-                }
-
-                DRAG_EDGE_RIGHT -> {
-                    val pivotLeft = mainClosedRect.right - revealedView.width
-
-                    return Math.min(
-                        mainView.right - pivotLeft,
-                        mainClosedRect.right - mainView.right
-                    )
-                }
-            }
-
-            return 0
-        }
 
     private val halfwayPivotHorizontal: Int
         get() = if (dragEdge == DRAG_EDGE_LEFT) {
@@ -260,7 +178,7 @@ class MySwipeRevealLayout : ViewGroup {
             if (isDragLocked)
                 return false
 
-            mDragHelper!!.captureChildView(mainView, pointerId)
+            mDragHelper.captureChildView(mainView, pointerId)
             return false
         }
 
@@ -326,18 +244,14 @@ class MySwipeRevealLayout : ViewGroup {
             val edgeStartRight = dragEdge == DRAG_EDGE_LEFT && edgeFlags == ViewDragHelper.EDGE_RIGHT
 
             if (edgeStartLeft || edgeStartRight) {
-                mDragHelper!!.captureChildView(mainView, pointerId)
+                mDragHelper.captureChildView(mainView, pointerId)
             }
         }
 
         override fun onViewPositionChanged(changedView: View, left: Int, top: Int, dx: Int, dy: Int) {
             super.onViewPositionChanged(changedView, left, top, dx, dy)
             if (mMode == MODE_SAME_LEVEL) {
-                if (dragEdge == DRAG_EDGE_LEFT || dragEdge == DRAG_EDGE_RIGHT) {
-                    revealedView.offsetLeftAndRight(dx)
-                } else {
-                    revealedView.offsetTopAndBottom(dy)
-                }
+                revealedView.offsetLeftAndRight(dx)
             }
 
             val isMoved = mainView.left != mLastMainLeft || mainView.top != mLastMainTop
@@ -366,19 +280,11 @@ class MySwipeRevealLayout : ViewGroup {
                 ViewDragHelper.STATE_IDLE ->
 
                     // drag edge is left or right
-                    if (dragEdge == DRAG_EDGE_LEFT || dragEdge == DRAG_EDGE_RIGHT) {
-                        if (mainView.left == mainClosedRect.left) {
-                            mState = STATE_CLOSE
-                        } else {
-                            mState = STATE_OPEN
-                        }
+                    if (mainView.left == mainClosedRect.left) {
+                        mState = STATE_CLOSE
                     } else {
-                        if (mainView.top == mainClosedRect.top) {
-                            mState = STATE_CLOSE
-                        } else {
-                            mState = STATE_OPEN
-                        }
-                    }// drag edge is top or bottom
+                        mState = STATE_OPEN
+                    }
             }
 
             if (mDragStateChangeListener != null && !mAborted && prevState != mState) {
@@ -420,8 +326,8 @@ class MySwipeRevealLayout : ViewGroup {
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        mGestureDetector!!.onTouchEvent(event)
-        mDragHelper!!.processTouchEvent(event)
+        mGestureDetector.onTouchEvent(event)
+        mDragHelper.processTouchEvent(event)
         return true
     }
 
@@ -435,8 +341,8 @@ class MySwipeRevealLayout : ViewGroup {
         accumulateDragDist(ev)
 
         val couldBecomeClick = couldBecomeClick(ev)
-        val settling = mDragHelper!!.viewDragState == ViewDragHelper.STATE_SETTLING
-        val idleAfterScrolled = mDragHelper!!.viewDragState == ViewDragHelper.STATE_IDLE && mIsScrolling
+        val settling = mDragHelper.viewDragState == ViewDragHelper.STATE_SETTLING
+        val idleAfterScrolled = mDragHelper.viewDragState == ViewDragHelper.STATE_IDLE && mIsScrolling
 
         // must be placed as the last statement
         mPrevX = ev.x
@@ -630,7 +536,7 @@ class MySwipeRevealLayout : ViewGroup {
     }
 
     override fun computeScroll() {
-        if (mDragHelper!!.continueSettling(true)) {
+        if (mDragHelper.continueSettling(true)) {
             ViewCompat.postInvalidateOnAnimation(this)
         }
     }
@@ -650,14 +556,14 @@ class MySwipeRevealLayout : ViewGroup {
 
         if (animation) {
             mState = STATE_OPENING
-            mDragHelper!!.smoothSlideViewTo(mainView, mainOpenRect.left, mainOpenRect.top)
+            mDragHelper.smoothSlideViewTo(mainView, mainOpenRect.left, mainOpenRect.top)
 
             if (mDragStateChangeListener != null) {
                 mDragStateChangeListener!!.onDragStateChanged(mState)
             }
         } else {
             mState = STATE_OPEN
-            mDragHelper!!.abort()
+            mDragHelper.abort()
 
             mainView.layout(
                 mainOpenRect.left,
@@ -688,7 +594,7 @@ class MySwipeRevealLayout : ViewGroup {
 
         if (animation) {
             mState = STATE_CLOSING
-            mDragHelper!!.smoothSlideViewTo(mainView, mainClosedRect.left, mainClosedRect.top)
+            mDragHelper.smoothSlideViewTo(mainView, mainClosedRect.left, mainClosedRect.top)
 
             if (mDragStateChangeListener != null) {
                 mDragStateChangeListener!!.onDragStateChanged(mState)
@@ -696,7 +602,7 @@ class MySwipeRevealLayout : ViewGroup {
 
         } else {
             mState = STATE_CLOSE
-            mDragHelper!!.abort()
+            mDragHelper.abort()
 
             mainView.layout(
                 mainClosedRect.left,
@@ -706,10 +612,10 @@ class MySwipeRevealLayout : ViewGroup {
             )
 
             revealedView.layout(
-                revealedCloseRect.left,
-                revealedCloseRect.top,
-                revealedCloseRect.right,
-                revealedCloseRect.bottom
+                revealedClosedRect.left,
+                revealedClosedRect.top,
+                revealedClosedRect.right,
+                revealedClosedRect.bottom
             )
         }
 
@@ -735,7 +641,7 @@ class MySwipeRevealLayout : ViewGroup {
     /** Abort current motion in progress. Only used for [ViewBinderHelper]  */
     fun abort() {
         mAborted = true
-        mDragHelper!!.abort()
+        mDragHelper.abort()
     }
 
     /**
@@ -744,6 +650,7 @@ class MySwipeRevealLayout : ViewGroup {
      * @return true if you should call [.requestLayout].
      */
     fun shouldRequestLayout(): Boolean {
+        // TODO: dat tu 3?
         return mOnLayoutCount < 2
     }
 
@@ -757,27 +664,41 @@ class MySwipeRevealLayout : ViewGroup {
         )
 
         // close position of secondary view
-        revealedCloseRect.set(
+        revealedClosedRect.set(
             revealedView.left,
             revealedView.top,
             revealedView.right,
             revealedView.bottom
         )
 
+        val a = when (dragEdge) {
+            DRAG_EDGE_LEFT -> mainClosedRect.left + revealedView.width
+            DRAG_EDGE_RIGHT -> mainClosedRect.left - revealedView.width
+            else -> 0
+        }
+
         // open position of the main view
         mainOpenRect.set(
-            mainOpenLeft,
-            mainOpenTop,
-            mainOpenLeft + mainView.width,
-            mainOpenTop + mainView.height
+            a,
+            mainView.top,
+            a + mainView.width,
+            mainView.bottom
         )
+
+        val b = if (mMode == MODE_NORMAL) {
+            revealedClosedRect.left
+        } else if (dragEdge == DRAG_EDGE_LEFT) {
+            revealedClosedRect.left + revealedView.width
+        } else {
+            revealedClosedRect.left - revealedView.width
+        }
 
         // open position of the secondary view
         revealedOpenRect.set(
-            secOpenLeft,
-            secOpenTop,
-            secOpenLeft + revealedView.width,
-            secOpenTop + revealedView.height
+            b,
+            revealedView.top,
+            b + revealedView.width,
+            revealedView.bottom
         )
     }
 
@@ -796,7 +717,7 @@ class MySwipeRevealLayout : ViewGroup {
     }
 
     private fun shouldInitiateADrag(): Boolean {
-        val minDistToInitiateDrag = mDragHelper!!.touchSlop.toFloat()
+        val minDistToInitiateDrag = mDragHelper.touchSlop.toFloat()
         return mDragDist >= minDistToInitiateDrag
     }
 
@@ -807,16 +728,7 @@ class MySwipeRevealLayout : ViewGroup {
             return
         }
 
-        val dragHorizontally = dragEdge == DRAG_EDGE_LEFT || dragEdge == DRAG_EDGE_RIGHT
-
-        val dragged: Float
-        if (dragHorizontally) {
-            dragged = Math.abs(ev.x - mPrevX)
-        } else {
-            dragged = Math.abs(ev.y - mPrevY)
-        }
-
-        mDragDist += dragged
+        mDragDist += Math.abs(ev.x - mPrevX)
     }
 
     private fun init(context: Context?, attrs: AttributeSet?) {
@@ -838,7 +750,7 @@ class MySwipeRevealLayout : ViewGroup {
         }
 
         mDragHelper = ViewDragHelper.create(this, 1.0f, mDragHelperCallback)
-        mDragHelper!!.setEdgeTrackingEnabled(ViewDragHelper.EDGE_ALL)
+        mDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_ALL)
 
         mGestureDetector = GestureDetectorCompat(context, mGestureListener)
     }
