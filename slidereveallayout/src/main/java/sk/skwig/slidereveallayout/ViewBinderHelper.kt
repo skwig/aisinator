@@ -32,7 +32,7 @@ class ViewBinderHelper {
             var total = 0
 
             for (state in mapStates.values) {
-                if (state == SlideRevealLayout.STATE_OPEN || state == SlideRevealLayout.STATE_OPENING) {
+                if (state == SlideRevealLayout.STATE_OPENED || state == SlideRevealLayout.STATE_OPENING) {
                     total++
                 }
             }
@@ -68,12 +68,12 @@ class ViewBinderHelper {
 
         // first time binding.
         if (!mapStates.containsKey(id)) {
-            mapStates[id] = SlideRevealLayout.STATE_CLOSE
+            mapStates[id] = SlideRevealLayout.STATE_CLOSED
             slideRevealLayout.close(false)
         } else {
             val state = mapStates[id]!!
 
-            if (state == SlideRevealLayout.STATE_CLOSE || state == SlideRevealLayout.STATE_CLOSING ||
+            if (state == SlideRevealLayout.STATE_CLOSED || state == SlideRevealLayout.STATE_CLOSING ||
                 state == SlideRevealLayout.STATE_DRAGGING
             ) {
                 slideRevealLayout.close(false)
@@ -83,7 +83,7 @@ class ViewBinderHelper {
         }// not the first time, then close or open depends on the current state.
 
         // set lock swipe
-        slideRevealLayout.setLockDrag(lockedSwipeSet.contains(id))
+        slideRevealLayout.isDragLocked = lockedSwipeSet.contains(id)
     }
 
     /**
@@ -156,7 +156,7 @@ class ViewBinderHelper {
      */
     fun openLayout(id: String) {
         synchronized(stateChangeLock) {
-            mapStates[id] = SlideRevealLayout.STATE_OPEN
+            mapStates[id] = SlideRevealLayout.STATE_OPENED
 
             if (mapLayouts.containsKey(id)) {
                 val layout = mapLayouts[id]
@@ -173,7 +173,7 @@ class ViewBinderHelper {
      */
     fun closeLayout(id: String) {
         synchronized(stateChangeLock) {
-            mapStates[id] = SlideRevealLayout.STATE_CLOSE
+            mapStates[id] = SlideRevealLayout.STATE_CLOSED
 
             if (mapLayouts.containsKey(id)) {
                 val layout = mapLayouts[id]
@@ -193,8 +193,8 @@ class ViewBinderHelper {
             if (openCount > 1) {
                 for ((key, value) in mapStates) {
                     if (key != id) {
-                        mapStates[key] = SlideRevealLayout.STATE_CLOSE
-//                        entry.setValue(MySwipeRevealLayout.STATE_CLOSE)
+                        mapStates[key] = SlideRevealLayout.STATE_CLOSED
+//                        entry.setValue(MySwipeRevealLayout.STATE_CLOSED)
                     }
                 }
 
@@ -219,7 +219,7 @@ class ViewBinderHelper {
         }
 
         id.forEach {
-            mapLayouts[it]?.setLockDrag(lock)
+            mapLayouts[it]?.isDragLocked = lock
         }
     }
 
