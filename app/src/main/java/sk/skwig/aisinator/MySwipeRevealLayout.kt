@@ -27,10 +27,9 @@ class MySwipeRevealLayout : FrameLayout {
         val STATE_CLOSING = 1
         val STATE_OPEN = 2
         val STATE_OPENING = 3
-        val STATE_DRAGGING = 4
-
-        val STATE_DISMISSED = 5
-        val STATE_DISMISSING = 6
+        val STATE_DISMISSED = 4
+        val STATE_DISMISSING = 5
+        val STATE_DRAGGING = 6
 
         private val DEFAULT_MIN_FLING_VELOCITY = 500 // dp per second
         private val DEFAULT_MIN_DIST_REQUEST_DISALLOW_PARENT = 1 // dp
@@ -93,17 +92,14 @@ class MySwipeRevealLayout : FrameLayout {
 
     private var onLayoutCount = 0
 
-    /**
-     * @return true if layout is fully opened, false otherwise.
-     */
     val isOpened: Boolean
         get() = state == STATE_OPEN
 
-    /**
-     * @return true if layout is fully closed, false otherwise.
-     */
     val isClosed: Boolean
         get() = state == STATE_CLOSE
+
+    val isDismissed: Boolean
+        get() = state == STATE_DISMISSED
 
     private val mGestureListener = object : GestureDetector.SimpleOnGestureListener() {
 
@@ -177,7 +173,8 @@ class MySwipeRevealLayout : FrameLayout {
             val openVelocityExceeded = pxToDp(xvel.toInt()) <= -minFlingOpenVelocity
             val closeVelocityExceeded = pxToDp(xvel.toInt()) >= minFlingOpenVelocity
             val dismissVelocityExceeded = pxToDp(xvel.toInt()) <= -minFlingDismissVelocity
-            val openedToDismissVelocityExceeded = pxToDp(xvel.toInt()) <= -(minFlingDismissVelocity - minFlingOpenVelocity)
+            val openedToDismissVelocityExceeded =
+                pxToDp(xvel.toInt()) <= -(minFlingDismissVelocity - minFlingOpenVelocity)
 
             val closeFromPivot = mainView.right > openPivot
             val dismissFromPivot = mainView.right < dismissPivot
@@ -225,6 +222,8 @@ class MySwipeRevealLayout : FrameLayout {
                         it.onClosed(this@MySwipeRevealLayout)
                     } else if (mainView.left == mainOpenRect.left && mainView.top == mainOpenRect.top) {
                         it.onOpened(this@MySwipeRevealLayout)
+                    } else if (mainView.left == mainDismissedRect.left && mainView.top == mainDismissedRect.top) {
+                        it.onDismissed(this@MySwipeRevealLayout)
                     } else {
                         it.onSlide(this@MySwipeRevealLayout, slideOffset)
                     }
