@@ -1,11 +1,7 @@
 package sk.skwig.aisinator
 
 import android.os.Bundle
-
-import java.util.Arrays
-import java.util.Collections
-import java.util.HashMap
-import java.util.HashSet
+import java.util.*
 
 /**
  * ViewBinderHelper provides a quick and easy solution to restore the open/close state
@@ -60,7 +56,7 @@ class MyViewBinderHelper {
         mapLayouts[id] = swipeLayout
 
         swipeLayout.abort()
-        swipeLayout.setDragStateChangeListener(object : MySwipeRevealLayout.DragStateChangeListener {
+        swipeLayout.dragStateChangeListener = object : MySwipeRevealLayout.DragStateChangeListener {
             override fun onDragStateChanged(state: Int) {
                 mapStates[id] = state
 
@@ -68,7 +64,7 @@ class MyViewBinderHelper {
                     closeOthers(id, swipeLayout)
                 }
             }
-        })
+        }
 
         // first time binding.
         if (!mapStates.containsKey(id)) {
