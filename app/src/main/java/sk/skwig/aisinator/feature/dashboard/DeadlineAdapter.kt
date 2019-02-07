@@ -7,17 +7,15 @@ import sk.skwig.aisinator.databinding.ItemDeadlineBinding
 import sk.skwig.aisinator.feature.course.CourseworkDeadline
 import sk.skwig.aisinator.util.layoutInflater
 import sk.skwig.aisinator.util.setAll
-import com.chauthai.swipereveallayout.ViewBinderHelper
 import android.os.Bundle
 import android.util.Log
-import com.chauthai.swipereveallayout.SwipeRevealLayout
-import sk.skwig.aisinator.MySwipeRevealLayout
-import sk.skwig.aisinator.MyViewBinderHelper
+import sk.skwig.aisinator.SlideRevealLayout
+import sk.skwig.aisinator.ViewBinderHelper
 
 
 class DeadlineAdapter : RecyclerView.Adapter<DeadlineViewHolder>() {
 
-    private val viewBinderHelper = MyViewBinderHelper()
+    private val viewBinderHelper = ViewBinderHelper()
 
     private val data = mutableListOf<CourseworkDeadline>()
 
@@ -37,24 +35,24 @@ class DeadlineAdapter : RecyclerView.Adapter<DeadlineViewHolder>() {
         viewBinderHelper.bind(holder.binding.swipeRevealLayout, item.id.toString());
         holder.binding.apply {
             holder.binding.card.setOnLongClickListener {
-                (it.parent as MySwipeRevealLayout).open(true)
+                (it.parent as SlideRevealLayout).open(true)
                 false
             }
-            holder.binding.swipeRevealLayout.swipeListener = object : MySwipeRevealLayout.SwipeListener {
-                override fun onClosed(view: MySwipeRevealLayout) {
-                    Log.d("matej", "onClosed() called with: view = [$view]")
+            holder.binding.swipeRevealLayout.listener = object : SlideRevealLayout.Listener {
+                override fun onClose(view: SlideRevealLayout) {
+                    Log.d("matej", "onClose() called with: view = [$view]")
                 }
 
-                override fun onOpened(view: MySwipeRevealLayout) {
-                    Log.d("matej", "onOpened() called with: view = [$view]")
+                override fun onOpen(view: SlideRevealLayout) {
+                    Log.d("matej", "onOpen() called with: view = [$view]")
                 }
 
-                override fun onSlide(view: MySwipeRevealLayout, slideOffset: Float) {
+                override fun onSlide(view: SlideRevealLayout, slideOffset: Float) {
                     Log.d("matej", "onSlide() called with: view = [$view], slideOffset = [$slideOffset]")
                 }
 
-                override fun onDismissed(view: MySwipeRevealLayout) {
-                    Log.d("matej", "onDismissed() called with: view = [$view]")
+                override fun onSwipe(view: SlideRevealLayout) {
+                    Log.d("matej", "onSwipe() called with: view = [$view]")
                 }
             }
             tagText.text = item.course.tag

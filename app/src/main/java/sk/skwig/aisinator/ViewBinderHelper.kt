@@ -17,10 +17,10 @@ import java.util.*
  * orientation is changed, call [.saveStates] in [android.app.Activity.onSaveInstanceState]
  * and [.restoreStates] in [android.app.Activity.onRestoreInstanceState]
  */
-class MyViewBinderHelper {
+class ViewBinderHelper {
 
     private var mapStates: MutableMap<String, Int> = Collections.synchronizedMap(HashMap())
-    private val mapLayouts = Collections.synchronizedMap(HashMap<String, MySwipeRevealLayout>())
+    private val mapLayouts = Collections.synchronizedMap(HashMap<String, SlideRevealLayout>())
     private val lockedSwipeSet = Collections.synchronizedSet(HashSet<String>())
 
     @Volatile
@@ -32,7 +32,7 @@ class MyViewBinderHelper {
             var total = 0
 
             for (state in mapStates.values) {
-                if (state == MySwipeRevealLayout.STATE_OPEN || state == MySwipeRevealLayout.STATE_OPENING) {
+                if (state == SlideRevealLayout.STATE_OPEN || state == SlideRevealLayout.STATE_OPENING) {
                     total++
                 }
             }
@@ -41,49 +41,49 @@ class MyViewBinderHelper {
         }
 
     /**
-     * Help to save and restore open/close state of the swipeLayout. Call this method
+     * Help to save and restore open/close state of the slideRevealLayout. Call this method
      * when you bind your view holder with the data object.
      *
-     * @param swipeLayout swipeLayout of the current view.
+     * @param slideRevealLayout slideRevealLayout of the current view.
      * @param id a string that uniquely defines the data object of the current view.
      */
-    fun bind(swipeLayout: MySwipeRevealLayout, id: String) {
-        if (swipeLayout.shouldRequestLayout()) {
-            swipeLayout.requestLayout()
+    fun bind(slideRevealLayout: SlideRevealLayout, id: String) {
+        if (slideRevealLayout.shouldRequestLayout()) {
+            slideRevealLayout.requestLayout()
         }
 
-        mapLayouts.values.remove(swipeLayout)
-        mapLayouts[id] = swipeLayout
+        mapLayouts.values.remove(slideRevealLayout)
+        mapLayouts[id] = slideRevealLayout
 
-        swipeLayout.abort()
-        swipeLayout.dragStateChangeListener = object : MySwipeRevealLayout.DragStateChangeListener {
+        slideRevealLayout.abort()
+        slideRevealLayout.dragStateChangeListener = object : SlideRevealLayout.DragStateChangeListener {
             override fun onDragStateChanged(state: Int) {
                 mapStates[id] = state
 
                 if (openOnlyOne) {
-                    closeOthers(id, swipeLayout)
+                    closeOthers(id, slideRevealLayout)
                 }
             }
         }
 
         // first time binding.
         if (!mapStates.containsKey(id)) {
-            mapStates[id] = MySwipeRevealLayout.STATE_CLOSE
-            swipeLayout.close(false)
+            mapStates[id] = SlideRevealLayout.STATE_CLOSE
+            slideRevealLayout.close(false)
         } else {
             val state = mapStates[id]!!
 
-            if (state == MySwipeRevealLayout.STATE_CLOSE || state == MySwipeRevealLayout.STATE_CLOSING ||
-                state == MySwipeRevealLayout.STATE_DRAGGING
+            if (state == SlideRevealLayout.STATE_CLOSE || state == SlideRevealLayout.STATE_CLOSING ||
+                state == SlideRevealLayout.STATE_DRAGGING
             ) {
-                swipeLayout.close(false)
+                slideRevealLayout.close(false)
             } else {
-                swipeLayout.open(false)
+                slideRevealLayout.open(false)
             }
         }// not the first time, then close or open depends on the current state.
 
         // set lock swipe
-        swipeLayout.setLockDrag(lockedSwipeSet.contains(id))
+        slideRevealLayout.setLockDrag(lockedSwipeSet.contains(id))
     }
 
     /**
@@ -156,7 +156,7 @@ class MyViewBinderHelper {
      */
     fun openLayout(id: String) {
         synchronized(stateChangeLock) {
-            mapStates[id] = MySwipeRevealLayout.STATE_OPEN
+            mapStates[id] = SlideRevealLayout.STATE_OPEN
 
             if (mapLayouts.containsKey(id)) {
                 val layout = mapLayouts[id]
@@ -173,7 +173,7 @@ class MyViewBinderHelper {
      */
     fun closeLayout(id: String) {
         synchronized(stateChangeLock) {
-            mapStates[id] = MySwipeRevealLayout.STATE_CLOSE
+            mapStates[id] = SlideRevealLayout.STATE_CLOSE
 
             if (mapLayouts.containsKey(id)) {
                 val layout = mapLayouts[id]
@@ -185,21 +185,21 @@ class MyViewBinderHelper {
     /**
      * Close others swipe layout.
      * @param id layout which bind with this data object id will be excluded.
-     * @param swipeLayout will be excluded.
+     * @param slideRevealLayout will be excluded.
      */
-    private fun closeOthers(id: String, swipeLayout: MySwipeRevealLayout?) {
+    private fun closeOthers(id: String, slideRevealLayout: SlideRevealLayout?) {
         synchronized(stateChangeLock) {
             // close other rows if openOnlyOne is true.
             if (openCount > 1) {
                 for ((key, value) in mapStates) {
                     if (key != id) {
-                        mapStates[key] = MySwipeRevealLayout.STATE_CLOSE
+                        mapStates[key] = SlideRevealLayout.STATE_CLOSE
 //                        entry.setValue(MySwipeRevealLayout.STATE_CLOSE)
                     }
                 }
 
                 for (layout in mapLayouts.values) {
-                    if (layout != swipeLayout) {
+                    if (layout != slideRevealLayout) {
                         layout.close(true)
                     }
                 }
@@ -208,17 +208,18 @@ class MyViewBinderHelper {
     }
 
     private fun setLockSwipe(lock: Boolean, vararg id: String) {
-        if (id == null || id.size == 0)
+        if (id.isEmpty()) {
             return
+        }
 
-        if (lock)
+        if (lock) {
             lockedSwipeSet.addAll(Arrays.asList(*id))
-        else
+        } else {
             lockedSwipeSet.removeAll(Arrays.asList(*id))
+        }
 
-        for (s in id) {
-            val layout = mapLayouts[s]
-            layout?.setLockDrag(lock)
+        id.forEach {
+            mapLayouts[it]?.setLockDrag(lock)
         }
     }
 
