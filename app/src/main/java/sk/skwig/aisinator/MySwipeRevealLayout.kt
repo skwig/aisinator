@@ -29,7 +29,10 @@ class MySwipeRevealLayout : FrameLayout {
         val STATE_OPENING = 3
         val STATE_DRAGGING = 4
 
-        private val DEFAULT_MIN_FLING_VELOCITY = 300 // dp per second
+        val STATE_DISMISSED = 5
+        val STATE_DISMISSING = 6
+
+        private val DEFAULT_MIN_FLING_VELOCITY = 500 // dp per second
         private val DEFAULT_MIN_DIST_REQUEST_DISALLOW_PARENT = 1 // dp
 
         val DRAG_EDGE_LEFT = 0x1
@@ -49,7 +52,8 @@ class MySwipeRevealLayout : FrameLayout {
     var isDragLocked = false
         private set
 
-    var minFlingVelocity = DEFAULT_MIN_FLING_VELOCITY
+    var minFlingOpenVelocity = DEFAULT_MIN_FLING_VELOCITY
+    var minFlingDismissVelocity = 2 * DEFAULT_MIN_FLING_VELOCITY
 
     var dragEdge = DRAG_EDGE_LEFT
 
@@ -64,6 +68,7 @@ class MySwipeRevealLayout : FrameLayout {
 
     private val mainOpenRect = Rect()
     private val mainClosedRect = Rect()
+    private val mainDismissedRect = Rect()
 
     private val revealedOpenRect = Rect()
     private val revealedClosedRect = Rect()
@@ -126,8 +131,12 @@ class MySwipeRevealLayout : FrameLayout {
             mainClosedRect.right - revealedView.width / 2
         }
 
-    private val halfwayPivotVertical: Int
-        get() = mainClosedRect.bottom - revealedView.height / 2
+    private val dismissPivot: Int
+        get() = if (dragEdge == DRAG_EDGE_LEFT) {
+            TODO()
+        } else {
+            mainClosedRect.left + (mainClosedRect.right - revealedView.width) / 2
+        }
 
     private val mDragHelperCallback = object : ViewDragHelper.Callback() {
 
@@ -165,22 +174,24 @@ class MySwipeRevealLayout : FrameLayout {
 
         override fun onViewReleased(releasedChild: View, xvel: Float, yvel: Float) {
 
-            val velocityRightExceeded = pxToDp(xvel.toInt()) >= minFlingVelocity
-            val velocityLeftExceeded = pxToDp(xvel.toInt()) <= -minFlingVelocity
+            val openVelocityExceeded = pxToDp(xvel.toInt()) <= -minFlingOpenVelocity
+            val closeVelocityExceeded = pxToDp(xvel.toInt()) >= minFlingOpenVelocity
+            val dismissVelocityExceeded = pxToDp(xvel.toInt()) <= -minFlingDismissVelocity
+            val openedToDismissVelocityExceeded = pxToDp(xvel.toInt()) <= -(minFlingDismissVelocity - minFlingOpenVelocity)
 
-            when (dragEdge) {
-                DRAG_EDGE_RIGHT ->
-                    when {
-                        velocityRightExceeded -> close()
-                        velocityLeftExceeded -> open()
-                        else -> if (mainView.right < openPivot) open() else close()
-                    }
-                DRAG_EDGE_LEFT ->
-                    when {
-                        velocityRightExceeded -> open()
-                        velocityLeftExceeded -> close()
-                        else -> if (mainView.left < openPivot) close() else open()
-                    }
+            val closeFromPivot = mainView.right > openPivot
+            val dismissFromPivot = mainView.right < dismissPivot
+            val openFromPivot = dismissPivot <= mainView.right && mainView.right <= openPivot
+
+            when {
+                dismissVelocityExceeded -> dismiss()
+                openVelocityExceeded -> open()
+                closeVelocityExceeded -> close()
+                openedToDismissVelocityExceeded && state == STATE_OPEN -> dismiss()
+                openFromPivot -> open()
+                closeFromPivot -> close()
+                dismissFromPivot -> dismiss()
+                else -> throw IllegalStateException()
             }
         }
 
@@ -238,12 +249,11 @@ class MySwipeRevealLayout : FrameLayout {
                         "onViewDragStateChanged() called with: state = [actual=${mainView.left}] closed=[${mainClosedRect.left}]"
                     )
 
-                    // drag edge is left or right
-
-                    if (mainView.left == mainClosedRect.left) {
-                        this@MySwipeRevealLayout.state = STATE_CLOSE
-                    } else {
-                        this@MySwipeRevealLayout.state = STATE_OPEN
+                    this@MySwipeRevealLayout.state = when (mainView.left) {
+                        mainOpenRect.left -> STATE_OPEN
+                        mainClosedRect.left -> STATE_CLOSE
+                        mainDismissedRect.left -> STATE_DISMISSED
+                        else -> throw IllegalStateException()
                     }
                 }
             }
@@ -260,17 +270,15 @@ class MySwipeRevealLayout : FrameLayout {
 
     interface SwipeListener {
         fun onClosed(view: MySwipeRevealLayout)
-
         fun onOpened(view: MySwipeRevealLayout)
-
+        fun onDismissed(view: MySwipeRevealLayout)
         fun onSlide(view: MySwipeRevealLayout, slideOffset: Float)
     }
 
     class SimpleSwipeListener : SwipeListener {
         override fun onClosed(view: MySwipeRevealLayout) {}
-
         override fun onOpened(view: MySwipeRevealLayout) {}
-
+        override fun onDismissed(view: MySwipeRevealLayout) {}
         override fun onSlide(view: MySwipeRevealLayout, slideOffset: Float) {}
     }
 
@@ -394,6 +402,38 @@ class MySwipeRevealLayout : FrameLayout {
         ViewCompat.postInvalidateOnAnimation(this@MySwipeRevealLayout)
     }
 
+    fun dismiss(animate: Boolean = true) {
+        isOpenBeforeInit = true
+        isAborted = false
+
+        if (animate) {
+            state = STATE_DISMISSING
+            // TODO:
+            dragHelper.smoothSlideViewTo(mainView, mainDismissedRect.left, mainDismissedRect.top)
+            dragStateChangeListener.onDragStateChanged(state)
+        } else {
+            TODO()
+            state = STATE_DISMISSED
+            dragHelper.abort()
+
+            mainView.layout(
+                mainOpenRect.left,
+                mainOpenRect.top,
+                mainOpenRect.right,
+                mainOpenRect.bottom
+            )
+
+            revealedView.layout(
+                revealedOpenRect.left,
+                revealedOpenRect.top,
+                revealedOpenRect.right,
+                revealedOpenRect.bottom
+            )
+        }
+
+        ViewCompat.postInvalidateOnAnimation(this@MySwipeRevealLayout)
+    }
+
     /**
      * Close the panel to hide the secondary view
      * @param animate true to animate the close motion. [com.chauthai.swipereveallayout.SwipeRevealLayout.SwipeListener] won't be
@@ -404,6 +444,10 @@ class MySwipeRevealLayout : FrameLayout {
         isAborted = false
 
         if (animate) {
+
+//            dismiss()
+//            return
+
             state = STATE_CLOSING
             dragHelper.smoothSlideViewTo(mainView, mainClosedRect.left, mainClosedRect.top)
 
@@ -500,6 +544,26 @@ class MySwipeRevealLayout : FrameLayout {
             b + revealedView.width,
             revealedView.bottom
         )
+
+        mainOpenRect.set(
+            a,
+            mainView.top,
+            a + mainView.width,
+            mainView.bottom
+        )
+
+        if (dragEdge == DRAG_EDGE_LEFT) {
+            TODO()
+        }
+
+        // dismissed position of the main view
+        val c = mainOpenRect.left - mainClosedRect.right
+        mainDismissedRect.set(
+            c,
+            mainView.top,
+            c + mainView.width,
+            mainView.bottom
+        )
     }
 
     private fun couldBecomeClick(ev: MotionEvent): Boolean {
@@ -540,7 +604,7 @@ class MySwipeRevealLayout : FrameLayout {
             )
 
             dragEdge = a.getInteger(R.styleable.SwipeRevealLayout_dragEdge, DRAG_EDGE_LEFT)
-            minFlingVelocity = a.getInteger(R.styleable.SwipeRevealLayout_flingVelocity, DEFAULT_MIN_FLING_VELOCITY)
+            minFlingOpenVelocity = a.getInteger(R.styleable.SwipeRevealLayout_flingVelocity, DEFAULT_MIN_FLING_VELOCITY)
             mode = a.getInteger(R.styleable.SwipeRevealLayout_mode, MODE_NORMAL)
 
             minDistRequestDisallowParent = a.getDimensionPixelSize(
