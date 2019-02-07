@@ -1,5 +1,7 @@
 package sk.skwig.aisinator.feature.dashboard
 
+import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -7,10 +9,8 @@ import sk.skwig.aisinator.databinding.ItemDeadlineBinding
 import sk.skwig.aisinator.feature.course.CourseworkDeadline
 import sk.skwig.aisinator.util.layoutInflater
 import sk.skwig.aisinator.util.setAll
-import android.os.Bundle
-import android.util.Log
-import sk.skwig.aisinator.SlideRevealLayout
-import sk.skwig.aisinator.ViewBinderHelper
+import sk.skwig.slidereveallayout.SlideRevealLayout
+import sk.skwig.slidereveallayout.ViewBinderHelper
 
 
 class DeadlineAdapter : RecyclerView.Adapter<DeadlineViewHolder>() {
@@ -32,13 +32,13 @@ class DeadlineAdapter : RecyclerView.Adapter<DeadlineViewHolder>() {
 
     override fun onBindViewHolder(holder: DeadlineViewHolder, position: Int) {
         val item = data[position]
-        viewBinderHelper.bind(holder.binding.swipeRevealLayout, item.id.toString());
+        viewBinderHelper.bind(holder.binding.slideRevealLayout, item.id.toString());
         holder.binding.apply {
             holder.binding.card.setOnLongClickListener {
                 (it.parent as SlideRevealLayout).open(true)
                 false
             }
-            holder.binding.swipeRevealLayout.listener = object : SlideRevealLayout.Listener {
+            holder.binding.slideRevealLayout.listener = object : SlideRevealLayout.Listener {
                 override fun onClose(view: SlideRevealLayout) {
                     Log.d("matej", "onClose() called with: view = [$view]")
                 }
@@ -53,6 +53,10 @@ class DeadlineAdapter : RecyclerView.Adapter<DeadlineViewHolder>() {
 
                 override fun onSwipe(view: SlideRevealLayout) {
                     Log.d("matej", "onSwipe() called with: view = [$view]")
+                    data.toMutableList().let {
+                        it.removeAt(holder.adapterPosition)
+                        submitList(it)
+                    }
                 }
             }
             tagText.text = item.course.tag

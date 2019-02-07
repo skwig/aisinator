@@ -1,4 +1,4 @@
-package sk.skwig.aisinator
+package sk.skwig.slidereveallayout
 
 import android.os.Bundle
 import java.util.*

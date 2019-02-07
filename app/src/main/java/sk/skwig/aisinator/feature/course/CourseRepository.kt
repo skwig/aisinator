@@ -33,7 +33,7 @@ class CourseRepository(
             .doOnNext { Log.d("matej","CourseRepository.getCoursework") }
             .flatMapSingle { courseApi.getCourseworkSubmissions(it.cookie) }
             .map { htmlParser.parseCourseworkDeadlines(it.toDocument()) }
-            .map { it.take(3) }
+//            .map { it.take(3) }
 //            .map { listOf(it.first()) }
 //            .map { it.filter { it.isOpen } }
 

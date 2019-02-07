@@ -1,4 +1,4 @@
-package sk.skwig.aisinator
+package sk.skwig.slidereveallayout
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -13,7 +13,9 @@ import android.widget.FrameLayout
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewCompat
 import androidx.customview.widget.ViewDragHelper
-import com.chauthai.swipereveallayout.ViewBinderHelper
+
+private const val DEFAULT_MIN_FLING_OPEN_VELOCITY_DP = 300 // dp per second
+private const val DEFAULT_MIN_FLING_DISMISS_VELOCITY_DP = 2000 // dp per second
 
 @SuppressLint("RtlHardcoded")
 class SlideRevealLayout : FrameLayout {
@@ -27,9 +29,6 @@ class SlideRevealLayout : FrameLayout {
         val STATE_DISMISSED = 4
         val STATE_DISMISSING = 5
         val STATE_DRAGGING = 6
-
-        private val DEFAULT_MIN_FLING_VELOCITY = 500 // dp per second
-        private val DEFAULT_MIN_DIST_REQUEST_DISALLOW_PARENT = 1 // dp
 
         val DRAG_EDGE_LEFT = 0x1
         val DRAG_EDGE_RIGHT = 0x1 shl 1
@@ -45,15 +44,35 @@ class SlideRevealLayout : FrameLayout {
         val MODE_SAME_LEVEL = 1
     }
 
+    internal interface DragStateChangeListener {
+        fun onDragStateChanged(state: Int)
+    }
+
+    interface Listener {
+        fun onClose(view: SlideRevealLayout)
+        fun onOpen(view: SlideRevealLayout)
+        fun onSwipe(view: SlideRevealLayout)
+        fun onSlide(view: SlideRevealLayout, slideOffset: Float)
+    }
+
     var isDragLocked = false
         private set
 
-    var minFlingOpenVelocity = DEFAULT_MIN_FLING_VELOCITY
-    var minFlingDismissVelocity = 2 * DEFAULT_MIN_FLING_VELOCITY
+    var minFlingOpenVelocity = DEFAULT_MIN_FLING_OPEN_VELOCITY_DP
+    var minFlingDismissVelocity = DEFAULT_MIN_FLING_DISMISS_VELOCITY_DP
 
     var dragEdge = DRAG_EDGE_LEFT
 
     var listener: Listener? = null
+
+    val isOpened: Boolean
+        get() = state == STATE_OPEN
+
+    val isClosed: Boolean
+        get() = state == STATE_CLOSE
+
+    val isDismissed: Boolean
+        get() = state == STATE_DISMISSED
 
     private lateinit var mainView: View
     private lateinit var revealedView: View
@@ -69,8 +88,6 @@ class SlideRevealLayout : FrameLayout {
     private val revealedOpenRect = Rect()
     private val revealedClosedRect = Rect()
 
-    private var minDistRequestDisallowParent = 0
-
     private var isOpenBeforeInit = false
     private var isAborted = false
     private var isScrolling = false
@@ -84,19 +101,9 @@ class SlideRevealLayout : FrameLayout {
 
     private lateinit var dragHelper: ViewDragHelper
     private lateinit var gestureDetector: GestureDetectorCompat
-
     internal lateinit var dragStateChangeListener: DragStateChangeListener
 
     private var onLayoutCount = 0
-
-    val isOpened: Boolean
-        get() = state == STATE_OPEN
-
-    val isClosed: Boolean
-        get() = state == STATE_CLOSE
-
-    val isDismissed: Boolean
-        get() = state == STATE_DISMISSED
 
     private val openPivot: Int
         get() = if (dragEdge == DRAG_EDGE_LEFT) {
@@ -261,24 +268,6 @@ class SlideRevealLayout : FrameLayout {
         }
     }
 
-    internal interface DragStateChangeListener {
-        fun onDragStateChanged(state: Int)
-    }
-
-    interface Listener {
-        fun onClose(view: SlideRevealLayout)
-        fun onOpen(view: SlideRevealLayout)
-        fun onSwipe(view: SlideRevealLayout)
-        fun onSlide(view: SlideRevealLayout, slideOffset: Float)
-    }
-
-    class SimpleListener : Listener {
-        override fun onClose(view: SlideRevealLayout) {}
-        override fun onOpen(view: SlideRevealLayout) {}
-        override fun onSwipe(view: SlideRevealLayout) {}
-        override fun onSlide(view: SlideRevealLayout, slideOffset: Float) {}
-    }
-
     constructor(context: Context) : super(context) {
         init(context, null)
     }
@@ -289,6 +278,22 @@ class SlideRevealLayout : FrameLayout {
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init(context, attrs)
+    }
+
+    private fun init(context: Context?, attrs: AttributeSet?) {
+        if (attrs != null && context != null) {
+            val a = context.theme.obtainStyledAttributes(attrs, R.styleable.SlideRevealLayout, 0, 0)
+
+            dragEdge = a.getInteger(R.styleable.SlideRevealLayout_dragEdge, DRAG_EDGE_LEFT)
+            minFlingOpenVelocity = a.getInteger(R.styleable.SlideRevealLayout_flingOpenVelocity, DEFAULT_MIN_FLING_OPEN_VELOCITY_DP)
+            minFlingDismissVelocity = a.getInteger(R.styleable.SlideRevealLayout_flingDismissVelocity, DEFAULT_MIN_FLING_DISMISS_VELOCITY_DP)
+            mode = a.getInteger(R.styleable.SlideRevealLayout_mode, MODE_NORMAL)
+        }
+
+        dragHelper = ViewDragHelper.create(this, 1.0f, mDragHelperCallback)
+        dragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_ALL)
+
+        gestureDetector = GestureDetectorCompat(context, mGestureListener)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -406,7 +411,8 @@ class SlideRevealLayout : FrameLayout {
         if (animate) {
             state = STATE_DISMISSING
             // TODO:
-            dragHelper.smoothSlideViewTo(mainView, mainDismissedRect.left, mainDismissedRect.top)
+            dragHelper.flingCapturedView(mainDismissedRect.left, mainDismissedRect.top,mainDismissedRect.left, mainDismissedRect.top)
+//            dragHelper.smoothSlideViewTo(mainView, mainDismissedRect.left, mainDismissedRect.top)
             dragStateChangeListener.onDragStateChanged(state)
         } else {
             TODO()
@@ -592,40 +598,9 @@ class SlideRevealLayout : FrameLayout {
         dragDistance += Math.abs(ev.x - previousX)
     }
 
-    private fun init(context: Context?, attrs: AttributeSet?) {
-        if (attrs != null && context != null) {
-            val a = context.theme.obtainStyledAttributes(
-                attrs,
-                R.styleable.SwipeRevealLayout,
-                0, 0
-            )
-
-            dragEdge = a.getInteger(R.styleable.SwipeRevealLayout_dragEdge, DRAG_EDGE_LEFT)
-            minFlingOpenVelocity = a.getInteger(R.styleable.SwipeRevealLayout_flingVelocity, DEFAULT_MIN_FLING_VELOCITY)
-            mode = a.getInteger(R.styleable.SwipeRevealLayout_mode, MODE_NORMAL)
-
-            minDistRequestDisallowParent = a.getDimensionPixelSize(
-                R.styleable.SwipeRevealLayout_minDistRequestDisallowParent,
-                dpToPx(DEFAULT_MIN_DIST_REQUEST_DISALLOW_PARENT)
-            )
-        }
-
-        dragHelper = ViewDragHelper.create(this, 1.0f, mDragHelperCallback)
-        dragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_ALL)
-
-        gestureDetector = GestureDetectorCompat(context, mGestureListener)
-    }
-
     private fun pxToDp(px: Int): Int {
         val resources = context.resources
         val metrics = resources.displayMetrics
         return (px / (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).toInt()
     }
-
-    private fun dpToPx(dp: Int): Int {
-        val resources = context.resources
-        val metrics = resources.displayMetrics
-        return (dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).toInt()
-    }
-
 }
