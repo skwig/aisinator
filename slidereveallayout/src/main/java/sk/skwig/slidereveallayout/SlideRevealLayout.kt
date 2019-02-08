@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewCompat
@@ -61,7 +62,7 @@ class SlideRevealLayout : FrameLayout {
     var minFlingDismissVelocity = DEFAULT_MIN_FLING_DISMISS_VELOCITY_DP
 
     var dragEdge = DRAG_EDGE_LEFT
-    var isDragLocked = false
+    internal var isDragLocked = false
 
     var listener: Listener? = null
 
@@ -187,13 +188,13 @@ class SlideRevealLayout : FrameLayout {
             val openFromPivot = mainView.right in swipePivot..openPivot
 
             when {
-                dismissVelocityExceeded -> swipe()
+                dismissVelocityExceeded -> internalSwipe(isFlinging = true)
                 openVelocityExceeded -> open()
                 closeVelocityExceeded -> close()
-                openedToDismissVelocityExceeded && state == STATE_OPENED -> swipe()
+                openedToDismissVelocityExceeded && state == STATE_OPENED -> internalSwipe(isFlinging = true)
                 openFromPivot -> open()
                 closeFromPivot -> close()
-                dismissFromPivot -> swipe()
+                dismissFromPivot -> internalSwipe(isFlinging = true)
                 else -> throw IllegalStateException()
             }
         }
@@ -286,8 +287,12 @@ class SlideRevealLayout : FrameLayout {
             val a = context.theme.obtainStyledAttributes(attrs, R.styleable.SlideRevealLayout, 0, 0)
 
             dragEdge = a.getInteger(R.styleable.SlideRevealLayout_dragEdge, DRAG_EDGE_LEFT)
-            minFlingOpenVelocity = a.getInteger(R.styleable.SlideRevealLayout_flingOpenVelocity, DEFAULT_MIN_FLING_OPEN_VELOCITY_DP)
-            minFlingDismissVelocity = a.getInteger(R.styleable.SlideRevealLayout_flingDismissVelocity, DEFAULT_MIN_FLING_DISMISS_VELOCITY_DP)
+            minFlingOpenVelocity =
+                    a.getInteger(R.styleable.SlideRevealLayout_flingOpenVelocity, DEFAULT_MIN_FLING_OPEN_VELOCITY_DP)
+            minFlingDismissVelocity = a.getInteger(
+                R.styleable.SlideRevealLayout_flingDismissVelocity,
+                DEFAULT_MIN_FLING_DISMISS_VELOCITY_DP
+            )
             mode = a.getInteger(R.styleable.SlideRevealLayout_mode, MODE_NORMAL)
         }
 
@@ -396,10 +401,11 @@ class SlideRevealLayout : FrameLayout {
         super.onFinishInflate()
 
         when (val i = childCount) {
-            3 -> {
+            2 -> {
                 backgroundView = getChildAt(0)
-                revealedView = getChildAt(1)
-                mainView = getChildAt(2)
+                // TODO: getovat revealedView cez attr
+                revealedView = ((backgroundView as ViewGroup).getChildAt(0) as ViewGroup).getChildAt(0)
+                mainView = getChildAt(1)
             }
             else -> throw IllegalStateException("Invalid MySwipeRevealLayout child count : $i")
         }
@@ -474,25 +480,35 @@ class SlideRevealLayout : FrameLayout {
     }
 
     fun swipe(animate: Boolean = true) {
+        internalSwipe(animate, false)
+    }
+
+    private fun internalSwipe(animate: Boolean = true, isFlinging: Boolean = false) {
         isOpenBeforeInit = true
         isAborted = false
 
         if (animate) {
             state = STATE_SWIPING
-            // TODO:
-            dragHelper.flingCapturedView(mainSwipedRect.left, mainSwipedRect.top,mainSwipedRect.left, mainSwipedRect.top)
-//            dragHelper.smoothSlideViewTo(mainView, mainSwipedRect.left, mainSwipedRect.top)
+            if (isFlinging) {
+                dragHelper.flingCapturedView(
+                    mainSwipedRect.left,
+                    mainSwipedRect.top,
+                    mainSwipedRect.left,
+                    mainSwipedRect.top
+                )
+            } else {
+                dragHelper.smoothSlideViewTo(mainView, mainSwipedRect.left, mainSwipedRect.top)
+            }
             dragStateChangeListener.onDragStateChanged(state)
         } else {
-            TODO()
             state = STATE_SWIPED
             dragHelper.abort()
 
             mainView.layout(
-                mainOpenRect.left,
-                mainOpenRect.top,
-                mainOpenRect.right,
-                mainOpenRect.bottom
+                mainSwipedRect.left,
+                mainSwipedRect.top,
+                mainSwipedRect.right,
+                mainSwipedRect.bottom
             )
 
             revealedView.layout(
@@ -543,8 +559,7 @@ class SlideRevealLayout : FrameLayout {
         ViewCompat.postInvalidateOnAnimation(this@SlideRevealLayout)
     }
 
-    /** Abort current motion in progress. Only used for [ViewBinderHelper]  */
-    fun abort() {
+    internal fun abort() {
         isAborted = true
         dragHelper.abort()
     }

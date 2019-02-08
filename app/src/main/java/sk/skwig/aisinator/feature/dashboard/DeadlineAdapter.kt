@@ -1,7 +1,6 @@
 package sk.skwig.aisinator.feature.dashboard
 
 import android.os.Bundle
-import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -9,6 +8,7 @@ import sk.skwig.aisinator.databinding.ItemDeadlineBinding
 import sk.skwig.aisinator.feature.course.CourseworkDeadline
 import sk.skwig.aisinator.util.layoutInflater
 import sk.skwig.aisinator.util.setAll
+import sk.skwig.slidereveallayout.SlideRevealAdapter
 import sk.skwig.slidereveallayout.SlideRevealLayout
 import sk.skwig.slidereveallayout.ViewBinderHelper
 
@@ -38,30 +38,26 @@ class DeadlineAdapter : RecyclerView.Adapter<DeadlineViewHolder>() {
                 (it.parent as SlideRevealLayout).open(true)
                 false
             }
-            holder.binding.slideRevealLayout.listener = object : SlideRevealLayout.Listener {
-                override fun onClose(view: SlideRevealLayout) {
-                    Log.d("matej", "onClose() called with: view = [$view]")
-                }
-
-                override fun onOpen(view: SlideRevealLayout) {
-                    Log.d("matej", "onOpen() called with: view = [$view]")
-                }
-
-                override fun onSlide(view: SlideRevealLayout, slideOffset: Float) {
-                    Log.d("matej", "onSlide() called with: view = [$view], slideOffset = [$slideOffset]")
-                }
-
+            holder.binding.slideRevealLayout.listener = object : SlideRevealAdapter() {
                 override fun onSwipe(view: SlideRevealLayout) {
-                    Log.d("matej", "onSwipe() called with: view = [$view]")
-                    data.toMutableList().let {
-                        it.removeAt(holder.adapterPosition)
-                        submitList(it)
+                    val adapterPosition = holder.adapterPosition
+
+                    if (adapterPosition == RecyclerView.NO_POSITION) {
+                        return
                     }
+
+                    data.toMutableList()
+                        .apply { removeAt(adapterPosition) }
+                        .let(::submitList)
                 }
             }
             tagText.text = item.course.tag
             nameText.text = item.name
             deadlineText.text = item.deadline
+
+            holder.binding.delete.setOnClickListener {
+                holder.binding.slideRevealLayout.swipe()
+            }
         }
     }
 
