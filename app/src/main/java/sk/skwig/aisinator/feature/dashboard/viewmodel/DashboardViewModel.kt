@@ -3,15 +3,11 @@ package sk.skwig.aisinator.feature.dashboard.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.jakewharton.rxrelay2.PublishRelay
-import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.plusAssign
-import sk.skwig.aisinator.feature.auth.AuthEvent
 import sk.skwig.aisinator.feature.auth.AuthMessageBus
 import sk.skwig.aisinator.feature.auth.AuthManager
 import sk.skwig.aisinator.feature.course.CourseRepository
 import sk.skwig.aisinator.feature.settings.SettingsManager
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class DashboardViewModel @Inject constructor(

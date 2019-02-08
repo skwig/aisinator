@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.util
+package sk.skwig.aisinator.common.util
 
 import android.view.LayoutInflater
 import android.view.View

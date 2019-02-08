@@ -21,7 +21,7 @@ class CourseHtmlParser {
                 val name = courseText.substringAfter(" ")
                 val time = timeElement.text()
 
-                Course(id, tag, name, time)
+                Course(id, tag, name, time, true)
             }
     }
 
@@ -62,7 +62,7 @@ class CourseHtmlParser {
                     val name = text.substringAfter(" ")
 
                     // TODO: oddelit time od course
-                    Course(id, tag, name, "")
+                    Course(id, tag, name, "", true /* TODO: dat time a isActive prec */)
                 }
                 val name = columns[1].text()
                 val deadlineText = columns[4].text()

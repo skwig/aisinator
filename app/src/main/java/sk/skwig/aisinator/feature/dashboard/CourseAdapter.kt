@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import sk.skwig.aisinator.databinding.ItemCourseBinding
 import sk.skwig.aisinator.feature.course.Course
-import sk.skwig.aisinator.util.layoutInflater
-import sk.skwig.aisinator.util.setAll
+import sk.skwig.aisinator.common.util.layoutInflater
+import sk.skwig.aisinator.common.util.setAll
 
 class CourseAdapter : RecyclerView.Adapter<CourseViewHolder>() {
 

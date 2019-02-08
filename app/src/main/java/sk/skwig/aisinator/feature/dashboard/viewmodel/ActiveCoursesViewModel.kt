@@ -13,50 +13,28 @@ class ActiveCoursesViewModel @Inject constructor(
 ) : ViewModel() {
 
     val state: Observable<ViewState>
-        get() = courseRepository.getActiveCourses()
-            .map { ViewState.Normal(it) as ViewState }
+
 
     private val disposable = CompositeDisposable()
 
     init {
-        Log.d("matej", "DashboardViewModel INIT")
-//        showLogin = Observable.merge(
-//            showLoginRelay,
-//            authMessageBus.events
-//                .filter { it == AuthEvent.LoginNeeded }
-//                .map { Unit }
-//        )
-//            .doOnSubscribe {
-//                Log.d("matej", "showLogin.doOnSubscribe ()")
-//            }
 
-//        if (!settingsManager.hasLoginCredentials) {
-//            disposable += Single.timer(50, TimeUnit.MILLISECONDS) // TODO: normalne riesenie
-//                .map { Unit }
-//                .subscribe(showLoginRelay)
-//        }
+        // TODO: fungujuci startWith
 
-//        disposable += authenticationManager.onAuthTimedOut
-//            .subscribe { it ->
-//                Log.d("matej", "$it")
-//            }
-
-        listOf("").forEach { }
-
-//        Observable.timer(1, TimeUnit.SECONDS).subscribe {
-
-//        disposable += courseRepository.getActiveCourses()
-//            .map { it.first() }
-//            .flatMap { courseRepository.getCoursework(it) }
-//            .subscribe({
-//                Log.d("matej", "$it")
-//            }, {
-//                Log.e("matej", "$it")
-//            })
-//        }
+        state = courseRepository.getActiveCourses()
+            .map<ViewState> { ViewState.Normal(it) }
+            .startWith(ViewState.Loading)
+            .onErrorReturnItem(ViewState.Error)
+            .timestamp()
+            .doOnNext {
+                Log.d("matej", "${it.time()}: ${it.value()}")
+            }
+            .map { it.value() }
     }
 
     sealed class ViewState {
         data class Normal(val activeCourses: List<Course>) : ViewState()
+        object Loading : ViewState()
+        object Error : ViewState()
     }
 }

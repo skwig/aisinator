@@ -37,7 +37,7 @@ dependencies {
     def moshi_version = "1.6.0"
     def moshi_lazy_adapters_version = "2.2"
     def architecture_components_version = '2.0.0'
-    def room_version = '2.0.0'
+    def room_version = '2.1.0-alpha04'
     def dagger_version = "2.16"
     def okhttp_version = "3.10.0"
 
@@ -84,6 +84,7 @@ dependencies {
     kapt "androidx.lifecycle:lifecycle-compiler:$architecture_components_version"
 
     implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-rxjava2:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
     // dagger

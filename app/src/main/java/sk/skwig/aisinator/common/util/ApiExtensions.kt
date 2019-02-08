@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.util
+package sk.skwig.aisinator.common.util
 
 import okhttp3.ResponseBody
 import org.jsoup.Jsoup

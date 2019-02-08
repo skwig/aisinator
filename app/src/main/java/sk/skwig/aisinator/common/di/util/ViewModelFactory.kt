@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.di.util
+package sk.skwig.aisinator.common.di.util
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

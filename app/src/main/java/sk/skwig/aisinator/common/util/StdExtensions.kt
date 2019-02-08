@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.util
+package sk.skwig.aisinator.common.util
 
 fun <T> MutableList<T>.setAll(list: List<T>): Boolean {
     clear()

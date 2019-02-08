@@ -21,9 +21,9 @@ class CourseworkDeadlinesViewModel @Inject constructor(
     private val disposable = CompositeDisposable()
 
     init {
-        disposable += courseRepository.getCourseworkDeadlines()
-            .map { ViewState.Normal(it) as ViewState }
-            .subscribe(stateRelay)
+//        disposable += courseRepository.getActiveCourseworkDeadlines()
+//            .map { ViewState.Normal(it) as ViewState }
+//            .subscribe(stateRelay)
     }
 
     sealed class ViewState {

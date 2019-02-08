@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.di.builder
+package sk.skwig.aisinator.common.di.builder
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
