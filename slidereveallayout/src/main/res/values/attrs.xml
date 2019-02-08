@@ -11,6 +11,9 @@
             <enum name="same_level" value="1" />
         </attr>
 
+        <attr name="revealedView" format="reference"/>
+        <attr name="slidingView" format="reference"/>
+
         <attr name="flingOpenVelocity" format="integer" />
         <attr name="flingDismissVelocity" format="integer" />
 

@@ -9,8 +9,8 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.annotation.IdRes
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewCompat
 import androidx.customview.widget.ViewDragHelper
@@ -75,10 +75,14 @@ class SlideRevealLayout : FrameLayout {
     val isDismissed: Boolean
         get() = state == STATE_SWIPED
 
+    @IdRes
+    private var mainViewId : Int = 0
+
+    @IdRes
+    private var revealedViewId : Int = 0
 
     private lateinit var mainView: View
     private lateinit var revealedView: View
-    private lateinit var backgroundView: View
 
     private var state = STATE_CLOSED
     private var mode = MODE_NORMAL
@@ -293,6 +297,10 @@ class SlideRevealLayout : FrameLayout {
                 R.styleable.SlideRevealLayout_flingDismissVelocity,
                 DEFAULT_MIN_FLING_DISMISS_VELOCITY_DP
             )
+
+            mainViewId = a.getResourceId(R.styleable.SlideRevealLayout_slidingView, 0)
+            revealedViewId = a.getResourceId(R.styleable.SlideRevealLayout_revealedView, 0)
+
             mode = a.getInteger(R.styleable.SlideRevealLayout_mode, MODE_NORMAL)
         }
 
@@ -402,10 +410,8 @@ class SlideRevealLayout : FrameLayout {
 
         when (val i = childCount) {
             2 -> {
-                backgroundView = getChildAt(0)
-                // TODO: getovat revealedView cez attr
-                revealedView = ((backgroundView as ViewGroup).getChildAt(0) as ViewGroup).getChildAt(0)
-                mainView = getChildAt(1)
+                mainView = findViewById(mainViewId)
+                revealedView = findViewById(revealedViewId)
             }
             else -> throw IllegalStateException("Invalid MySwipeRevealLayout child count : $i")
         }

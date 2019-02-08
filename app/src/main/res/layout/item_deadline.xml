@@ -7,7 +7,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:dragEdge="right"
-        app:mode="normal">
+        app:mode="normal"
+        app:revealedView="@id/revealed_layout"
+        app:slidingView="@id/card">
 
         <com.google.android.material.card.MaterialCardView
             style="@style/DeadlineItem.Background"
@@ -18,7 +20,6 @@
             android:layout_marginRight="8dp"
             android:layout_marginBottom="4dp">
 
-            <!--TODO: fixnut layoutovanie nech netreba gravity-->
             <LinearLayout
                 android:id="@+id/revealed_layout"
                 android:layout_width="wrap_content"
@@ -74,6 +75,6 @@
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
-        <!--</FrameLayout>-->
+
     </sk.skwig.slidereveallayout.SlideRevealLayout>
 </layout>
