@@ -49,10 +49,10 @@ class CourseRepositoryImpl(
                 Observable.just(it)
                     .flatMapSingle { courseApi.getActiveCourses(it.cookie) }
                     .map { htmlParser.parseActiveCourses(it.toDocument()) }
-                    .map { courseMapper.toEntity(it) }
+                    .map { courseMapper.toEntityList(it) }
                     .concatMapCompletable { courseDao.insertCourses(it) }
                     .andThen(courseDao.loadAllCourses())
-                    .map { courseMapper.fromEntity(it) }
+                    .map { courseMapper.fromEntityList(it) }
             }
 //            .publish()
 //            .autoConnect()

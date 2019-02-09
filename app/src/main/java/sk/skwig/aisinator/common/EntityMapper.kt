@@ -1,10 +1,22 @@
 package sk.skwig.aisinator.common
 
-abstract class EntityMapper<E, D> {
+abstract class EntityMapper<Entity, Domain> {
 
-    abstract fun toEntity(domainObject: D): E
-    abstract fun fromEntity(entityObject: E): D
+    abstract fun toEntity(domain: Domain): Entity
+    open fun toEntityList(domains: List<Domain>): List<Entity> = domains.map { toEntity(it) }
 
-    open fun toEntity(domainObjects: List<D>): List<E> = domainObjects.map { toEntity(it) }
-    open fun fromEntity(entityObjects: List<E>): List<D> = entityObjects.map { fromEntity(it) }
+}
+
+abstract class SimpleEntityMapper<Entity, Domain> : EntityMapper<Entity, Domain>() {
+
+    abstract fun fromEntity(entity: Entity): Domain
+    open fun fromEntityList(entities: List<Entity>): List<Domain> = entities.map { fromEntity(it) }
+
+}
+
+abstract class RelationEntityMapper<Entity, Relation, Domain> : EntityMapper<Entity, Domain>() {
+
+    abstract fun toRelationList(domains: List<Domain>): List<Relation>
+    abstract fun fromRelationList(relations: List<Relation>): List<Domain>
+
 }
