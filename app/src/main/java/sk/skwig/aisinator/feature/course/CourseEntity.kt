@@ -38,13 +38,13 @@ data class CourseEntity(
 )
 data class CourseworkDeadlineEntity(
     @PrimaryKey
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "d_id")
     val id: Long,
 
     @ColumnInfo(name = "course_id")
     val courseId: Long,
 
-    @ColumnInfo(name = "name")
+    @ColumnInfo(name = "d_name")
     val name: String,
 
     @ColumnInfo(name = "deadline")

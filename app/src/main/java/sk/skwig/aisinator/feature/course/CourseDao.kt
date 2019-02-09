@@ -31,10 +31,15 @@ abstract class CourseDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insertCourses(courses: List<CourseEntity>): Completable
 
+
+    @Update
+    abstract fun updateCourseworkDeadline(courseworkDeadlineEntity: CourseworkDeadlineEntity): Completable
+
+
     @Query("SELECT * FROM courses")
     abstract fun loadAllCourses(): Observable<List<CourseEntity>>
 
     @Transaction
-    @Query("SELECT * FROM courses")
+    @Query("SELECT * FROM coursework_deadlines INNER JOIN courses ON courses.id = coursework_deadlines.course_id WHERE coursework_deadlines.is_dismissed == 0")
     abstract fun loadAllCoursesWithDeadlines(): Observable<List<CourseWithDeadlines>>
 }

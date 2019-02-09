@@ -8,6 +8,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import sk.skwig.aisinator.feature.course.CourseRepository
 import sk.skwig.aisinator.feature.course.CourseworkDeadline
+import timber.log.Timber
 import javax.inject.Inject
 
 class CourseworkDeadlinesViewModel @Inject constructor(
@@ -23,11 +24,20 @@ class CourseworkDeadlinesViewModel @Inject constructor(
 
     init {
         disposable += courseRepository.getActiveCourseworkDeadlines()
+            .doOnError {
+                Log.e("matej", ": ", it)
+            }
             .doOnNext {
                 Log.d("matej", "Deadline count: ${it.size} ")
             }
             .map { ViewState.Normal(it) as ViewState }
             .subscribe(stateRelay)
+    }
+
+    fun onDismiss(courseworkDeadline: CourseworkDeadline){
+        Log.d("matej", "onDismiss() called with: courseworkDeadline = [$courseworkDeadline]")
+        disposable += courseRepository.dismissCourseworkDeadline(courseworkDeadline)
+            .subscribe({}, Timber::e)
     }
 
     sealed class ViewState {

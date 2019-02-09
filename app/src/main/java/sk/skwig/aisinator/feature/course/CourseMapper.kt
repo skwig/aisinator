@@ -33,7 +33,7 @@ class CourseworkDeadlineMapper(private val courseMapper: CourseMapper) :
 
     override fun fromRelationList(relations: List<CourseWithDeadlines>): List<CourseworkDeadline> =
         relations
-            .flatMap {
+            .map {
                 val course = courseMapper.fromEntity(it.course)
                 it.deadlines.map {
                     CourseworkDeadline(
@@ -44,6 +44,6 @@ class CourseworkDeadlineMapper(private val courseMapper: CourseMapper) :
                         it.isOpen,
                         it.isDismissed
                     )
-                }
+                }.first()
             }
 }

@@ -13,7 +13,9 @@ import sk.skwig.slidereveallayout.SlideRevealLayout
 import sk.skwig.slidereveallayout.ViewBinderHelper
 
 
-class DeadlineAdapter : RecyclerView.Adapter<DeadlineViewHolder>() {
+class DeadlineAdapter(
+    private val onDelete: (CourseworkDeadline) -> Unit
+) : RecyclerView.Adapter<DeadlineViewHolder>() {
 
     private val viewBinderHelper = ViewBinderHelper()
 
@@ -46,9 +48,11 @@ class DeadlineAdapter : RecyclerView.Adapter<DeadlineViewHolder>() {
                         return
                     }
 
-                    data.toMutableList()
-                        .apply { removeAt(adapterPosition) }
-                        .let(::submitList)
+                    onDelete(data[adapterPosition])
+
+//                    data.toMutableList()
+//                        .apply { removeAt(adapterPosition) }
+//                        .let(::submitList)
                 }
             }
             tagText.text = item.course.tag

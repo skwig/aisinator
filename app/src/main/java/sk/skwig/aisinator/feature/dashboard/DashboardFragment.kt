@@ -62,7 +62,9 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
                             .subscribeBy(
                                 onNext = {
                                     when (it) {
-                                        is CourseworkDeadlinesViewModel.ViewState.Normal -> deadlinesAdapter.submitList(it.deadlines)
+                                        is CourseworkDeadlinesViewModel.ViewState.Normal -> deadlinesAdapter.submitList(
+                                            it.deadlines
+                                        )
                                     }
                                 },
                                 onError = Timber::e
@@ -75,7 +77,7 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
         binding = FragmentDashboardBinding.inflate(layoutInflater, container, false)
 
         activeCoursesAdapter = CourseAdapter()
-        deadlinesAdapter = DeadlineAdapter()
+        deadlinesAdapter = DeadlineAdapter(courseworkDeadlinesViewModel::onDismiss)
 
         return binding.root
     }
