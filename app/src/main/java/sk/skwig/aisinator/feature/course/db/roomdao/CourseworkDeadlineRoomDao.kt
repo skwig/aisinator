@@ -24,6 +24,6 @@ interface CourseworkDeadlineRoomDao {
     fun updateCourseworkDeadline(courseworkDeadlineEntity: CourseworkDeadlineEntity): Completable
 
     @Transaction
-    @Query("SELECT * FROM coursework_deadlines INNER JOIN courses ON courses.id = coursework_deadlines.course_id WHERE coursework_deadlines.is_dismissed == 0")
+    @Query("SELECT * FROM coursework_deadlines d JOIN courses c ON c.course_id = d.fk_course_id WHERE d.deadline_is_dismissed == 0")
     fun loadAllCourseworkDeadlines(): Observable<List<CourseworkDeadlineWithCourse>>
 }

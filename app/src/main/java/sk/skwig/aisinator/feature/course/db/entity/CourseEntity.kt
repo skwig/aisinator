@@ -2,22 +2,27 @@ package sk.skwig.aisinator.feature.course.db.entity
 
 import androidx.room.*
 
+// naming convention:
+// 1. prefixovat foreign keye "fk"
+// 2. prefixovat columny nazvom tabulky
+//      - room nezvlada duplikaty column namov v embednutom query resulte a prefix anotacia mu nestaci
+
 @Entity(tableName = "courses")
 data class CourseEntity(
     @PrimaryKey
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "course_id")
     val id: Long,
 
-    @ColumnInfo(name = "tag")
+    @ColumnInfo(name = "course_tag")
     val tag: String,
 
-    @ColumnInfo(name = "name")
+    @ColumnInfo(name = "course_name")
     val name: String,
 
-    @ColumnInfo(name = "time")
+    @ColumnInfo(name = "course_tag")
     val time: String,
 
-    @ColumnInfo(name = "is_active")
+    @ColumnInfo(name = "course_is_active")
     val isActive: Boolean
 )
 
@@ -26,33 +31,33 @@ data class CourseEntity(
     foreignKeys = [
         ForeignKey(
             entity = CourseEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["course_id"]
+            parentColumns = ["course_id"],
+            childColumns = ["fk_course_id"]
         )
     ],
     indices = [
         Index(
-            value = ["course_id"]
+            value = ["fk_course_id"]
         )
     ]
 )
 data class CourseworkDeadlineEntity(
     @PrimaryKey
-    @ColumnInfo(name = "d_id")
+    @ColumnInfo(name = "deadline_id")
     val id: Long,
 
-    @ColumnInfo(name = "course_id")
+    @ColumnInfo(name = "fk_course_id")
     val courseId: Long,
 
-    @ColumnInfo(name = "d_name")
+    @ColumnInfo(name = "deadline_name")
     val name: String,
 
-    @ColumnInfo(name = "deadline")
+    @ColumnInfo(name = "deadline_deadline")
     val deadline: String,
 
-    @ColumnInfo(name = "is_open")
+    @ColumnInfo(name = "deadline_is_open")
     val isOpen: Boolean,
 
-    @ColumnInfo(name = "is_dismissed")
+    @ColumnInfo(name = "deadline_is_dismissed")
     val isDismissed: Boolean
 )
