@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.feature.course
+package sk.skwig.aisinator.feature.course.db.entity
 
 import androidx.room.*
 
@@ -55,17 +55,4 @@ data class CourseworkDeadlineEntity(
 
     @ColumnInfo(name = "is_dismissed")
     val isDismissed: Boolean
-)
-
-
-data class CourseWithDeadlines(
-
-    @Embedded
-    val course: CourseEntity,
-
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "course_id"
-    )
-    val deadlines: List<CourseworkDeadlineEntity>
 )
