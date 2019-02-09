@@ -6,6 +6,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import sk.skwig.aisinator.feature.course.Course
 import sk.skwig.aisinator.feature.course.CourseRepository
+import timber.log.Timber
 import javax.inject.Inject
 
 class ActiveCoursesViewModel @Inject constructor(
@@ -24,6 +25,7 @@ class ActiveCoursesViewModel @Inject constructor(
         state = courseRepository.getActiveCourses()
             .map<ViewState> { ViewState.Normal(it) }
             .startWith(ViewState.Loading)
+            .doOnError(Timber::e)
             .onErrorReturnItem(ViewState.Error)
             .timestamp()
             .doOnNext {

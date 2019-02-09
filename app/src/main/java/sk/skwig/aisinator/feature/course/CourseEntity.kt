@@ -29,6 +29,11 @@ data class CourseEntity(
             parentColumns = ["id"],
             childColumns = ["course_id"]
         )
+    ],
+    indices = [
+        Index(
+            value = ["course_id"]
+        )
     ]
 )
 data class CourseworkDeadlineEntity(

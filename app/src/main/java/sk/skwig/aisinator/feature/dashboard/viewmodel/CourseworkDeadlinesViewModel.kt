@@ -1,5 +1,6 @@
 package sk.skwig.aisinator.feature.dashboard.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
@@ -21,9 +22,12 @@ class CourseworkDeadlinesViewModel @Inject constructor(
     private val disposable = CompositeDisposable()
 
     init {
-//        disposable += courseRepository.getActiveCourseworkDeadlines()
-//            .map { ViewState.Normal(it) as ViewState }
-//            .subscribe(stateRelay)
+        disposable += courseRepository.getActiveCourseworkDeadlines()
+            .doOnNext {
+                Log.d("matej", "Deadline count: ${it.size} ")
+            }
+            .map { ViewState.Normal(it) as ViewState }
+            .subscribe(stateRelay)
     }
 
     sealed class ViewState {
