@@ -19,7 +19,7 @@ data class CourseEntity(
     @ColumnInfo(name = "course_name")
     val name: String,
 
-    @ColumnInfo(name = "course_tag")
+    @ColumnInfo(name = "course_time")
     val time: String,
 
     @ColumnInfo(name = "course_is_active")
