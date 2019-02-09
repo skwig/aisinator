@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.common
+package sk.skwig.aisinator
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

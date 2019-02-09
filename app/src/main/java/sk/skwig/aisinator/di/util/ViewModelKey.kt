@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.common.di.util
+package sk.skwig.aisinator.di.util
 
 import androidx.lifecycle.ViewModel
 import dagger.MapKey

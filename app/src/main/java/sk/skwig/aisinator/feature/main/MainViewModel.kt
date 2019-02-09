@@ -1,4 +1,4 @@
-package sk.skwig.aisinator
+package sk.skwig.aisinator.feature.main
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

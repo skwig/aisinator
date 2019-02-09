@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.common.di
+package sk.skwig.aisinator.di
 
 import dagger.Module
 import dagger.Provides

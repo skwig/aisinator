@@ -1,9 +1,9 @@
-package sk.skwig.aisinator.common.di
+package sk.skwig.aisinator.di
 
 import dagger.Component
 import sk.skwig.aisinator.AisinatorApp
-import sk.skwig.aisinator.common.di.builder.ActivityBuilderModule
-import sk.skwig.aisinator.common.di.builder.FragmentBuilderModule
+import sk.skwig.aisinator.di.builder.ActivityBuilderModule
+import sk.skwig.aisinator.di.builder.FragmentBuilderModule
 import sk.skwig.aisinator.feature.auth.di.AuthModule
 import sk.skwig.aisinator.feature.course.di.CourseModule
 import sk.skwig.aisinator.feature.settings.di.SettingsModule

@@ -11,7 +11,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.CompositeDisposable
-import sk.skwig.aisinator.common.di.util.ViewModelFactory
+import sk.skwig.aisinator.di.util.ViewModelFactory
 import javax.inject.Inject
 
 abstract class BaseFragment<VM : ViewModel, B : ViewDataBinding> : Fragment() {

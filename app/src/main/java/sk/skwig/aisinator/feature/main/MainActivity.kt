@@ -1,4 +1,4 @@
-package sk.skwig.aisinator
+package sk.skwig.aisinator.feature.main
 
 import android.os.Bundle
 import android.view.Menu
@@ -8,6 +8,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
+import sk.skwig.aisinator.R
 import sk.skwig.aisinator.common.BaseActivity
 import timber.log.Timber
 

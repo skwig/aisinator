@@ -1,6 +1,10 @@
-package sk.skwig.aisinator.feature.course
+package sk.skwig.aisinator.feature.course.api
 
 import org.jsoup.nodes.Document
+import sk.skwig.aisinator.feature.course.Course
+import sk.skwig.aisinator.feature.course.Coursework
+import sk.skwig.aisinator.feature.course.CourseworkDeadline
+import sk.skwig.aisinator.feature.course.CourseworkEntry
 import java.time.format.DateTimeFormatter
 
 class CourseHtmlParser {
@@ -62,7 +66,13 @@ class CourseHtmlParser {
                     val name = text.substringAfter(" ")
 
                     // TODO: oddelit time od course
-                    Course(id, tag, name, "", true /* TODO: dat time a isActive prec */)
+                    Course(
+                        id,
+                        tag,
+                        name,
+                        "",
+                        true /* TODO: dat time a isActive prec */
+                    )
                 }
                 val name = columns[1].text()
                 val deadlineText = columns[4].text()

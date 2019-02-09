@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.common.di
+package sk.skwig.aisinator.di
 
 import android.app.Application
 import android.content.Context

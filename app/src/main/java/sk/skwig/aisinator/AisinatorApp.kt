@@ -7,9 +7,9 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import dagger.android.support.HasSupportFragmentInjector
-import sk.skwig.aisinator.common.di.AndroidModule
-import sk.skwig.aisinator.common.di.AppComponent
-import sk.skwig.aisinator.common.di.DaggerAppComponent
+import sk.skwig.aisinator.di.AndroidModule
+import sk.skwig.aisinator.di.AppComponent
+import sk.skwig.aisinator.di.DaggerAppComponent
 import timber.log.Timber
 import javax.inject.Inject
 

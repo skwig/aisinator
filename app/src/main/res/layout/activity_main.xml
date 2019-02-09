@@ -7,7 +7,7 @@
         android:id="@+id/foo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity">
+        tools:context=".feature.main.MainActivity">
 
         <fragment
             android:id="@+id/main_nav_host_fragment"

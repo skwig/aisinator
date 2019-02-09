@@ -5,6 +5,8 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import sk.skwig.aisinator.common.util.toDocument
 import sk.skwig.aisinator.feature.auth.AuthManager
+import sk.skwig.aisinator.feature.course.api.CourseApi
+import sk.skwig.aisinator.feature.course.api.CourseHtmlParser
 import sk.skwig.aisinator.feature.course.db.CourseDao
 import sk.skwig.aisinator.feature.course.db.CourseworkDeadlineDao
 

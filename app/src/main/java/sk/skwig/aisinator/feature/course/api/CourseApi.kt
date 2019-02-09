@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.feature.course
+package sk.skwig.aisinator.feature.course.api
 
 import io.reactivex.Single
 import okhttp3.ResponseBody

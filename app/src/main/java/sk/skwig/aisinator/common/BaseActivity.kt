@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import dagger.android.AndroidInjection
 import io.reactivex.disposables.CompositeDisposable
-import sk.skwig.aisinator.common.di.util.ViewModelFactory
+import sk.skwig.aisinator.di.util.ViewModelFactory
 import javax.inject.Inject
 
 abstract class BaseActivity<VM : ViewModel, B : ViewDataBinding> : AppCompatActivity() {
