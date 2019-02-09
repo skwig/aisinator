@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import sk.skwig.aisinator.databinding.ItemDeadlineBinding
-import sk.skwig.aisinator.feature.course.CourseworkDeadline
+import sk.skwig.aisinator.course.CourseworkDeadline
 import sk.skwig.aisinator.common.util.layoutInflater
 import sk.skwig.aisinator.common.util.setAll
 import sk.skwig.slidereveallayout.SlideRevealAdapter

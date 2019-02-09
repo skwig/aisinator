@@ -6,7 +6,7 @@ import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.disposables.CompositeDisposable
 import sk.skwig.aisinator.feature.auth.AuthMessageBus
 import sk.skwig.aisinator.feature.auth.AuthManager
-import sk.skwig.aisinator.feature.course.CourseRepository
+import sk.skwig.aisinator.course.CourseRepository
 import sk.skwig.aisinator.feature.settings.SettingsManager
 import javax.inject.Inject
 

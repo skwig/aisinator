@@ -7,8 +7,8 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 import sk.skwig.aisinator.feature.main.MainViewModel
 import sk.skwig.aisinator.feature.dashboard.viewmodel.DashboardViewModel
-import sk.skwig.aisinator.di.util.ViewModelFactory
-import sk.skwig.aisinator.di.util.ViewModelKey
+import sk.skwig.aisinator.common.di.util.ViewModelFactory
+import sk.skwig.aisinator.common.di.util.ViewModelKey
 import sk.skwig.aisinator.feature.dashboard.viewmodel.ActiveCoursesViewModel
 import sk.skwig.aisinator.feature.dashboard.viewmodel.CourseworkDeadlinesViewModel
 import sk.skwig.aisinator.feature.login.viewmodel.LoginViewModel

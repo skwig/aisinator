@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import sk.skwig.aisinator.feature.course.Course
-import sk.skwig.aisinator.feature.course.CourseRepository
+import sk.skwig.aisinator.course.Course
+import sk.skwig.aisinator.course.CourseRepository
 import timber.log.Timber
 import javax.inject.Inject
 

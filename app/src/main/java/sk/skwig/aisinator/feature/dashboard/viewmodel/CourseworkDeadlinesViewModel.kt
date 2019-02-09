@@ -7,8 +7,8 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
-import sk.skwig.aisinator.feature.course.CourseRepository
-import sk.skwig.aisinator.feature.course.CourseworkDeadline
+import sk.skwig.aisinator.course.CourseRepository
+import sk.skwig.aisinator.course.CourseworkDeadline
 import timber.log.Timber
 import javax.inject.Inject
 
