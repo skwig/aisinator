@@ -6,7 +6,7 @@ import sk.skwig.aisinator.di.builder.ActivityBuilderModule
 import sk.skwig.aisinator.di.builder.FragmentBuilderModule
 import sk.skwig.aisinator.feature.auth.di.AuthModule
 import sk.skwig.aisinator.course.di.CourseModule
-import sk.skwig.aisinator.feature.settings.di.SettingsModule
+import sk.skwig.aisinator.settings.settings.di.SettingsModule
 import javax.inject.Singleton
 
 @Singleton

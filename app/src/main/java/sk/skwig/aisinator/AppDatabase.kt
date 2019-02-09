@@ -11,6 +11,7 @@ const val APP_DATABASE_NAME = "app-database"
 
 @Database(
     version = 1,
+
     entities = [
         CourseEntity::class,
         CourseworkDeadlineEntity::class

@@ -1,1 +1,1 @@
-include ':app', ':slidereveallayout', ':course', ':common'
+include ':app', ':slidereveallayout', ':course', ':common', ':auth', ':settings'

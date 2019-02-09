@@ -1,5 +1,9 @@
 package sk.skwig.aisinator.course.db.roomdao
 
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import io.reactivex.Completable
 import io.reactivex.Observable
 import sk.skwig.aisinator.course.db.entity.CourseEntity
