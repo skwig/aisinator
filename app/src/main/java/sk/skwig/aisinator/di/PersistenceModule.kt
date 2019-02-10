@@ -6,17 +6,17 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import sk.skwig.aisinator.APP_DATABASE_NAME
-import sk.skwig.aisinator.AppDatabase
+import sk.skwig.aisinator.AisinatorDatabase
 import sk.skwig.aisinator.course.CourseDaoProvider
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [PersistenceBinderModule::class])
 class PersistenceModule {
 
     @Singleton
     @Provides
-    fun provideAppDatabase(context: Context): AppDatabase {
-        return Room.databaseBuilder(context, AppDatabase::class.java, APP_DATABASE_NAME)
+    fun provideAppDatabase(context: Context): AisinatorDatabase {
+        return Room.databaseBuilder(context, AisinatorDatabase::class.java, APP_DATABASE_NAME)
             .build()
     }
 }
@@ -25,5 +25,5 @@ class PersistenceModule {
 abstract class PersistenceBinderModule {
 
     @Binds
-    abstract fun bindCourseDaoProvider(appDatabase: AppDatabase): CourseDaoProvider
+    abstract fun bindCourseDaoProvider(aisinatorDatabase: AisinatorDatabase): CourseDaoProvider
 }

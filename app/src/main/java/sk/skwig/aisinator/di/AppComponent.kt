@@ -16,7 +16,6 @@ import javax.inject.Singleton
         ViewModelModule::class,
         NetworkModule::class,
         PersistenceModule::class,
-        PersistenceBinderModule::class,
 
         AuthModule::class,
         CourseModule::class,

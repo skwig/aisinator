@@ -13,8 +13,8 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import sk.skwig.aisinator.common.BaseFragment
 import sk.skwig.aisinator.databinding.FragmentDashboardBinding
-import sk.skwig.aisinator.feature.dashboard.viewmodel.ActiveCoursesViewModel
-import sk.skwig.aisinator.feature.dashboard.viewmodel.CourseworkDeadlinesViewModel
+import sk.skwig.aisinator.course.viewmodel.ActiveCoursesViewModel
+import sk.skwig.aisinator.course.viewmodel.CourseworkDeadlinesViewModel
 import sk.skwig.aisinator.feature.dashboard.viewmodel.DashboardViewModel
 import timber.log.Timber
 

@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.feature.dashboard.viewmodel
+package sk.skwig.aisinator.course.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

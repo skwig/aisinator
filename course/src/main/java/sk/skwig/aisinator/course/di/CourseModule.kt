@@ -14,7 +14,7 @@ import sk.skwig.aisinator.course.db.roomdao.CourseRoomDao
 import sk.skwig.aisinator.course.db.roomdao.CourseworkDeadlineRoomDao
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [CourseViewModelModule::class])
 class CourseModule {
 
     @Provides
@@ -52,7 +52,8 @@ class CourseModule {
 
     @Singleton
     @Provides
-    fun provideCourseworkDeadlineRoomDao(courseDaoProvider: CourseDaoProvider) = courseDaoProvider.courseworkDeadlineDao()
+    fun provideCourseworkDeadlineRoomDao(courseDaoProvider: CourseDaoProvider) =
+        courseDaoProvider.courseworkDeadlineDao()
 
     @Singleton
     @Provides
