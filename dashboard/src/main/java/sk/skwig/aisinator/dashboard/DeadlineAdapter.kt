@@ -55,7 +55,7 @@ class DeadlineAdapter(
                 }
             }
             title.text = item.name
-            subtitle.text = "${item.course.tag} ● ${item.deadline}" // TODO: do resourcov
+            subtitle.text = subtitle.resources.getString(R.string.deadline_subtitle_format, item.course.tag, item.deadline)
 
             holder.binding.delete.setOnClickListener {
                 holder.binding.slideRevealLayout.swipe()
