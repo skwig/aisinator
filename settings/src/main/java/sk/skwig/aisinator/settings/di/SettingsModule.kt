@@ -11,6 +11,6 @@ class SettingsModule {
 
     @Provides
     @Singleton
-    fun privideSettingsManager(context: Context) = SettingsManager(context)
+    fun provideSettingsManager(context: Context) = SettingsManager(context)
 
 }
