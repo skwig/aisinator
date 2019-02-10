@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.feature.dashboard
+package sk.skwig.aisinator.dashboard
 
 import android.content.Context
 import android.os.Bundle
@@ -12,10 +12,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import sk.skwig.aisinator.common.BaseFragment
-import sk.skwig.aisinator.databinding.FragmentDashboardBinding
+import sk.skwig.aisinator.course.CourseAdapter
 import sk.skwig.aisinator.course.viewmodel.ActiveCoursesViewModel
 import sk.skwig.aisinator.course.viewmodel.CourseworkDeadlinesViewModel
-import sk.skwig.aisinator.feature.dashboard.viewmodel.DashboardViewModel
+import sk.skwig.aisinator.dashboard.databinding.FragmentDashboardBinding
+import sk.skwig.aisinator.dashboard.viewmodel.DashboardViewModel
 import timber.log.Timber
 
 /**

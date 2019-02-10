@@ -10,6 +10,7 @@ android {
     }
 
     compileSdkVersion 28
+
     defaultConfig {
         applicationId "sk.skwig.aisinator"
         minSdkVersion 21
@@ -42,9 +43,13 @@ dependencies {
     def okhttp_version = "3.10.0"
 
     implementation project(':common')
+
     implementation project(':course')
     implementation project(':settings')
     implementation project(':auth')
+    implementation project(':dashboard')
+    implementation project(':login')
+
     implementation project(':slidereveallayout')
 
     // databinding

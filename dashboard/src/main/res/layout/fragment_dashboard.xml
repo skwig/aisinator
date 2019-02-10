@@ -11,7 +11,7 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".feature.dashboard.DashboardFragment"
+            tools:context="sk.skwig.aisinator.dashboard.DashboardFragment"
             tools:showIn="@layout/activity_main">
 
             <include

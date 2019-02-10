@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.feature.login
+package sk.skwig.aisinator.login
 
 import android.content.Context
 import android.os.Bundle
@@ -11,8 +11,8 @@ import androidx.lifecycle.ViewModelProviders
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.rxkotlin.subscribeBy
 import sk.skwig.aisinator.common.BaseFragment
-import sk.skwig.aisinator.databinding.FragmentLoginBinding
-import sk.skwig.aisinator.feature.login.viewmodel.LoginViewModel
+import sk.skwig.aisinator.login.databinding.FragmentLoginBinding
+import sk.skwig.aisinator.login.viewmodel.LoginViewModel
 import timber.log.Timber
 
 /**

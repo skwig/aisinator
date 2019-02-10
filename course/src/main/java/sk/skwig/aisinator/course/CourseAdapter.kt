@@ -1,12 +1,11 @@
-package sk.skwig.aisinator.feature.dashboard
+package sk.skwig.aisinator.course
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import sk.skwig.aisinator.databinding.ItemCourseBinding
-import sk.skwig.aisinator.course.Course
 import sk.skwig.aisinator.common.util.layoutInflater
 import sk.skwig.aisinator.common.util.setAll
+import sk.skwig.aisinator.databinding.ItemCourseBinding
 
 class CourseAdapter : RecyclerView.Adapter<CourseViewHolder>() {
 

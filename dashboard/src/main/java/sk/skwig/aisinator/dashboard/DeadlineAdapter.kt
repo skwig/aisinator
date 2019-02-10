@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.feature.dashboard
+package sk.skwig.aisinator.dashboard
 
 import android.os.Bundle
 import android.view.ViewGroup

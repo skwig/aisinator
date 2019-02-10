@@ -1,13 +1,13 @@
-package sk.skwig.aisinator.di.builder
+package sk.skwig.aisinator.dashboard.di
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import sk.skwig.aisinator.dashboard.DashboardFragment
 
 @Module
-abstract class FragmentBuilderModule {
+abstract class DashboardFragmentModule {
 
     @ContributesAndroidInjector
-    abstract fun contributeMainActivityFragment(): DashboardFragment
+    abstract fun contributeDashboardFragment(): DashboardFragment
 
 }

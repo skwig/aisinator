@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.feature.login.viewmodel
+package sk.skwig.aisinator.login.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

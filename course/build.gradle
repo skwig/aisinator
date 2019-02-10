@@ -5,9 +5,11 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
+    dataBinding {
+        enabled = true
+    }
+
     compileSdkVersion 28
-
-
 
     defaultConfig {
         minSdkVersion 21
@@ -40,7 +42,9 @@ dependencies {
 
     implementation project(':common')
     implementation project(':auth')
+    implementation project(':slidereveallayout')
 
+    implementation 'androidx.databinding:databinding-runtime:3.3.0'
     kapt 'androidx.databinding:databinding-compiler:3.3.0'
 
     // appcompat

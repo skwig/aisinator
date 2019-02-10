@@ -6,11 +6,11 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="sk.skwig.aisinator.feature.login.LoginFragment"
+        android:name="sk.skwig.aisinator.login.LoginFragment"
         android:label="LoginFragment"/>
     <fragment
         android:id="@+id/mainActivityFragment"
-        android:name="sk.skwig.aisinator.feature.dashboard.DashboardFragment"
+        android:name="sk.skwig.aisinator.dashboard.DashboardFragment"
         android:label="MainActivityFragment" />
     <action
         android:id="@+id/action_global_loginFragment"

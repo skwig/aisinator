@@ -30,6 +30,7 @@ android {
 
 }
 
+
 dependencies {
     def picasso_version = "2.71828"
     def retrofit_version = "2.4.0"
@@ -39,6 +40,10 @@ dependencies {
     def room_version = '2.1.0-alpha04'
     def dagger_version = "2.16"
     def okhttp_version = "3.10.0"
+
+    implementation project(':common')
+    implementation project(':course')
+    implementation project(':slidereveallayout')
 
     // databinding
     implementation 'androidx.databinding:databinding-runtime:3.3.0'
@@ -113,4 +118,3 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }
-
