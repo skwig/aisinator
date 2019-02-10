@@ -8,14 +8,14 @@ import sk.skwig.aisinator.auth.AuthManager
 import sk.skwig.aisinator.course.api.CourseApi
 import sk.skwig.aisinator.course.api.CourseHtmlParser
 import sk.skwig.aisinator.course.db.CourseDao
-import sk.skwig.aisinator.course.db.CourseworkDeadlineDao
+import sk.skwig.aisinator.course.db.DeadlineDao
 
 interface CourseRepository {
     fun getActiveCourses(): Observable<List<Course>>
     fun getCoursework(course: Course): Observable<Coursework>
-    fun getActiveCourseworkDeadlines(): Observable<List<CourseworkDeadline>>
+    fun getActiveCourseworkDeadlines(): Observable<List<Deadline>>
 
-    fun dismissCourseworkDeadline(courseworkDeadline: CourseworkDeadline): Completable
+    fun dismissCourseworkDeadline(deadline: Deadline): Completable
 }
 
 class CourseRepositoryImpl(
@@ -23,7 +23,7 @@ class CourseRepositoryImpl(
     private val courseApi: CourseApi,
     private val htmlParser: CourseHtmlParser,
     private val courseDao: CourseDao,
-    private val courseworkDeadlineDao: CourseworkDeadlineDao
+    private val deadlineDao: DeadlineDao
 ) : CourseRepository {
 
     override fun getActiveCourses(): Observable<List<Course>> =
@@ -37,15 +37,15 @@ class CourseRepositoryImpl(
                     .andThen(courseDao.loadAllCourses())
             }
 
-    override fun getActiveCourseworkDeadlines(): Observable<List<CourseworkDeadline>> =
+    override fun getActiveCourseworkDeadlines(): Observable<List<Deadline>> =
         authManager.authentication
             .doOnNext { Log.d("matej", "CourseRepository.getDeadlines") }
             .switchMap {
                 Observable.just(it)
                     .flatMapSingle { courseApi.getCourseworkDeadlines(it.cookie) }
                     .map { htmlParser.parseCourseworkDeadlines(it.toDocument()) }
-                    .concatMapCompletable { courseworkDeadlineDao.insertCourseworkDeadlines(it) }
-                    .andThen(courseworkDeadlineDao.loadAllCourses())
+                    .concatMapCompletable { deadlineDao.insertCourseworkDeadlines(it) }
+                    .andThen(deadlineDao.loadAllCourses())
             }
 
     override fun getCoursework(course: Course) =
@@ -54,8 +54,8 @@ class CourseRepositoryImpl(
             .flatMapSingle { courseApi.getCoursework(it.cookie, course = course.id) }
             .map { htmlParser.parseCoursework(it.toDocument()) }
 
-    override fun dismissCourseworkDeadline(courseworkDeadline: CourseworkDeadline): Completable =
-        courseworkDeadlineDao.updateCourseworkDeadline(
-            courseworkDeadline.copy(isDismissed = true)
+    override fun dismissCourseworkDeadline(deadline: Deadline): Completable =
+        deadlineDao.updateCourseworkDeadline(
+            deadline.copy(isDismissed = true)
         )
 }

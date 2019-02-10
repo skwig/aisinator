@@ -3,9 +3,8 @@ package sk.skwig.aisinator.course.api
 import org.jsoup.nodes.Document
 import sk.skwig.aisinator.course.Course
 import sk.skwig.aisinator.course.Coursework
-import sk.skwig.aisinator.course.CourseworkDeadline
+import sk.skwig.aisinator.course.Deadline
 import sk.skwig.aisinator.course.CourseworkEntry
-import java.time.format.DateTimeFormatter
 
 class CourseHtmlParser {
 
@@ -48,7 +47,7 @@ class CourseHtmlParser {
         return Coursework(entries)
     }
 
-    fun parseCourseworkDeadlines(document: Document): List<CourseworkDeadline> {
+    fun parseCourseworkDeadlines(document: Document): List<Deadline> {
 
 //        val dateTimeFormatter = DateTimeFormatter.ofPattern("M/d/y H:m")
 
@@ -84,7 +83,7 @@ class CourseHtmlParser {
                     }
                 }
 //                val deadline = dateTimeFormatter.parse(deadlineText)
-                CourseworkDeadline(id, course, name, deadlineText, isOpen)
+                Deadline(id, course, name, deadlineText, isOpen)
             }
     }
 }

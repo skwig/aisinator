@@ -1,76 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <sk.skwig.slidereveallayout.SlideRevealLayout
-        android:id="@+id/slide_reveal_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:dragEdge="right"
-        app:mode="normal"
-        app:revealedView="@id/revealed_layout"
-        app:slidingView="@id/card">
+            android:id="@+id/slide_reveal_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:dragEdge="right"
+            app:mode="normal"
+            app:revealedView="@id/revealed_layout"
+            app:slidingView="@id/card">
 
         <com.google.android.material.card.MaterialCardView
-            style="@style/DeadlineItem.Background"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="4dp">
+                style="@style/DeadlineItem.Background"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="4dp">
 
             <LinearLayout
-                android:id="@+id/revealed_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:orientation="horizontal"
-                android:padding="8dp">
+                    android:id="@+id/revealed_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:orientation="horizontal"
+            >
+                    <!--android:padding="8dp"-->
 
                 <ImageButton
-                    android:id="@+id/delete"
-                    style="@style/DeadlineItem.Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:padding="16dp"
-                    android:src="@drawable/ic_delete" />
+                        android:id="@+id/delete"
+                        style="@style/DeadlineItem.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="16dp"
+                        android:src="@drawable/ic_delete"/>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card"
-            style="@style/DeadlineItem.Foreground"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="4dp">
+                android:id="@+id/card"
+                style="@style/DeadlineItem.Foreground"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="4dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <TextView
-                    android:id="@+id/tag_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold" />
+                    android:orientation="vertical"
+                    android:padding="8dp">
 
                 <TextView
-                    android:id="@+id/name_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                        style="?attr/textAppearanceBody1"
+                        android:id="@+id/title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
                 <TextView
-                    android:id="@+id/deadline_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                        style="?attr/textAppearanceCaption"
+                        android:id="@+id/subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
             </LinearLayout>
 

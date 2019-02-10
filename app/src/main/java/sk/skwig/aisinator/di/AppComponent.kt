@@ -4,8 +4,8 @@ import dagger.Component
 import sk.skwig.aisinator.AisinatorApp
 import sk.skwig.aisinator.auth.di.AuthModule
 import sk.skwig.aisinator.course.di.CourseModule
-import sk.skwig.aisinator.di.builder.ActivityBuilderModule
-import sk.skwig.aisinator.di.builder.FragmentBuilderModule
+import sk.skwig.aisinator.dashboard.di.DashboardModule
+import sk.skwig.aisinator.login.di.LoginModule
 import sk.skwig.aisinator.settings.di.SettingsModule
 import javax.inject.Singleton
 
@@ -13,16 +13,19 @@ import javax.inject.Singleton
 @Component(
     modules = [
         AndroidModule::class,
-        ViewModelModule::class,
+        ActivityBuilderModule::class,
+
         NetworkModule::class,
         PersistenceModule::class,
 
         AuthModule::class,
         CourseModule::class,
+        DashboardModule::class,
+        LoginModule::class,
         SettingsModule::class,
 
-        ActivityBuilderModule::class,
-        FragmentBuilderModule::class
+        // TODO: asap do feature modulu
+        ViewModelModule::class
     ]
 )
 interface AppComponent {

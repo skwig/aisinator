@@ -27,7 +27,7 @@ data class CourseEntity(
 )
 
 @Entity(
-    tableName = "coursework_deadlines",
+    tableName = "deadlines",
     foreignKeys = [
         ForeignKey(
             entity = CourseEntity::class,
@@ -41,7 +41,7 @@ data class CourseEntity(
         )
     ]
 )
-data class CourseworkDeadlineEntity(
+data class DeadlineEntity(
     @PrimaryKey
     @ColumnInfo(name = "deadline_id")
     val id: Long,

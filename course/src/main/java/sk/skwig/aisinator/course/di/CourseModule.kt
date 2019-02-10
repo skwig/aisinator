@@ -11,7 +11,7 @@ import sk.skwig.aisinator.course.api.CourseApi
 import sk.skwig.aisinator.course.api.CourseHtmlParser
 import sk.skwig.aisinator.course.db.*
 import sk.skwig.aisinator.course.db.roomdao.CourseRoomDao
-import sk.skwig.aisinator.course.db.roomdao.CourseworkDeadlineRoomDao
+import sk.skwig.aisinator.course.db.roomdao.DeadlineRoomDao
 import javax.inject.Singleton
 
 @Module(includes = [CourseViewModelModule::class])
@@ -24,13 +24,13 @@ class CourseModule {
         courseApi: CourseApi,
         courseHtmlParser: CourseHtmlParser,
         courseDao: CourseDao,
-        courseworkDeadlineDao: CourseworkDeadlineDao
+        deadlineDao: DeadlineDao
     ): CourseRepository = CourseRepositoryImpl(
         authManager,
         courseApi,
         courseHtmlParser,
         courseDao,
-        courseworkDeadlineDao
+        deadlineDao
     )
 
     @Provides
@@ -58,16 +58,16 @@ class CourseModule {
     @Singleton
     @Provides
     fun provideCourseworkDeadlineDao(
-        courseworkDeadlineRoomDao: CourseworkDeadlineRoomDao,
+        deadlineRoomDao: DeadlineRoomDao,
         courseMapper: CourseMapper,
-        courseworkDeadlineMapper: CourseworkDeadlineMapper,
-        courseworkDeadlineWithCourseMapper: CourseworkDeadlineWithCourseMapper
-    ): CourseworkDeadlineDao =
-        CourseworkDeadlineDaoImpl(
-            courseworkDeadlineRoomDao,
+        deadlineMapper: DeadlineMapper,
+        deadlineWithCourseMapper: DeadlineWithCourseMapper
+    ): DeadlineDao =
+        DeadlineDaoImpl(
+            deadlineRoomDao,
             courseMapper,
-            courseworkDeadlineMapper,
-            courseworkDeadlineWithCourseMapper
+            deadlineMapper,
+            deadlineWithCourseMapper
         )
 
     @Singleton
@@ -76,13 +76,13 @@ class CourseModule {
 
     @Singleton
     @Provides
-    fun provideCourseworkDeadlineMapper() = CourseworkDeadlineMapper()
+    fun provideCourseworkDeadlineMapper() = DeadlineMapper()
 
     @Singleton
     @Provides
     fun provideCourseworkDeadlineWithCourseMapper(
         courseMapper: CourseMapper,
-        courseworkDeadlineMapper: CourseworkDeadlineMapper
+        deadlineMapper: DeadlineMapper
     ) =
-        CourseworkDeadlineWithCourseMapper(courseMapper, courseworkDeadlineMapper)
+        DeadlineWithCourseMapper(courseMapper, deadlineMapper)
 }

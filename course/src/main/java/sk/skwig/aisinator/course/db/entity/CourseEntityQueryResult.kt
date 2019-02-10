@@ -6,7 +6,7 @@ import androidx.room.Embedded
 data class CourseworkDeadlineWithCourse(
 
     @Embedded
-    val courseworkDeadline: CourseworkDeadlineEntity,
+    val deadline: DeadlineEntity,
 
     @Embedded
     val course: CourseEntity

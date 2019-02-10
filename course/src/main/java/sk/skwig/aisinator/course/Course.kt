@@ -5,7 +5,7 @@ data class Course(
     val tag: String,
     val name: String,
     val time: String,
-    val isActive:Boolean
+    val isActive: Boolean
     /*attendance*/
 )
 
@@ -16,13 +16,4 @@ data class Coursework(
 data class CourseworkEntry(
     val name: String,
     val values: Map<String, String>
-)
-
-data class CourseworkDeadline(
-    val id: Long,
-    val course: Course,
-    val name: String,
-    val deadline: String,
-    val isOpen: Boolean,
-    val isDismissed: Boolean = false
 )

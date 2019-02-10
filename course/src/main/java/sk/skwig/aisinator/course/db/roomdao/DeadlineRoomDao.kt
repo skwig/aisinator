@@ -4,26 +4,26 @@ import androidx.room.*
 import io.reactivex.Completable
 import io.reactivex.Observable
 import sk.skwig.aisinator.course.db.entity.CourseEntity
-import sk.skwig.aisinator.course.db.entity.CourseworkDeadlineEntity
+import sk.skwig.aisinator.course.db.entity.DeadlineEntity
 import sk.skwig.aisinator.course.db.entity.CourseworkDeadlineWithCourse
 
 @Dao
-interface CourseworkDeadlineRoomDao {
+interface DeadlineRoomDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertCourseworkDeadlines(deadlines: List<CourseworkDeadlineEntity>): Completable
+    fun insertCourseworkDeadlines(deadlines: List<DeadlineEntity>): Completable
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertCourseDeadlinesWithCourses(
         courses: List<CourseEntity>,
-        deadlines: List<CourseworkDeadlineEntity>
+        deadlines: List<DeadlineEntity>
     ): Unit // TODO: zmenit na Completable ked to fixnu v Room libke
 
     @Update
-    fun updateCourseworkDeadline(courseworkDeadlineEntity: CourseworkDeadlineEntity): Completable
+    fun updateCourseworkDeadline(deadlineEntity: DeadlineEntity): Completable
 
     @Transaction
-    @Query("SELECT * FROM coursework_deadlines d JOIN courses c ON c.course_id = d.fk_course_id WHERE d.deadline_is_dismissed == 0")
+    @Query("SELECT * FROM deadlines d JOIN courses c ON c.course_id = d.fk_course_id WHERE d.deadline_is_dismissed == 0")
     fun loadAllCourseworkDeadlines(): Observable<List<CourseworkDeadlineWithCourse>>
 }

@@ -16,7 +16,6 @@ class CourseDaoImpl(
     private val mapper: CourseMapper
 ) : CourseDao {
 
-
     override fun insertCourse(course: Course): Completable = dao.insertCourse(mapper.toEntity(course))
 
     override fun insertCourses(courses: List<Course>): Completable = dao.insertCourses(mapper.toEntityList(courses))

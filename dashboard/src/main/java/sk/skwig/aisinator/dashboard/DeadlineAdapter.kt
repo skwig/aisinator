@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import sk.skwig.aisinator.databinding.ItemDeadlineBinding
-import sk.skwig.aisinator.course.CourseworkDeadline
+import sk.skwig.aisinator.course.Deadline
 import sk.skwig.aisinator.common.util.layoutInflater
 import sk.skwig.aisinator.common.util.setAll
 import sk.skwig.slidereveallayout.SlideRevealAdapter
@@ -14,12 +14,12 @@ import sk.skwig.slidereveallayout.ViewBinderHelper
 
 
 class DeadlineAdapter(
-    private val onDelete: (CourseworkDeadline) -> Unit
+    private val onDelete: (Deadline) -> Unit
 ) : RecyclerView.Adapter<DeadlineViewHolder>() {
 
     private val viewBinderHelper = ViewBinderHelper()
 
-    private val data = mutableListOf<CourseworkDeadline>()
+    private val data = mutableListOf<Deadline>()
 
     init {
         viewBinderHelper.setOpenOnlyOne(true)
@@ -55,9 +55,8 @@ class DeadlineAdapter(
 //                        .let(::submitList)
                 }
             }
-            tagText.text = item.course.tag
-            nameText.text = item.name
-            deadlineText.text = item.deadline
+            title.text = item.name
+            subtitle.text = "${item.course.tag} ● ${item.deadline}" // TODO: do resourcov
 
             holder.binding.delete.setOnClickListener {
                 holder.binding.slideRevealLayout.swipe()
@@ -73,24 +72,24 @@ class DeadlineAdapter(
         viewBinderHelper.restoreStates(inState)
     }
 
-    fun submitList(courses: List<CourseworkDeadline>) {
-        DiffUtil.calculateDiff(diffCallback(courses)).dispatchUpdatesTo(this)
-        data.setAll(courses)
+    fun submitList(deadlines: List<Deadline>) {
+        DiffUtil.calculateDiff(diffCallback(deadlines)).dispatchUpdatesTo(this)
+        data.setAll(deadlines)
     }
 
-    private fun diffCallback(courses: List<CourseworkDeadline>): DiffUtil.Callback {
+    private fun diffCallback(deadlines: List<Deadline>): DiffUtil.Callback {
         return object : DiffUtil.Callback() {
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return data[oldItemPosition].id == courses[newItemPosition].id
+                return data[oldItemPosition].id == deadlines[newItemPosition].id
             }
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return data[oldItemPosition] == courses[newItemPosition]
+                return data[oldItemPosition] == deadlines[newItemPosition]
             }
 
             override fun getOldListSize() = data.size
 
-            override fun getNewListSize() = courses.size
+            override fun getNewListSize() = deadlines.size
         }
     }
 }
