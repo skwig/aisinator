@@ -4,7 +4,7 @@ import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.Observable
 import sk.skwig.aisinator.common.util.toDocument
-import sk.skwig.aisinator.feature.auth.AuthManager
+import sk.skwig.aisinator.auth.AuthManager
 import sk.skwig.aisinator.course.api.CourseApi
 import sk.skwig.aisinator.course.api.CourseHtmlParser
 import sk.skwig.aisinator.course.db.CourseDao

@@ -4,10 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.disposables.CompositeDisposable
-import sk.skwig.aisinator.feature.auth.AuthMessageBus
-import sk.skwig.aisinator.feature.auth.AuthManager
+import sk.skwig.aisinator.auth.AuthManager
+import sk.skwig.aisinator.auth.AuthMessageBus
 import sk.skwig.aisinator.course.CourseRepository
-import sk.skwig.aisinator.settings.settings.SettingsManager
+import sk.skwig.aisinator.settings.SettingsManager
 import javax.inject.Inject
 
 class DashboardViewModel @Inject constructor(

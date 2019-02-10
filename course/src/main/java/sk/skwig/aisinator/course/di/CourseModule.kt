@@ -3,12 +3,12 @@ package sk.skwig.aisinator.course.di
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
-import sk.skwig.aisinator.AppDatabase
-import sk.skwig.aisinator.feature.auth.AuthManager
-import sk.skwig.aisinator.course.api.CourseApi
-import sk.skwig.aisinator.course.api.CourseHtmlParser
+import sk.skwig.aisinator.auth.AuthManager
+import sk.skwig.aisinator.course.CourseDaoProvider
 import sk.skwig.aisinator.course.CourseRepository
 import sk.skwig.aisinator.course.CourseRepositoryImpl
+import sk.skwig.aisinator.course.api.CourseApi
+import sk.skwig.aisinator.course.api.CourseHtmlParser
 import sk.skwig.aisinator.course.db.*
 import sk.skwig.aisinator.course.db.roomdao.CourseRoomDao
 import sk.skwig.aisinator.course.db.roomdao.CourseworkDeadlineRoomDao
@@ -43,7 +43,7 @@ class CourseModule {
 
     @Singleton
     @Provides
-    fun provideCourseRoomDao(appDatabase: AppDatabase) = appDatabase.courseDao()
+    fun provideCourseRoomDao(courseDaoProvider: CourseDaoProvider) = courseDaoProvider.courseDao()
 
     @Singleton
     @Provides
@@ -52,7 +52,7 @@ class CourseModule {
 
     @Singleton
     @Provides
-    fun provideCourseworkDeadlineRoomDao(appDatabase: AppDatabase) = appDatabase.courseworkDeadlineDao()
+    fun provideCourseworkDeadlineRoomDao(courseDaoProvider: CourseDaoProvider) = courseDaoProvider.courseworkDeadlineDao()
 
     @Singleton
     @Provides

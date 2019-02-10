@@ -39,6 +39,7 @@ dependencies {
     def okhttp_version = "3.10.0"
 
     implementation project(':common')
+    implementation project(':auth')
 
     kapt 'androidx.databinding:databinding-compiler:3.3.0'
 

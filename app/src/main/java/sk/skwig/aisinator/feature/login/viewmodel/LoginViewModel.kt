@@ -7,7 +7,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
-import sk.skwig.aisinator.feature.auth.AuthManager
+import sk.skwig.aisinator.auth.AuthManager
 import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(private val authManager: AuthManager) : ViewModel() {
