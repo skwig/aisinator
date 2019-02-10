@@ -42,7 +42,7 @@ dependencies {
     def okhttp_version = "3.10.0"
 
     implementation project(':common')
-    implementation project(':course')
+    implementation project(':auth')
     implementation project(':slidereveallayout')
 
     // databinding

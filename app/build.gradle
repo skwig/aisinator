@@ -44,11 +44,10 @@ dependencies {
 
     implementation project(':common')
 
-    implementation project(':course')
-    implementation project(':settings')
     implementation project(':auth')
     implementation project(':dashboard')
     implementation project(':login')
+    implementation project(':settings')
 
     implementation project(':slidereveallayout')
 

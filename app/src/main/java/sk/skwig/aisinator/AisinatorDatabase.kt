@@ -2,9 +2,9 @@ package sk.skwig.aisinator
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import sk.skwig.aisinator.course.CourseDaoProvider
-import sk.skwig.aisinator.course.db.entity.CourseEntity
-import sk.skwig.aisinator.course.db.entity.DeadlineEntity
+import sk.skwig.aisinator.dashboard.DashboardDaoProvider
+import sk.skwig.aisinator.dashboard.db.entity.CourseEntity
+import sk.skwig.aisinator.dashboard.db.entity.DeadlineEntity
 
 const val APP_DATABASE_NAME = "aisinator-database"
 
@@ -15,4 +15,4 @@ const val APP_DATABASE_NAME = "aisinator-database"
         DeadlineEntity::class
     ]
 )
-abstract class AisinatorDatabase : RoomDatabase(), CourseDaoProvider
+abstract class AisinatorDatabase : RoomDatabase(), DashboardDaoProvider

@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import sk.skwig.aisinator.databinding.ItemDeadlineBinding
-import sk.skwig.aisinator.course.Deadline
 import sk.skwig.aisinator.common.util.layoutInflater
 import sk.skwig.aisinator.common.util.setAll
+import sk.skwig.aisinator.dashboard.databinding.ItemDeadlineBinding
 import sk.skwig.slidereveallayout.SlideRevealAdapter
 import sk.skwig.slidereveallayout.SlideRevealLayout
 import sk.skwig.slidereveallayout.ViewBinderHelper

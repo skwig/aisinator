@@ -3,7 +3,7 @@ package sk.skwig.aisinator.di
 import dagger.Component
 import sk.skwig.aisinator.AisinatorApp
 import sk.skwig.aisinator.auth.di.AuthModule
-import sk.skwig.aisinator.course.di.CourseModule
+import sk.skwig.aisinator.dashboard.di.CourseModule
 import sk.skwig.aisinator.dashboard.di.DashboardModule
 import sk.skwig.aisinator.login.di.LoginModule
 import sk.skwig.aisinator.settings.di.SettingsModule
