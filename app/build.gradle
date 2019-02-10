@@ -26,10 +26,10 @@ android {
         }
     }
 
-    lintOptions {
-        warningsAsErrors true
-//            ignore 'MissingTranslation', ...
-    }
+//    lintOptions {
+//        warningsAsErrors true
+////            ignore 'MissingTranslation', ...
+//    }
 }
 
 dependencies {

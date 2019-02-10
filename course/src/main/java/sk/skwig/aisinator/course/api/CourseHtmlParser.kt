@@ -50,7 +50,7 @@ class CourseHtmlParser {
 
     fun parseCourseworkDeadlines(document: Document): List<CourseworkDeadline> {
 
-        val dateTimeFormatter = DateTimeFormatter.ofPattern("M/d/y H:m")
+//        val dateTimeFormatter = DateTimeFormatter.ofPattern("M/d/y H:m")
 
         return document
             // TODO: selectovat z otvorenych miest odovzdani
@@ -83,7 +83,7 @@ class CourseHtmlParser {
                         else -> throw IllegalStateException()
                     }
                 }
-                val deadline = dateTimeFormatter.parse(deadlineText)
+//                val deadline = dateTimeFormatter.parse(deadlineText)
                 CourseworkDeadline(id, course, name, deadlineText, isOpen)
             }
     }
