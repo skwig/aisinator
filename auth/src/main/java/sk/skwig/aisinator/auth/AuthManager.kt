@@ -8,8 +8,8 @@ import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
-import sk.skwig.aisinator.feature.settings.SettingsManager
 import sk.skwig.aisinator.common.util.replayLast
+import sk.skwig.aisinator.settings.SettingsManager
 import timber.log.Timber
 
 private const val AUTH_HEADER = "UISAuth"
