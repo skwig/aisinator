@@ -1,6 +1,7 @@
 package sk.skwig.aisinator.dashboard
 
 import android.os.Bundle
+import android.text.format.DateUtils
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -48,14 +49,14 @@ class DeadlineAdapter(
                     }
 
                     onDelete(data[adapterPosition])
-
-//                    data.toMutableList()
-//                        .apply { removeAt(adapterPosition) }
-//                        .let(::submitList)
                 }
             }
+
+            // TODO: DisplayableDeadline, kde je toto uz rovno ako string & ma isBold (ak je odovzdanie v nejakom thresholde, napr dnes)
+            val deadlineText = DateUtils.getRelativeTimeSpanString(item.deadline.toEpochMilli())
+
             title.text = item.name
-            subtitle.text = subtitle.resources.getString(R.string.deadline_subtitle_format, item.course.tag, item.deadline)
+            subtitle.text = subtitle.resources.getString(R.string.deadline_subtitle_format, item.course.tag, deadlineText)
 
             holder.binding.delete.setOnClickListener {
                 holder.binding.slideRevealLayout.swipe()

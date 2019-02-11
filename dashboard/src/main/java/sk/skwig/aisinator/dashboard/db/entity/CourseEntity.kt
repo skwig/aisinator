@@ -1,6 +1,7 @@
 package sk.skwig.aisinator.dashboard.db.entity
 
 import androidx.room.*
+import java.time.Instant
 
 // naming convention:
 // 1. prefixovat foreign keye "fk"
@@ -53,7 +54,7 @@ data class DeadlineEntity(
     val name: String,
 
     @ColumnInfo(name = "deadline_deadline")
-    val deadline: String,
+    val deadline: Instant,
 
     @ColumnInfo(name = "deadline_is_open")
     val isOpen: Boolean,

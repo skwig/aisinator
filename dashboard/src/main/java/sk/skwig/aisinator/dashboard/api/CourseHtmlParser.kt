@@ -3,8 +3,11 @@ package sk.skwig.aisinator.dashboard.api
 import org.jsoup.nodes.Document
 import sk.skwig.aisinator.dashboard.Course
 import sk.skwig.aisinator.dashboard.Coursework
-import sk.skwig.aisinator.dashboard.Deadline
 import sk.skwig.aisinator.dashboard.CourseworkEntry
+import sk.skwig.aisinator.dashboard.Deadline
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 class CourseHtmlParser {
 
@@ -49,7 +52,7 @@ class CourseHtmlParser {
 
     fun parseCourseworkDeadlines(document: Document): List<Deadline> {
 
-//        val dateTimeFormatter = DateTimeFormatter.ofPattern("M/d/y H:m")
+        val dateTimeFormatter = DateTimeFormatter.ofPattern("M/d/y H:m")
 
         return document
             // TODO: selectovat z otvorenych miest odovzdani
@@ -82,8 +85,11 @@ class CourseHtmlParser {
                         else -> throw IllegalStateException()
                     }
                 }
-//                val deadline = dateTimeFormatter.parse(deadlineText)
-                Deadline(id, course, name, deadlineText, isOpen)
+
+                // TODO: Date manager
+                val deadline = dateTimeFormatter.parse(deadlineText)
+                val instant = LocalDateTime.from(deadline).toInstant(ZoneOffset.UTC)
+                Deadline(id, course, name, instant, isOpen)
             }
     }
 }
