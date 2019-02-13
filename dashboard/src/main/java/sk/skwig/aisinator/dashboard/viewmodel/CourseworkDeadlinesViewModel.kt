@@ -7,11 +7,12 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
+import sk.skwig.aisinator.dashboard.DashboardRepository
 import timber.log.Timber
 import javax.inject.Inject
 
 class CourseworkDeadlinesViewModel @Inject constructor(
-    private val courseRepository: sk.skwig.aisinator.dashboard.CourseRepository
+    private val dashboardRepository: DashboardRepository
 ) : ViewModel() {
 
     private val stateRelay = BehaviorRelay.create<ViewState>()
@@ -22,7 +23,7 @@ class CourseworkDeadlinesViewModel @Inject constructor(
     private val disposable = CompositeDisposable()
 
     init {
-        disposable += courseRepository.getActiveCourseworkDeadlines()
+        disposable += dashboardRepository.getActiveCourseworkDeadlines()
             .doOnError {
                 Log.e("matej", ": ", it)
             }
@@ -35,7 +36,7 @@ class CourseworkDeadlinesViewModel @Inject constructor(
 
     fun onDismiss(deadline: sk.skwig.aisinator.dashboard.Deadline){
         Log.d("matej", "onDismiss() called with: courseworkDeadline = [$deadline]")
-        disposable += courseRepository.dismissCourseworkDeadline(deadline)
+        disposable += dashboardRepository.dismissCourseworkDeadline(deadline)
             .subscribeOn(Schedulers.io())
             .subscribe({}, Timber::e)
     }

@@ -6,6 +6,7 @@ import androidx.room.TypeConverters
 import sk.skwig.aisinator.dashboard.DashboardDaoProvider
 import sk.skwig.aisinator.dashboard.db.entity.CourseEntity
 import sk.skwig.aisinator.dashboard.db.entity.DeadlineEntity
+import sk.skwig.aisinator.dashboard.db.entity.LessonEntity
 
 const val APP_DATABASE_NAME = "aisinator-database"
 
@@ -13,12 +14,15 @@ const val APP_DATABASE_NAME = "aisinator-database"
     version = 1,
     entities = [
         CourseEntity::class,
-        DeadlineEntity::class
+        DeadlineEntity::class,
+        LessonEntity::class
     ]
 )
 @TypeConverters(
     value = [
-        InstantConverter::class
+        InstantConverter::class,
+        DayOfWeekConverter::class,
+        LocalTimeConverter::class
     ]
 )
 abstract class AisinatorDatabase : RoomDatabase(), DashboardDaoProvider

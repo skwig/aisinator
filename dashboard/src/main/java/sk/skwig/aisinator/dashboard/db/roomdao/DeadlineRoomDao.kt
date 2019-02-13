@@ -5,7 +5,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import sk.skwig.aisinator.dashboard.db.entity.CourseEntity
 import sk.skwig.aisinator.dashboard.db.entity.DeadlineEntity
-import sk.skwig.aisinator.dashboard.db.entity.CourseworkDeadlineWithCourse
+import sk.skwig.aisinator.dashboard.db.entity.DeadlineWithCourse
 
 @Dao
 interface DeadlineRoomDao {
@@ -25,5 +25,5 @@ interface DeadlineRoomDao {
 
     @Transaction
     @Query("SELECT * FROM deadlines d JOIN courses c ON c.course_id = d.fk_course_id WHERE d.deadline_is_dismissed == 0")
-    fun loadAllCourseworkDeadlines(): Observable<List<CourseworkDeadlineWithCourse>>
+    fun loadAllCourseworkDeadlines(): Observable<List<DeadlineWithCourse>>
 }

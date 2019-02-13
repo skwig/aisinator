@@ -4,35 +4,34 @@ import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.Observable
 import sk.skwig.aisinator.auth.AuthManager
-import sk.skwig.aisinator.common.util.toDocument
-import sk.skwig.aisinator.dashboard.api.CourseApi
-import sk.skwig.aisinator.dashboard.api.CourseHtmlParser
+import sk.skwig.aisinator.dashboard.api.DashboardApi
 import sk.skwig.aisinator.dashboard.db.CourseDao
 import sk.skwig.aisinator.dashboard.db.DeadlineDao
+import sk.skwig.aisinator.dashboard.db.LessonDao
 
-interface CourseRepository {
+interface DashboardRepository {
     fun getActiveCourses(): Observable<List<Course>>
     fun getCoursework(course: Course): Observable<Coursework>
     fun getActiveCourseworkDeadlines(): Observable<List<Deadline>>
 
     fun dismissCourseworkDeadline(deadline: Deadline): Completable
+    fun getUpcomingLessons(): Observable<List<UpcomingLesson>>
 }
 
-class CourseRepositoryImpl(
+class DashboardRepositoryImpl(
     private val authManager: AuthManager,
-    private val courseApi: CourseApi,
-    private val htmlParser: CourseHtmlParser,
+    private val dashboardApi: DashboardApi,
     private val courseDao: CourseDao,
-    private val deadlineDao: DeadlineDao
-) : CourseRepository {
+    private val deadlineDao: DeadlineDao,
+    private val lessonDao: LessonDao
+) : DashboardRepository {
 
     override fun getActiveCourses(): Observable<List<Course>> =
         authManager.authentication
             .doOnNext { Log.d("matej", "CourseRepository.getDeadlines") }
             .switchMap {
                 Observable.just(it)
-                    .flatMapSingle { courseApi.getActiveCourses(it.cookie) }
-                    .map { htmlParser.parseActiveCourses(it.toDocument()) }
+                    .flatMapSingle { dashboardApi.getActiveCourses(it) }
                     .concatMapCompletable { courseDao.insertCourses(it) }
                     .andThen(courseDao.loadAllCourses())
             }
@@ -42,8 +41,7 @@ class CourseRepositoryImpl(
             .doOnNext { Log.d("matej", "CourseRepository.getDeadlines") }
             .switchMap {
                 Observable.just(it)
-                    .flatMapSingle { courseApi.getCourseworkDeadlines(it.cookie) }
-                    .map { htmlParser.parseCourseworkDeadlines(it.toDocument()) }
+                    .flatMapSingle { dashboardApi.getDeadlines(it) }
                     .concatMapCompletable { deadlineDao.insertCourseworkDeadlines(it) }
                     .andThen(deadlineDao.loadAllCourses())
             }
@@ -51,8 +49,20 @@ class CourseRepositoryImpl(
     override fun getCoursework(course: Course) =
         authManager.authentication
             .doOnNext { Log.d("matej", "CourseRepository.getCoursework") }
-            .flatMapSingle { courseApi.getCoursework(it.cookie, course = course.id) }
-            .map { htmlParser.parseCoursework(it.toDocument()) }
+            .switchMap {
+                Observable.just(it)
+                    .flatMapSingle { dashboardApi.getCoursework(it, course) }
+            }
+
+    override fun getUpcomingLessons(/*student*/) =
+        authManager.authentication
+            .doOnNext { Log.d("matej", "CourseRepository.getUpcomingLessons") }
+            .switchMap {
+                Observable.just(it)
+                    .flatMapSingle { dashboardApi.getLessons(it) }
+                    .concatMapCompletable { lessonDao.insertLessons(it) }
+                    .andThen(lessonDao.loadAllUpcomingLessons())
+            }
 
     override fun dismissCourseworkDeadline(deadline: Deadline): Completable =
         deadlineDao.updateCourseworkDeadline(
