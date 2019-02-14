@@ -11,7 +11,7 @@ import sk.skwig.aisinator.dashboard.DashboardRepository
 import timber.log.Timber
 import javax.inject.Inject
 
-class CourseworkDeadlinesViewModel @Inject constructor(
+class DeadlinesViewModel @Inject constructor(
     private val dashboardRepository: DashboardRepository
 ) : ViewModel() {
 

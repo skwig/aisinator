@@ -13,9 +13,10 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import sk.skwig.aisinator.common.BaseFragment
 import sk.skwig.aisinator.dashboard.viewmodel.ActiveCoursesViewModel
-import sk.skwig.aisinator.dashboard.viewmodel.CourseworkDeadlinesViewModel
+import sk.skwig.aisinator.dashboard.viewmodel.DeadlinesViewModel
 import sk.skwig.aisinator.dashboard.databinding.FragmentDashboardBinding
 import sk.skwig.aisinator.dashboard.viewmodel.DashboardViewModel
+import sk.skwig.aisinator.dashboard.viewmodel.UpcomingLessonsViewModel
 import timber.log.Timber
 
 /**
@@ -25,7 +26,8 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
 
 
     lateinit var activeCoursesViewModel: ActiveCoursesViewModel
-    lateinit var deadlinesViewModel: CourseworkDeadlinesViewModel
+    lateinit var deadlinesViewModel: DeadlinesViewModel
+    lateinit var upcomingLessonsViewModel: UpcomingLessonsViewModel
 
     private lateinit var activeCoursesAdapter: CourseAdapter
     private lateinit var deadlinesAdapter: DeadlineAdapter
@@ -41,6 +43,7 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
 
         // TODO: subscriby do onViewCreated
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(DashboardViewModel::class.java).also {}
+
         activeCoursesViewModel = ViewModelProviders.of(this, viewModelFactory).get(ActiveCoursesViewModel::class.java)
             .also {
                 disposable += it.state
@@ -56,15 +59,32 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
             }
 
         deadlinesViewModel =
-                ViewModelProviders.of(this, viewModelFactory).get(CourseworkDeadlinesViewModel::class.java)
+                ViewModelProviders.of(this, viewModelFactory).get(DeadlinesViewModel::class.java)
                     .also {
                         disposable += it.state
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeBy(
                                 onNext = {
                                     when (it) {
-                                        is CourseworkDeadlinesViewModel.ViewState.Normal -> deadlinesAdapter.submitList(
+                                        is DeadlinesViewModel.ViewState.Normal -> deadlinesAdapter.submitList(
                                             it.deadlines
+                                        )
+                                    }
+                                },
+                                onError = Timber::e
+                            )
+                    }
+
+        upcomingLessonsViewModel =
+                ViewModelProviders.of(this, viewModelFactory).get(UpcomingLessonsViewModel::class.java)
+                    .also {
+                        disposable += it.state
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeBy(
+                                onNext = {
+                                    when (it) {
+                                        is UpcomingLessonsViewModel.ViewState.Normal -> upcomingLessonsAdapter.submitList(
+                                            it.upcomingLessons
                                         )
                                     }
                                 },

@@ -101,14 +101,16 @@ class DashboardHtmlParser {
         return document
             .select("div#base div.mainpage table")
             .let { timetableElement ->
-                val headers = timetableElement.select("thead th").drop(1)
+                val headers = timetableElement.select("thead th")
 
                 val days = timetableElement.select("tr:has(td.zahlavi)")
                     .forEach {
 
                         // TODO: skraslit
 
-                        val todaysLessons = it.children().drop(1)
+                        val todaysLessons = it.children()
+
+                        // TODO: mapovat podla indexu a nie hodnoty? (pre language support)
                         val todaysDayOfWeek = when (it.select("td.zahlavi").text()) {
                             "Mon" -> DayOfWeek.MONDAY
                             "Tue" -> DayOfWeek.TUESDAY
@@ -143,7 +145,7 @@ class DashboardHtmlParser {
 
                                 val links = lesson.select("a")
 
-                                val room = links[0].text()
+                                val room = links[0].text().substringBeforeLast(" ")
                                 val course = links[1].let {
                                     val id = it.attr("href").substringAfter("predmet=").substringBefore(";").toLong()
                                     val name = it.text()

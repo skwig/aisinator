@@ -16,7 +16,7 @@ interface DashboardRepository {
     fun getActiveCourseworkDeadlines(): Observable<List<Deadline>>
 
     fun dismissCourseworkDeadline(deadline: Deadline): Completable
-    fun getUpcomingLessons(): Observable<List<UpcomingLesson>>
+    fun getTodaysUpcomingLessons(): Observable<List<UpcomingLesson>>
 }
 
 class DashboardRepositoryImpl(
@@ -55,9 +55,9 @@ class DashboardRepositoryImpl(
                     .flatMapSingle { dashboardApi.getCoursework(it, course) }
             }
 
-    override fun getUpcomingLessons(/*student*/) =
+    override fun getTodaysUpcomingLessons(/*student*/) =
         authManager.authentication
-            .doOnNext { Log.d("matej", "CourseRepository.getUpcomingLessons") }
+            .doOnNext { Log.d("matej", "CourseRepository.getTodaysUpcomingLessons") }
             .switchMap {
                 Observable.just(it)
                     .flatMapSingle { dashboardApi.getLessons(it) }

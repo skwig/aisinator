@@ -1,17 +1,21 @@
 package sk.skwig.aisinator.dashboard
 
+import android.text.format.DateUtils
 import android.view.ViewGroup
+import androidx.annotation.StringRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import sk.skwig.aisinator.common.util.layoutInflater
 import sk.skwig.aisinator.common.util.setAll
+import sk.skwig.aisinator.dashboard.databinding.ItemUpcomingLessonBinding
+import java.time.Instant
 
 class UpcomingLessonsAdapter : RecyclerView.Adapter<UpcomingLessonViewHolder>() {
 
     private val data = mutableListOf<UpcomingLesson>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UpcomingLessonViewHolder {
-        return sk.skwig.aisinator.dashboard.databinding.ItemUpcomingLessonBinding.inflate(parent.layoutInflater, parent, false)
+        return ItemUpcomingLessonBinding.inflate(parent.layoutInflater, parent, false)
             .let(::UpcomingLessonViewHolder)
     }
 
@@ -20,8 +24,29 @@ class UpcomingLessonsAdapter : RecyclerView.Adapter<UpcomingLessonViewHolder>() 
     override fun onBindViewHolder(holder: UpcomingLessonViewHolder, position: Int) {
         val item = data[position]
         holder.binding.apply {
-//            tagText.text = item.tag
-//            nameText.text = item.name
+            // TODO: DisplayableUpcomingLesson, kde je toto uz rovno ako string & ma isBold (ak je zaciatok/koniec v nejakom thresholde)
+
+            val time: Instant
+            @StringRes val startOrEndText: Int
+            if (Instant.now().isBefore(item.startTime)) {
+                time = item.startTime
+                startOrEndText = R.string.starts_in
+            } else if (Instant.now().isBefore(item.endTime)) {
+                time = item.endTime
+                startOrEndText = R.string.ends_in
+            } else {
+                time = item.endTime
+                startOrEndText = R.string.ended
+            }
+
+            title.text = item.lesson.course.name
+            subtitle.text = subtitle.resources.getString(
+                R.string.upcoming_lesson_subtitle_format,
+                item.lesson.course.tag,
+                item.lesson.room,
+                subtitle.resources.getString(startOrEndText),
+                DateUtils.getRelativeTimeSpanString(subtitle.context, time.toEpochMilli(), true)
+            )
         }
     }
 
@@ -48,4 +73,5 @@ class UpcomingLessonsAdapter : RecyclerView.Adapter<UpcomingLessonViewHolder>() 
 }
 
 
-data class UpcomingLessonViewHolder(val binding: sk.skwig.aisinator.dashboard.databinding.ItemUpcomingLessonBinding) : RecyclerView.ViewHolder(binding.root)
+data class UpcomingLessonViewHolder(val binding: ItemUpcomingLessonBinding) :
+    RecyclerView.ViewHolder(binding.root)

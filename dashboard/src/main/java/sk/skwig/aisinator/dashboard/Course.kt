@@ -1,5 +1,6 @@
 package sk.skwig.aisinator.dashboard
 
+// TODO: nullable name/tag s tym, ze pri update nejaka hodnota > ziadna hodnota
 data class Course(
     val id: Long,
     val tag: String,

@@ -6,7 +6,8 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 import sk.skwig.aisinator.common.di.util.ViewModelKey
 import sk.skwig.aisinator.dashboard.viewmodel.ActiveCoursesViewModel
-import sk.skwig.aisinator.dashboard.viewmodel.CourseworkDeadlinesViewModel
+import sk.skwig.aisinator.dashboard.viewmodel.DeadlinesViewModel
+import sk.skwig.aisinator.dashboard.viewmodel.UpcomingLessonsViewModel
 
 @Module
 abstract class CourseViewModelModule {
@@ -17,6 +18,11 @@ abstract class CourseViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(CourseworkDeadlinesViewModel::class)
-    abstract fun bindCourseworkDeadlinesViewModel(courseworkDeadlinesViewModel: CourseworkDeadlinesViewModel): ViewModel
+    @ViewModelKey(DeadlinesViewModel::class)
+    abstract fun bindCourseworkDeadlinesViewModel(deadlinesViewModel: DeadlinesViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(UpcomingLessonsViewModel::class)
+    abstract fun bindUpcomingLessonsViewModel(upcomingLessonsViewModel: UpcomingLessonsViewModel): ViewModel
 }
