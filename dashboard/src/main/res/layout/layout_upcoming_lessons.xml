@@ -7,15 +7,16 @@
         android:orientation="vertical">
 
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="Active Courses"
-                android:textAlignment="center"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Title" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="Upcoming lessons"
+            android:textAlignment="center"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Title" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/course_recycler"
+            android:id="@+id/upcoming_lessons_recycler"
+            android:background="#f8f8f8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="true" />

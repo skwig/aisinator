@@ -5,10 +5,11 @@ import io.reactivex.Observable
 import sk.skwig.aisinator.dashboard.Lesson
 import sk.skwig.aisinator.dashboard.UpcomingLesson
 import sk.skwig.aisinator.dashboard.db.roomdao.LessonRoomDao
+import java.time.Instant
 
 interface LessonDao {
-    fun insertLessons(deadlines: List<Lesson>): Completable
-    fun loadAllUpcomingLessons(): Observable<List<UpcomingLesson>>
+    fun insertLessons(lessons: List<Lesson>): Completable
+    fun loadUpcomingLessons(instant: Instant): Observable<List<UpcomingLesson>>
 }
 
 class LessonDaoImpl(
@@ -26,8 +27,8 @@ class LessonDaoImpl(
             )
         }
 
-    override fun loadAllUpcomingLessons(): Observable<List<UpcomingLesson>> =
-        dao.loadAllUpcomingLessons()
+    override fun loadUpcomingLessons(instant: Instant): Observable<List<UpcomingLesson>> =
+        dao.loadUpcomingLessons(instant)
             .map { upcomingLessonWithCourseMapper.fromEntityList(it) }
 
 }

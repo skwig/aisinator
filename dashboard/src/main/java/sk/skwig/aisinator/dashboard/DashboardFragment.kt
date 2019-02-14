@@ -25,10 +25,11 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
 
 
     lateinit var activeCoursesViewModel: ActiveCoursesViewModel
-    lateinit var courseworkDeadlinesViewModel: CourseworkDeadlinesViewModel
+    lateinit var deadlinesViewModel: CourseworkDeadlinesViewModel
 
     private lateinit var activeCoursesAdapter: CourseAdapter
     private lateinit var deadlinesAdapter: DeadlineAdapter
+    private lateinit var upcomingLessonsAdapter: UpcomingLessonsAdapter
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -54,7 +55,7 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
                     )
             }
 
-        courseworkDeadlinesViewModel =
+        deadlinesViewModel =
                 ViewModelProviders.of(this, viewModelFactory).get(CourseworkDeadlinesViewModel::class.java)
                     .also {
                         disposable += it.state
@@ -77,7 +78,8 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
         binding = FragmentDashboardBinding.inflate(layoutInflater, container, false)
 
         activeCoursesAdapter = CourseAdapter()
-        deadlinesAdapter = DeadlineAdapter(courseworkDeadlinesViewModel::onDismiss)
+        deadlinesAdapter = DeadlineAdapter(deadlinesViewModel::onDismiss)
+        upcomingLessonsAdapter = UpcomingLessonsAdapter()
 
         return binding.root
     }
@@ -93,6 +95,11 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
         binding.layoutDeadlines.apply {
             deadlineRecycler.adapter = deadlinesAdapter
             deadlineRecycler.layoutManager = LinearLayoutManager(context)
+        }
+
+        binding.layoutUpcomingLessons.apply {
+            upcomingLessonsRecycler.adapter = upcomingLessonsAdapter
+            upcomingLessonsRecycler.layoutManager = LinearLayoutManager(context)
         }
 
         binding.fab.setOnClickListener {

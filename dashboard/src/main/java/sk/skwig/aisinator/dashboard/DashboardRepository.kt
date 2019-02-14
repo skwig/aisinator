@@ -8,6 +8,7 @@ import sk.skwig.aisinator.dashboard.api.DashboardApi
 import sk.skwig.aisinator.dashboard.db.CourseDao
 import sk.skwig.aisinator.dashboard.db.DeadlineDao
 import sk.skwig.aisinator.dashboard.db.LessonDao
+import java.time.Instant
 
 interface DashboardRepository {
     fun getActiveCourses(): Observable<List<Course>>
@@ -61,7 +62,7 @@ class DashboardRepositoryImpl(
                 Observable.just(it)
                     .flatMapSingle { dashboardApi.getLessons(it) }
                     .concatMapCompletable { lessonDao.insertLessons(it) }
-                    .andThen(lessonDao.loadAllUpcomingLessons())
+                    .andThen(lessonDao.loadUpcomingLessons(Instant.ofEpochSecond(1550102400)))
             }
 
     override fun dismissCourseworkDeadline(deadline: Deadline): Completable =

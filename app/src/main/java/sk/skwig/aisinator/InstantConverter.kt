@@ -9,13 +9,13 @@ object InstantConverter {
     @JvmStatic
     @TypeConverter
     fun fromTimestamp(value: Long?): Instant? {
-        return value?.let { Instant.ofEpochMilli(it) }
+        return value?.let { Instant.ofEpochSecond(it) }
     }
 
     @JvmStatic
     @TypeConverter
     fun toTimestamp(instant: Instant?): Long? {
-        return instant?.toEpochMilli()
+        return instant?.epochSecond
     }
 }
 
