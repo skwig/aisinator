@@ -101,14 +101,14 @@ class DashboardHtmlParser {
         return document
             .select("div#base div.mainpage table")
             .let { timetableElement ->
-                val headers = timetableElement.select("thead th")
+                val headers = timetableElement.select("thead th").drop(1)
 
                 val days = timetableElement.select("tr:has(td.zahlavi)")
                     .forEach {
 
                         // TODO: skraslit
 
-                        val todaysLessons = it.children()
+                        val todaysLessons = it.children().drop(1)
 
                         // TODO: mapovat podla indexu a nie hodnoty? (pre language support)
                         val todaysDayOfWeek = when (it.select("td.zahlavi").text()) {
