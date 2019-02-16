@@ -54,6 +54,11 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:$okhttpVersion"
     implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttpUrlConnectionVersion"
 
+    // retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+
     // architecture components
     implementation "androidx.lifecycle:lifecycle-runtime:$architectureComponentsVersion"
     implementation "androidx.lifecycle:lifecycle-extensions:$architectureComponentsVersion"

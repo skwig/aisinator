@@ -1,12 +1,12 @@
-package sk.skwig.aisinator.auth.di
+package sk.skwig.aisinator.common.auth.di
 
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
-import sk.skwig.aisinator.auth.AuthApi
-import sk.skwig.aisinator.auth.AuthMessageBus
-import sk.skwig.aisinator.auth.AuthManager
-import sk.skwig.aisinator.settings.SettingsManager
+import sk.skwig.aisinator.common.auth.AuthApi
+import sk.skwig.aisinator.common.auth.AuthMessageBus
+import sk.skwig.aisinator.common.auth.AuthManager
+import sk.skwig.aisinator.common.settings.SettingsManager
 import javax.inject.Singleton
 
 @Module

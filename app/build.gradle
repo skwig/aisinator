@@ -35,8 +35,6 @@ android {
 dependencies {
 
     implementation project(':common')
-    implementation project(':lib-auth')
-    implementation project(':lib-settings')
     implementation project(':feature-dashboard')
     implementation project(':feature-login')
 

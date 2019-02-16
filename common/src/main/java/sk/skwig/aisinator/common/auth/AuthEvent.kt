@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.auth
+package sk.skwig.aisinator.common.auth
 
 sealed class AuthEvent {
 

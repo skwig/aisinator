@@ -3,8 +3,8 @@ package sk.skwig.aisinator.feature.main
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import io.reactivex.Observable
-import sk.skwig.aisinator.auth.AuthEvent
-import sk.skwig.aisinator.auth.AuthMessageBus
+import sk.skwig.aisinator.common.auth.AuthEvent
+import sk.skwig.aisinator.common.auth.AuthMessageBus
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(authMessageBus: AuthMessageBus) : ViewModel() {

@@ -3,7 +3,7 @@ package sk.skwig.aisinator.dashboard
 import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.Observable
-import sk.skwig.aisinator.auth.AuthManager
+import sk.skwig.aisinator.common.auth.AuthManager
 import sk.skwig.aisinator.dashboard.api.DashboardApi
 import sk.skwig.aisinator.dashboard.db.CourseDao
 import sk.skwig.aisinator.dashboard.db.DeadlineDao

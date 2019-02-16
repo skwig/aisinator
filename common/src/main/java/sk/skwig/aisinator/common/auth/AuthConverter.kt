@@ -1,10 +1,4 @@
-package sk.skwig.aisinator.auth
-
-import okhttp3.ResponseBody
-import retrofit2.Converter
-import retrofit2.Response
-import retrofit2.Retrofit
-import java.lang.reflect.Type
+package sk.skwig.aisinator.common.auth
 
 //class AuthConverterFactory : Converter.Factory(){
 //    override fun responseBodyConverter(

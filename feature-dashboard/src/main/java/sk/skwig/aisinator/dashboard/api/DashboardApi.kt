@@ -1,7 +1,7 @@
 package sk.skwig.aisinator.dashboard.api
 
 import io.reactivex.Single
-import sk.skwig.aisinator.auth.Authentication
+import sk.skwig.aisinator.common.auth.Authentication
 import sk.skwig.aisinator.common.util.toDocument
 import sk.skwig.aisinator.dashboard.Course
 import sk.skwig.aisinator.dashboard.Coursework

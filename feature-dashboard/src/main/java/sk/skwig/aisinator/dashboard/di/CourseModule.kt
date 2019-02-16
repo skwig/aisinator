@@ -3,7 +3,7 @@ package sk.skwig.aisinator.dashboard.di
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
-import sk.skwig.aisinator.auth.AuthManager
+import sk.skwig.aisinator.common.auth.AuthManager
 import sk.skwig.aisinator.dashboard.DashboardDaoProvider
 import sk.skwig.aisinator.dashboard.DashboardRepository
 import sk.skwig.aisinator.dashboard.DashboardRepositoryImpl

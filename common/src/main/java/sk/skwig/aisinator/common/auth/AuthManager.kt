@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.auth
+package sk.skwig.aisinator.common.auth
 
 import android.util.Log
 import com.jakewharton.rxrelay2.BehaviorRelay
@@ -9,7 +9,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import sk.skwig.aisinator.common.util.replayLast
-import sk.skwig.aisinator.settings.SettingsManager
+import sk.skwig.aisinator.common.settings.SettingsManager
 import timber.log.Timber
 
 private const val AUTH_HEADER = "UISAuth"

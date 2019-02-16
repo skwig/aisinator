@@ -1,7 +1,8 @@
-package sk.skwig.aisinator.settings
+package sk.skwig.aisinator.common.settings
 
 import android.content.Context
 import androidx.annotation.StringRes
+import sk.skwig.aisinator.common.R
 import java.security.InvalidKeyException
 
 class SettingsManager(private val context: Context) {

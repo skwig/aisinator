@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.settings
+package sk.skwig.aisinator.common.settings
 
 enum class PrefKey {
     LOGIN,

@@ -1,4 +1,4 @@
-package sk.skwig.aisinator.auth
+package sk.skwig.aisinator.common.auth
 
 import io.reactivex.Single
 import okhttp3.ResponseBody

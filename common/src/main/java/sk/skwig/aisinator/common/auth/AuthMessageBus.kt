@@ -1,9 +1,8 @@
-package sk.skwig.aisinator.auth
+package sk.skwig.aisinator.common.auth
 
 import android.util.Log
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
-import timber.log.Timber
 
 class AuthMessageBus {
 

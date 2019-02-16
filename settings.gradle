@@ -1,1 +1,1 @@
-include ':app', ':slidereveallayout', ':common', ':lib-auth', ':lib-settings', ':feature-dashboard', ':feature-login'
+include ':app', ':slidereveallayout', ':common', ':feature-dashboard', ':feature-login'

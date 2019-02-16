@@ -33,7 +33,6 @@ android {
 
 dependencies {
     implementation project(':common')
-    implementation project(':lib-auth')
 
     // databinding
     implementation "androidx.databinding:databinding-runtime:$databindingVersion"
