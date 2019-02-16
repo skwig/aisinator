@@ -35,13 +35,10 @@ android {
 dependencies {
 
     implementation project(':common')
-
-    implementation project(':auth')
-    implementation project(':dashboard')
-    implementation project(':login')
-    implementation project(':settings')
-
-    implementation project(':slidereveallayout')
+    implementation project(':lib-auth')
+    implementation project(':lib-settings')
+    implementation project(':feature-dashboard')
+    implementation project(':feature-login')
 
     // databinding
     implementation "androidx.databinding:databinding-runtime:$databindingVersion"
