@@ -28,7 +28,7 @@ android {
 
 dependencies {
     implementation project(':common')
-    implementation project(':settings')
+    implementation project(':lib-settings')
 
     // okhttp
     implementation "com.squareup.okhttp3:okhttp:$okhttpVersion"

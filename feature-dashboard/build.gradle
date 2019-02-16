@@ -33,7 +33,7 @@ android {
 
 dependencies {
     implementation project(':common')
-    implementation project(':auth')
+    implementation project(':lib-auth')
     implementation project(':slidereveallayout')
 
     // databinding
