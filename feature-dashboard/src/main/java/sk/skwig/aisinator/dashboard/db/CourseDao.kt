@@ -11,7 +11,7 @@ interface CourseDao {
     fun loadAllCourses(): Observable<List<Course>>
 }
 
-class CourseDaoImpl(
+internal class CourseDaoImpl(
     private val dao: CourseRoomDao,
     private val mapper: CourseMapper
 ) : CourseDao {

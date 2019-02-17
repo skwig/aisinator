@@ -6,19 +6,19 @@ import sk.skwig.aisinator.dashboard.Deadline
 import sk.skwig.aisinator.dashboard.db.roomdao.DeadlineRoomDao
 
 interface DeadlineDao {
-    fun insertCourseworkDeadlines(deadlines: List<Deadline>): Completable
-    fun updateCourseworkDeadline(deadline: Deadline): Completable
+    fun insertDeadlines(deadlines: List<Deadline>): Completable
+    fun updateDeadline(deadline: Deadline): Completable
     fun loadAllCourses(): Observable<List<Deadline>>
 }
 
-class DeadlineDaoImpl(
+internal class DeadlineDaoImpl(
     private val dao: DeadlineRoomDao,
     private val courseMapper: CourseMapper,
     private val deadlineMapper: DeadlineMapper,
     private val deadlineWithCourseMapper: DeadlineWithCourseMapper
 ) : DeadlineDao {
 
-    override fun insertCourseworkDeadlines(deadlines: List<Deadline>): Completable {
+    override fun insertDeadlines(deadlines: List<Deadline>): Completable {
         return Completable.fromAction {
             dao.insertCourseDeadlinesWithCourses(
                 courseMapper.toEntityList(deadlines.map { it.course }),
@@ -27,7 +27,7 @@ class DeadlineDaoImpl(
         }
     }
 
-    override fun updateCourseworkDeadline(deadline: Deadline): Completable {
+    override fun updateDeadline(deadline: Deadline): Completable {
         return dao.updateCourseworkDeadline(deadlineMapper.toEntity(deadline))
     }
 

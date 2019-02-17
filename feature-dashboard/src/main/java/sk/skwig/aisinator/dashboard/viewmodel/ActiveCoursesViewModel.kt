@@ -8,7 +8,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ActiveCoursesViewModel @Inject constructor(
-    private val dashboardRepository: sk.skwig.aisinator.dashboard.DashboardRepository
+    private val courseRepository: sk.skwig.aisinator.dashboard.CourseRepository
 ) : ViewModel() {
 
     val state: Observable<ViewState>
@@ -20,7 +20,7 @@ class ActiveCoursesViewModel @Inject constructor(
 
         // TODO: fungujuci startWith
 
-        state = dashboardRepository.getActiveCourses()
+        state = courseRepository.getActiveCourses()
             .map<ViewState> {
                 ViewState.Normal(
                     it

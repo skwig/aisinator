@@ -12,6 +12,7 @@ import sk.skwig.aisinator.common.util.replayLast
 import sk.skwig.aisinator.common.settings.SettingsManager
 import timber.log.Timber
 
+const val COOKIE_HEADER = "Cookie"
 private const val AUTH_HEADER = "UISAuth"
 
 class AuthManager(

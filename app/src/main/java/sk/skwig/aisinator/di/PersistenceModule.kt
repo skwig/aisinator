@@ -7,7 +7,9 @@ import dagger.Module
 import dagger.Provides
 import sk.skwig.aisinator.APP_DATABASE_NAME
 import sk.skwig.aisinator.AisinatorDatabase
-import sk.skwig.aisinator.dashboard.DashboardDaoProvider
+import sk.skwig.aisinator.dashboard.CourseDaoProvider
+import sk.skwig.aisinator.dashboard.DeadlineDaoProvider
+import sk.skwig.aisinator.dashboard.LessonDaoProvider
 import javax.inject.Singleton
 
 @Module(includes = [PersistenceBinderModule::class])
@@ -25,5 +27,11 @@ class PersistenceModule {
 abstract class PersistenceBinderModule {
 
     @Binds
-    abstract fun bindCourseDaoProvider(aisinatorDatabase: AisinatorDatabase): DashboardDaoProvider
+    abstract fun bindCourseDaoProvider(aisinatorDatabase: AisinatorDatabase): CourseDaoProvider
+
+    @Binds
+    abstract fun bindDeadlineDaoProvider(aisinatorDatabase: AisinatorDatabase): DeadlineDaoProvider
+
+    @Binds
+    abstract fun bindLessonDaoProvider(aisinatorDatabase: AisinatorDatabase): LessonDaoProvider
 }

@@ -1,19 +1,22 @@
 package sk.skwig.aisinator.dashboard.di
 
+import androidx.lifecycle.ViewModel
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import dagger.multibindings.IntoMap
 import retrofit2.Retrofit
 import sk.skwig.aisinator.common.auth.AuthManager
-import sk.skwig.aisinator.dashboard.DashboardDaoProvider
-import sk.skwig.aisinator.dashboard.DashboardRepository
-import sk.skwig.aisinator.dashboard.DashboardRepositoryImpl
-import sk.skwig.aisinator.dashboard.api.DashboardApi
-import sk.skwig.aisinator.dashboard.api.DashboardHtmlParser
-import sk.skwig.aisinator.dashboard.api.DashboardRetrofitApi
-import sk.skwig.aisinator.dashboard.db.*
+import sk.skwig.aisinator.common.di.util.ViewModelKey
+import sk.skwig.aisinator.dashboard.CourseDaoProvider
+import sk.skwig.aisinator.dashboard.CourseRepository
+import sk.skwig.aisinator.dashboard.CourseRepositoryImpl
+import sk.skwig.aisinator.dashboard.api.*
+import sk.skwig.aisinator.dashboard.db.CourseDao
+import sk.skwig.aisinator.dashboard.db.CourseDaoImpl
+import sk.skwig.aisinator.dashboard.db.CourseMapper
 import sk.skwig.aisinator.dashboard.db.roomdao.CourseRoomDao
-import sk.skwig.aisinator.dashboard.db.roomdao.DeadlineRoomDao
-import sk.skwig.aisinator.dashboard.db.roomdao.LessonRoomDao
+import sk.skwig.aisinator.dashboard.viewmodel.ActiveCoursesViewModel
 import javax.inject.Singleton
 
 @Module(includes = [CourseViewModelModule::class])
@@ -23,34 +26,31 @@ class CourseModule {
     @Singleton
     fun provideCourseRepository(
         authManager: AuthManager,
-        dashboardApi: DashboardApi,
-        courseDao: CourseDao,
-        deadlineDao: DeadlineDao,
-        lessonDao: LessonDao
-    ): DashboardRepository = DashboardRepositoryImpl(
-        authManager,
-        dashboardApi,
-        courseDao,
-        deadlineDao,
-        lessonDao
-    )
+        courseApi: CourseApi,
+        courseDao: CourseDao
+    ): CourseRepository =
+        CourseRepositoryImpl(
+            authManager,
+            courseApi,
+            courseDao
+        )
 
     @Provides
     @Singleton
-    fun provideCourseHtmlParser() = DashboardHtmlParser()
+    fun provideCourseHtmlParser(): CourseHtmlParser = CourseHtmlParserImpl()
 
     @Singleton
     @Provides
-    fun provideDashboardRetrofitApi(retrofit: Retrofit) = retrofit.create(DashboardRetrofitApi::class.java)
+    fun provideCourseRetrofitApi(retrofit: Retrofit) = retrofit.create(CourseRetrofitApi::class.java)
 
     @Singleton
     @Provides
-    fun provideDashboardApi(dashboardRetrofitApi: DashboardRetrofitApi, dashboardHtmlParser: DashboardHtmlParser) =
-        DashboardApi(dashboardRetrofitApi, dashboardHtmlParser)
+    fun provideCourseApi(courseRetrofitApi: CourseRetrofitApi, courseHtmlParser: CourseHtmlParser): CourseApi =
+        CourseApiImpl(courseRetrofitApi, courseHtmlParser)
 
     @Singleton
     @Provides
-    fun provideCourseRoomDao(dashboardDaoProvider: DashboardDaoProvider) = dashboardDaoProvider.courseDao()
+    fun provideCourseRoomDao(courseDaoProvider: CourseDaoProvider) = courseDaoProvider.courseDao()
 
     @Singleton
     @Provides
@@ -59,73 +59,14 @@ class CourseModule {
 
     @Singleton
     @Provides
-    fun provideDeadlineRoomDao(dashboardDaoProvider: DashboardDaoProvider) =
-        dashboardDaoProvider.deadlineDao()
-
-    @Singleton
-    @Provides
-    fun provideLessonRoomDao(dashboardDaoProvider: DashboardDaoProvider) =
-        dashboardDaoProvider.lessonDao()
-
-    @Singleton
-    @Provides
-    fun provideDeadlineDao(
-        deadlineRoomDao: DeadlineRoomDao,
-        courseMapper: CourseMapper,
-        deadlineMapper: DeadlineMapper,
-        deadlineWithCourseMapper: DeadlineWithCourseMapper
-    ): DeadlineDao =
-        DeadlineDaoImpl(
-            deadlineRoomDao,
-            courseMapper,
-            deadlineMapper,
-            deadlineWithCourseMapper
-        )
-
-    @Singleton
-    @Provides
-    fun provideLessonDao(
-        lessonRoomDao: LessonRoomDao,
-        courseMapper: CourseMapper,
-        lessonMapper: LessonMapper,
-        upcomingLessonWithCourseMapper: UpcomingLessonWithCourseMapper
-    ): LessonDao =
-        LessonDaoImpl(
-            lessonRoomDao,
-            courseMapper,
-            lessonMapper,
-            upcomingLessonWithCourseMapper
-        )
-
-    @Singleton
-    @Provides
     fun provideCourseMapper() = CourseMapper()
 
-    @Singleton
-    @Provides
-    fun provideDeadlineMapper() = DeadlineMapper()
+}
 
-    @Singleton
-    @Provides
-    fun provideLessonTimeMapper() = LessonTimeMapper()
-
-    @Singleton
-    @Provides
-    fun provideUpcomingLessonWithCourseMapper(
-        courseMapper: CourseMapper,
-        lessonMapper: LessonMapper,
-        lessonTimeMapper: LessonTimeMapper
-    ) = UpcomingLessonWithCourseMapper(courseMapper, lessonMapper, lessonTimeMapper)
-
-    @Singleton
-    @Provides
-    fun provideLessonMapper(lessonTimeMapper: LessonTimeMapper) = LessonMapper(lessonTimeMapper)
-
-    @Singleton
-    @Provides
-    fun provideDeadlineWithCourseMapper(
-        courseMapper: CourseMapper,
-        deadlineMapper: DeadlineMapper
-    ) =
-        DeadlineWithCourseMapper(courseMapper, deadlineMapper)
+@Module
+abstract class CourseViewModelModule {
+    @Binds
+    @IntoMap
+    @ViewModelKey(ActiveCoursesViewModel::class)
+    abstract fun bindActiveCoursesViewModel(activeCoursesViewModel: ActiveCoursesViewModel): ViewModel
 }

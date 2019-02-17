@@ -12,7 +12,7 @@ interface LessonDao {
     fun loadUpcomingLessons(instant: Instant): Observable<List<UpcomingLesson>>
 }
 
-class LessonDaoImpl(
+internal class LessonDaoImpl(
     private val dao: LessonRoomDao,
     private val courseMapper: CourseMapper,
     private val lessonMapper: LessonMapper,
