@@ -3,21 +3,17 @@ package sk.skwig.aisinator.common.course
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import sk.skwig.aisinator.common.BaseAdapter
 import sk.skwig.aisinator.common.data.Course
 import sk.skwig.aisinator.common.databinding.ItemCourseBinding
 import sk.skwig.aisinator.common.util.layoutInflater
-import sk.skwig.aisinator.common.util.setAll
 
-class CourseAdapter : RecyclerView.Adapter<CourseViewHolder>() {
-
-    private val data = mutableListOf<Course>()
+class CourseAdapter : BaseAdapter<Course, CourseViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseViewHolder {
         return ItemCourseBinding.inflate(parent.layoutInflater, parent, false)
             .let(::CourseViewHolder)
     }
-
-    override fun getItemCount() = data.size
 
     override fun onBindViewHolder(holder: CourseViewHolder, position: Int) {
         val item = data[position]
@@ -27,24 +23,19 @@ class CourseAdapter : RecyclerView.Adapter<CourseViewHolder>() {
         }
     }
 
-    fun submitList(courses: List<Course>) {
-        DiffUtil.calculateDiff(diffCallback(courses)).dispatchUpdatesTo(this)
-        data.setAll(courses)
-    }
-
-    private fun diffCallback(courses: List<Course>): DiffUtil.Callback {
+    override fun getDiffCallback(items: List<Course>): DiffUtil.Callback {
         return object : DiffUtil.Callback() {
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return data[oldItemPosition].id == courses[newItemPosition].id
+                return data[oldItemPosition].id == items[newItemPosition].id
             }
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return data[oldItemPosition] == courses[newItemPosition]
+                return data[oldItemPosition] == items[newItemPosition]
             }
 
             override fun getOldListSize() = data.size
 
-            override fun getNewListSize() = courses.size
+            override fun getNewListSize() = items.size
         }
     }
 }

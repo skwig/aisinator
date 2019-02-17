@@ -5,23 +5,19 @@ import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import sk.skwig.aisinator.common.BaseAdapter
 import sk.skwig.aisinator.common.R
 import sk.skwig.aisinator.common.data.UpcomingLesson
 import sk.skwig.aisinator.common.databinding.ItemUpcomingLessonBinding
 import sk.skwig.aisinator.common.util.layoutInflater
-import sk.skwig.aisinator.common.util.setAll
 import java.time.Instant
 
-class UpcomingLessonsAdapter : RecyclerView.Adapter<UpcomingLessonViewHolder>() {
-
-    private val data = mutableListOf<UpcomingLesson>()
+class UpcomingLessonsAdapter : BaseAdapter<UpcomingLesson, UpcomingLessonViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UpcomingLessonViewHolder {
         return ItemUpcomingLessonBinding.inflate(parent.layoutInflater, parent, false)
             .let(::UpcomingLessonViewHolder)
     }
-
-    override fun getItemCount() = data.size
 
     override fun onBindViewHolder(holder: UpcomingLessonViewHolder, position: Int) {
         val item = data[position]
@@ -52,24 +48,19 @@ class UpcomingLessonsAdapter : RecyclerView.Adapter<UpcomingLessonViewHolder>() 
         }
     }
 
-    fun submitList(upcomingLessons: List<UpcomingLesson>) {
-        DiffUtil.calculateDiff(diffCallback(upcomingLessons)).dispatchUpdatesTo(this)
-        data.setAll(upcomingLessons)
-    }
-
-    private fun diffCallback(upcomingLessons: List<UpcomingLesson>): DiffUtil.Callback {
+    override fun getDiffCallback(items: List<UpcomingLesson>): DiffUtil.Callback {
         return object : DiffUtil.Callback() {
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return data[oldItemPosition] == upcomingLessons[newItemPosition]
+                return data[oldItemPosition] == items[newItemPosition]
             }
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return data[oldItemPosition] == upcomingLessons[newItemPosition]
+                return data[oldItemPosition] == items[newItemPosition]
             }
 
             override fun getOldListSize() = data.size
 
-            override fun getNewListSize() = upcomingLessons.size
+            override fun getNewListSize() = items.size
         }
     }
 }
