@@ -12,7 +12,7 @@ import sk.skwig.aisinator.R
 import sk.skwig.aisinator.common.BaseActivity
 import timber.log.Timber
 
-class MainActivity : BaseActivity<MainViewModel, sk.skwig.aisinator.databinding.ActivityMainBinding>() {
+class MainActivity : BaseActivity<MainActivityViewModel, sk.skwig.aisinator.databinding.ActivityMainBinding>() {
 
     // TODO: skusit cez findFragment
     override val navController: NavController
@@ -26,7 +26,7 @@ class MainActivity : BaseActivity<MainViewModel, sk.skwig.aisinator.databinding.
         setContentView(R.layout.activity_main)
 //        setSupportActionBar(toolbar)
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java).also {
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainActivityViewModel::class.java).also {
             disposable += it.showLoginScreen
                 .subscribeBy(
                     onNext = { navController.navigate(R.id.action_global_loginFragment) /*TODO: notifikovat cez intent ze zly login (a dat napr prazdny password field)*/ },

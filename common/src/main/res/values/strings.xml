@@ -7,4 +7,7 @@
 
     <string name="deadline_subtitle_format">%s ● %s</string>
     <string name="upcoming_lesson_subtitle_format">%s ● %s ● %s %s</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

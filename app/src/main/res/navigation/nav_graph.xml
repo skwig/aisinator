@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph"
-    app:startDestination="@id/mainActivityFragment">
+            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
 
     <fragment
         android:id="@+id/loginFragment"
         android:name="sk.skwig.aisinator.login.LoginFragment"
         android:label="LoginFragment"/>
     <fragment
-        android:id="@+id/mainActivityFragment"
-        android:name="sk.skwig.aisinator.dashboard.DashboardFragment"
-        android:label="MainActivityFragment" />
+            android:id="@+id/dashboardFragment"
+            android:name="sk.skwig.aisinator.dashboard.DashboardFragment"
+            android:label="DashboardFragment"/>
+    <fragment
+            android:id="@+id/timetableFragment"
+            android:name="sk.skwig.aisinator.timetable.TimetableFragment"
+            android:label="TimetableFragment"/>
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="sk.skwig.aisinator.common.main.MainFragment"
+        android:label="MainFragment" >
+        <action android:id="@+id/action_mainFragment_to_timetableFragment" app:destination="@id/timetableFragment"/>
+        <action android:id="@+id/action_mainFragment_to_dashboardFragment" app:destination="@id/dashboardFragment"/>
+    </fragment>
     <action
         android:id="@+id/action_global_loginFragment"
         app:destination="@id/loginFragment"

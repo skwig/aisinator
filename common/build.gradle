@@ -33,9 +33,9 @@ android {
 dependencies {
     implementation project(':slidereveallayout')
 
-
     // databinding
     implementation "androidx.databinding:databinding-runtime:$databindingVersion"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
     kapt "androidx.databinding:databinding-compiler:$databindingVersion"
 
     // appcompat

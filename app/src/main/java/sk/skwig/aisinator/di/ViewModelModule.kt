@@ -7,15 +7,15 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 import sk.skwig.aisinator.common.di.util.ViewModelFactory
 import sk.skwig.aisinator.common.di.util.ViewModelKey
-import sk.skwig.aisinator.feature.main.MainViewModel
+import sk.skwig.aisinator.feature.main.MainActivityViewModel
 
 @Module
 abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(MainViewModel::class)
-    abstract fun bindMainViewModel(mainViewModel: MainViewModel): ViewModel
+    @ViewModelKey(MainActivityViewModel::class)
+    abstract fun bindMainViewModel(mainActivityViewModel: MainActivityViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory

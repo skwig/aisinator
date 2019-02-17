@@ -7,9 +7,11 @@ import sk.skwig.aisinator.common.auth.di.AuthModule
 import sk.skwig.aisinator.common.course.di.CourseModule
 import sk.skwig.aisinator.common.deadline.di.DeadlineModule
 import sk.skwig.aisinator.common.lesson.di.LessonModule
+import sk.skwig.aisinator.common.main.di.MainModule
 import sk.skwig.aisinator.common.settings.di.SettingsModule
 import sk.skwig.aisinator.dashboard.di.DashboardModule
 import sk.skwig.aisinator.login.di.LoginModule
+import sk.skwig.aisinator.timetable.di.TimetableModule
 import javax.inject.Singleton
 
 @Singleton
@@ -32,8 +34,10 @@ interface AppComponent {
 
 @Module(
     includes = [
+        MainModule::class,
         DashboardModule::class,
-        LoginModule::class
+        LoginModule::class,
+        TimetableModule::class
     ]
 )
 class FeatureModule

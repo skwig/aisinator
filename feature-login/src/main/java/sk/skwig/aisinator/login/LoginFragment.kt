@@ -1,6 +1,5 @@
 package sk.skwig.aisinator.login
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,22 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
-import dagger.android.support.AndroidSupportInjection
 import io.reactivex.rxkotlin.subscribeBy
 import sk.skwig.aisinator.common.BaseFragment
 import sk.skwig.aisinator.login.databinding.FragmentLoginBinding
 import sk.skwig.aisinator.login.viewmodel.LoginViewModel
 import timber.log.Timber
 
-/**
- * A placeholder fragment containing a simple view.
- */
 class LoginFragment : BaseFragment<LoginViewModel, FragmentLoginBinding>() {
-
-    override fun onAttach(context: Context) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
