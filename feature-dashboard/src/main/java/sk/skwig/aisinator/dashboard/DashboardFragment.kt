@@ -12,11 +12,14 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import sk.skwig.aisinator.common.BaseFragment
-import sk.skwig.aisinator.dashboard.viewmodel.ActiveCoursesViewModel
-import sk.skwig.aisinator.dashboard.viewmodel.DeadlinesViewModel
+import sk.skwig.aisinator.common.course.CourseAdapter
+import sk.skwig.aisinator.common.course.viewmodel.ActiveCoursesViewModel
+import sk.skwig.aisinator.common.deadline.DeadlineAdapter
+import sk.skwig.aisinator.common.deadline.viewmodel.DeadlinesViewModel
+import sk.skwig.aisinator.common.lesson.UpcomingLessonsAdapter
 import sk.skwig.aisinator.dashboard.databinding.FragmentDashboardBinding
 import sk.skwig.aisinator.dashboard.viewmodel.DashboardViewModel
-import sk.skwig.aisinator.dashboard.viewmodel.UpcomingLessonsViewModel
+import sk.skwig.aisinator.common.lesson.viewmodel.UpcomingLessonsViewModel
 import timber.log.Timber
 
 /**

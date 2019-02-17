@@ -3,12 +3,12 @@ package sk.skwig.aisinator
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import sk.skwig.aisinator.dashboard.CourseDaoProvider
-import sk.skwig.aisinator.dashboard.DeadlineDaoProvider
-import sk.skwig.aisinator.dashboard.LessonDaoProvider
-import sk.skwig.aisinator.dashboard.db.entity.CourseEntity
-import sk.skwig.aisinator.dashboard.db.entity.DeadlineEntity
-import sk.skwig.aisinator.dashboard.db.entity.LessonEntity
+import sk.skwig.aisinator.common.course.db.CourseDaoProvider
+import sk.skwig.aisinator.common.data.db.CourseEntity
+import sk.skwig.aisinator.common.data.db.DeadlineEntity
+import sk.skwig.aisinator.common.data.db.LessonEntity
+import sk.skwig.aisinator.common.deadline.db.DeadlineDaoProvider
+import sk.skwig.aisinator.common.lesson.db.LessonDaoProvider
 
 const val APP_DATABASE_NAME = "aisinator-database"
 
@@ -27,4 +27,5 @@ const val APP_DATABASE_NAME = "aisinator-database"
         LocalTimeConverter::class
     ]
 )
-abstract class AisinatorDatabase : RoomDatabase(), CourseDaoProvider, DeadlineDaoProvider, LessonDaoProvider
+abstract class AisinatorDatabase : RoomDatabase(), CourseDaoProvider,
+    DeadlineDaoProvider, LessonDaoProvider

@@ -4,11 +4,11 @@ import dagger.Component
 import dagger.Module
 import sk.skwig.aisinator.AisinatorApp
 import sk.skwig.aisinator.common.auth.di.AuthModule
+import sk.skwig.aisinator.common.course.di.CourseModule
+import sk.skwig.aisinator.common.deadline.di.DeadlineModule
+import sk.skwig.aisinator.common.lesson.di.LessonModule
 import sk.skwig.aisinator.common.settings.di.SettingsModule
-import sk.skwig.aisinator.dashboard.di.CourseModule
 import sk.skwig.aisinator.dashboard.di.DashboardModule
-import sk.skwig.aisinator.dashboard.di.DeadlineModule
-import sk.skwig.aisinator.dashboard.di.LessonModule
 import sk.skwig.aisinator.login.di.LoginModule
 import javax.inject.Singleton
 

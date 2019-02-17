@@ -7,9 +7,9 @@ import dagger.Module
 import dagger.Provides
 import sk.skwig.aisinator.APP_DATABASE_NAME
 import sk.skwig.aisinator.AisinatorDatabase
-import sk.skwig.aisinator.dashboard.CourseDaoProvider
-import sk.skwig.aisinator.dashboard.DeadlineDaoProvider
-import sk.skwig.aisinator.dashboard.LessonDaoProvider
+import sk.skwig.aisinator.common.course.db.CourseDaoProvider
+import sk.skwig.aisinator.common.deadline.db.DeadlineDaoProvider
+import sk.skwig.aisinator.common.lesson.db.LessonDaoProvider
 import javax.inject.Singleton
 
 @Module(includes = [PersistenceBinderModule::class])

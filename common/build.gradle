@@ -31,26 +31,24 @@ android {
 }
 
 dependencies {
+    implementation project(':slidereveallayout')
+
+
     // databinding
     implementation "androidx.databinding:databinding-runtime:$databindingVersion"
     kapt "androidx.databinding:databinding-compiler:$databindingVersion"
 
     // appcompat
     implementation "androidx.appcompat:appcompat:$appcompatVersion"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
     implementation "androidx.legacy:legacy-support-v4:$legacySupportVersion"
+    implementation "androidx.recyclerview:recyclerview:$recyclerviewVersion"
 
     // material components
     implementation "com.google.android.material:material:$materialVersion"
 
-    // rx
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.4'
-    implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion"
-    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
-    implementation "com.jakewharton.rxbinding2:rxbinding-kotlin:$rxBindingKotlinVersion"
-    implementation "com.jakewharton.rxrelay2:rxrelay:$rxRelayVersion"
-    implementation "com.github.akarnokd:rxjava2-extensions:$rxExtensionsVersion"
-
     // okhttp
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpLoggingInterceptorVersion"
     implementation "com.squareup.okhttp3:okhttp:$okhttpVersion"
     implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttpUrlConnectionVersion"
 
@@ -59,10 +57,22 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
 
+    // rx
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+    implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion"
+    implementation "com.jakewharton.rxbinding2:rxbinding-kotlin:$rxBindingKotlinVersion"
+    implementation "com.jakewharton.rxrelay2:rxrelay:$rxRelayVersion"
+    implementation "com.github.akarnokd:rxjava2-extensions:$rxExtensionsVersion"
+
     // architecture components
     implementation "androidx.lifecycle:lifecycle-runtime:$architectureComponentsVersion"
     implementation "androidx.lifecycle:lifecycle-extensions:$architectureComponentsVersion"
     kapt "androidx.lifecycle:lifecycle-compiler:$architectureComponentsVersion"
+
+    implementation "androidx.room:room-runtime:$roomVersion"
+    implementation "androidx.room:room-rxjava2:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
 
     // dagger
     implementation "com.google.dagger:dagger:$daggerVersion"
