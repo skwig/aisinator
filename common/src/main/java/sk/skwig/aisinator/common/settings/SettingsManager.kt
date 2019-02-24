@@ -1,24 +1,27 @@
 package sk.skwig.aisinator.common.settings
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.annotation.StringRes
 import sk.skwig.aisinator.common.R
 import java.security.InvalidKeyException
 
-class SettingsManager(private val context: Context) {
-
-    private val sharedPreferences = android.preference.PreferenceManager.getDefaultSharedPreferences(context)
-
+interface SettingsManager {
     var login: String
+    var password: String
+}
+
+class SettingsManagerImpl(private val context: Context) : SettingsManager {
+
+    val sharedPreferences = android.preference.PreferenceManager.getDefaultSharedPreferences(context)
+
+    override var login: String
         get() = getString(PrefKey.LOGIN, "")
         set(value) = putString(PrefKey.LOGIN, value)
 
-    var password: String
+    override var password: String
         get() = getString(PrefKey.PASSWORD, "")
         set(value) = putString(PrefKey.PASSWORD, value)
-
-    val hasLoginCredentials:Boolean
-        get() = login.isNotBlank() && password.isNotBlank()
 
     @StringRes
     private fun getPrefRes(prefKey: PrefKey): Int {

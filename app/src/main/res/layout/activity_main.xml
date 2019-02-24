@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/foo"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".feature.main.MainActivity">
@@ -15,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:defaultNavHost="true"
-            app:navGraph="@navigation/nav_graph" />
+            app:navGraph="@navigation/main_nav_graph" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </FrameLayout>
 </layout>

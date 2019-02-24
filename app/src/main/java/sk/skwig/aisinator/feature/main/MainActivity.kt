@@ -17,8 +17,7 @@ class MainActivity : BaseActivity<MainActivityViewModel, sk.skwig.aisinator.data
     // TODO: skusit cez findFragment
     override val navController: NavController
         get() = supportFragmentManager
-            .fragments
-            .first()
+            .findFragmentById(R.id.main_nav_host_fragment)!!
             .findNavController()
 
     override fun onCreate(savedInstanceState: Bundle?) {

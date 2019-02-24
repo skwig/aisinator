@@ -2,6 +2,7 @@ package sk.skwig.aisinator.common.lesson
 
 import android.util.Log
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import sk.skwig.aisinator.common.auth.AuthManager
 import sk.skwig.aisinator.common.data.UpcomingLesson
 import sk.skwig.aisinator.common.lesson.api.LessonApi
@@ -23,8 +24,9 @@ internal class LessonRepositoryImpl(
             .doOnNext { Log.d("matej", "LessonRepositoryImpl.getTodaysUpcomingLessons") }
             .switchMap {
                 Observable.just(it)
+                    .subscribeOn(Schedulers.io())
                     .flatMapSingle { lessonApi.getLessons(it) }
                     .concatMapCompletable { lessonDao.insertLessons(it) }
-                    .andThen(lessonDao.loadUpcomingLessons(Instant.ofEpochSecond(1550102400)))
+                    .andThen(lessonDao.loadUpcomingLessons(Instant.now()))
             }
 }

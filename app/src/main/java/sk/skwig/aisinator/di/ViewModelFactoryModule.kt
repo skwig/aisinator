@@ -10,12 +10,7 @@ import sk.skwig.aisinator.common.di.util.ViewModelKey
 import sk.skwig.aisinator.feature.main.MainActivityViewModel
 
 @Module
-abstract class ViewModelModule {
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(MainActivityViewModel::class)
-    abstract fun bindMainViewModel(mainActivityViewModel: MainActivityViewModel): ViewModel
+abstract class ViewModelFactoryModule {
 
     @Binds
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory

@@ -31,7 +31,7 @@ buildscript {
         rxRelayVersion = "2.0.0"
         rxExtensionsVersion = "0.20.5"
 
-        navigationVersion = "1.0.0-beta01"
+        navigationVersion = "1.0.0-rc01"
 
         materialVersion = "1.1.0-alpha03"
 

@@ -1,11 +1,12 @@
-package sk.skwig.aisinator.common.main
+package sk.skwig.aisinator.feature.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import javax.inject.Inject
 
-class MainViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val stateRelay = BehaviorRelay.createDefault<ViewState>(ViewState.Dashboard)
@@ -16,9 +17,15 @@ class MainViewModel @Inject constructor(
         state = stateRelay.distinctUntilChanged()
     }
 
-    fun onDashboardSelected() = stateRelay.accept(ViewState.Dashboard)
+    fun onDashboardSelected() {
+        Log.d("matej", "onDashboardSelected() called")
+        stateRelay.accept(ViewState.Dashboard)
+    }
 
-    fun onTimetableSelected() = stateRelay.accept(ViewState.Timetable)
+    fun onTimetableSelected() {
+        Log.d("matej", "onTimetableSelected() called")
+        stateRelay.accept(ViewState.Timetable)
+    }
 
     sealed class ViewState {
         object Dashboard : ViewState()

@@ -2,6 +2,7 @@ package sk.skwig.aisinator.common.course
 
 import android.util.Log
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import sk.skwig.aisinator.common.auth.AuthManager
 import sk.skwig.aisinator.common.course.api.CourseApi
 import sk.skwig.aisinator.common.course.db.CourseDao
@@ -24,6 +25,7 @@ internal class CourseRepositoryImpl(
             .doOnNext { Log.d("matej", "CourseRepositoryImpl.getDeadlines") }
             .switchMap {
                 Observable.just(it)
+                    .subscribeOn(Schedulers.io())
                     .flatMapSingle { courseApi.getActiveCourses(it) }
                     .concatMapCompletable { courseDao.insertCourses(it) }
                     .andThen(courseDao.loadAllCourses())
@@ -34,6 +36,7 @@ internal class CourseRepositoryImpl(
             .doOnNext { Log.d("matej", "CourseRepositoryImpl.getCoursework") }
             .switchMap {
                 Observable.just(it)
+                    .subscribeOn(Schedulers.io())
                     .flatMapSingle { courseApi.getCoursework(it, course) }
             }
 }

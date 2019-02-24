@@ -7,9 +7,9 @@ import sk.skwig.aisinator.common.auth.di.AuthModule
 import sk.skwig.aisinator.common.course.di.CourseModule
 import sk.skwig.aisinator.common.deadline.di.DeadlineModule
 import sk.skwig.aisinator.common.lesson.di.LessonModule
-import sk.skwig.aisinator.common.main.di.MainModule
 import sk.skwig.aisinator.common.settings.di.SettingsModule
 import sk.skwig.aisinator.dashboard.di.DashboardModule
+import sk.skwig.aisinator.feature.home.HomeModule
 import sk.skwig.aisinator.login.di.LoginModule
 import sk.skwig.aisinator.timetable.di.TimetableModule
 import javax.inject.Singleton
@@ -18,13 +18,12 @@ import javax.inject.Singleton
 @Component(
     modules = [
         AndroidModule::class,
-        ActivityBuilderModule::class,
+        MainActivityModule::class,
+
+        ViewModelFactoryModule::class,
 
         LibraryModule::class,
-        FeatureModule::class,
-
-        // TODO: asap do feature modulu
-        ViewModelModule::class
+        FeatureModule::class
     ]
 )
 interface AppComponent {
@@ -34,7 +33,7 @@ interface AppComponent {
 
 @Module(
     includes = [
-        MainModule::class,
+        HomeModule::class,
         DashboardModule::class,
         LoginModule::class,
         TimetableModule::class

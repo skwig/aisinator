@@ -33,10 +33,26 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(DashboardViewModel::class.java).also {}
-
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(DashboardViewModel::class.java)
         activeCoursesViewModel = ViewModelProviders.of(this, viewModelFactory).get(ActiveCoursesViewModel::class.java)
-            .also {
+        deadlinesViewModel = ViewModelProviders.of(this, viewModelFactory).get(DeadlinesViewModel::class.java)
+        upcomingLessonsViewModel = ViewModelProviders.of(this, viewModelFactory).get(UpcomingLessonsViewModel::class.java)
+
+        activeCoursesAdapter = CourseAdapter()
+        deadlinesAdapter = DeadlineAdapter(deadlinesViewModel::onDismiss)
+        upcomingLessonsAdapter = UpcomingLessonsAdapter()
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentDashboardBinding.inflate(layoutInflater, container, false)
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        activeCoursesViewModel.also {
                 disposable += it.state
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
@@ -49,8 +65,7 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
                     )
             }
 
-        deadlinesViewModel = ViewModelProviders.of(this, viewModelFactory).get(DeadlinesViewModel::class.java)
-            .also {
+        deadlinesViewModel.also {
                 disposable += it.state
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
@@ -65,37 +80,20 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
                     )
             }
 
-        upcomingLessonsViewModel =
-                ViewModelProviders.of(this, viewModelFactory).get(UpcomingLessonsViewModel::class.java)
-                    .also {
-                        disposable += it.state
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeBy(
-                                onNext = {
-                                    when (it) {
-                                        is UpcomingLessonsViewModel.ViewState.Normal -> upcomingLessonsAdapter.submitList(
-                                            it.upcomingLessons
-                                        )
-                                    }
-                                },
-                                onError = Timber::e
-                            )
-                    }
-
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentDashboardBinding.inflate(layoutInflater, container, false)
-
-        activeCoursesAdapter = CourseAdapter()
-        deadlinesAdapter = DeadlineAdapter(deadlinesViewModel::onDismiss)
-        upcomingLessonsAdapter = UpcomingLessonsAdapter()
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        upcomingLessonsViewModel.also {
+                disposable += it.state
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeBy(
+                        onNext = {
+                            when (it) {
+                                is UpcomingLessonsViewModel.ViewState.Normal -> upcomingLessonsAdapter.submitList(
+                                    it.upcomingLessons
+                                )
+                            }
+                        },
+                        onError = Timber::e
+                    )
+            }
 
         binding.layoutActiveCourses.apply {
             courseRecycler.adapter = activeCoursesAdapter
