@@ -22,7 +22,7 @@ interface AuthManager {
     fun login(login: String, password: String)
 
     data class LoginData(val login: String, val password: String) {
-        val isComplete: Boolean
+        val isValid: Boolean
             get() = login.isNotBlank() && password.isNotBlank()
     }
 }
@@ -44,7 +44,7 @@ class AuthManagerImpl(
         val credentialsFromSettings = Observable.just(Unit)
             .flatMap {
                 AuthManager.LoginData(settingsManager.login, settingsManager.password).let {
-                    if (it.isComplete) {
+                    if (it.isValid) {
                         Observable.just(it)
                     } else {
                         authMessageBus.onLoginNeeded()
