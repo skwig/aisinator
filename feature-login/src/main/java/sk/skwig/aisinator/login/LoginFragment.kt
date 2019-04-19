@@ -15,7 +15,7 @@ import timber.log.Timber
 
 class LoginFragment : BaseFragment<LoginViewModel, FragmentLoginBinding>() {
 
-    override fun createViewModel() = ViewModelProviders.of(this, viewModelFactory).get(LoginViewModel::class.java)
+    override fun createViewModel() = Injector
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentLoginBinding.inflate(layoutInflater, container, false)

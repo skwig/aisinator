@@ -17,7 +17,7 @@ class DeadlineModule {
     lateinit var courseModule: CourseModule
 
     @Singleton
-    val provideDeadlineRepository: DeadlineRepository by lazy {
+    val deadlineRepository: DeadlineRepository by lazy {
         DeadlineRepositoryImpl(
             authModule.authManager,
             deadlineApi,

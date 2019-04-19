@@ -57,7 +57,7 @@ class AisinatorApp : Application(), HasActivityInjector, HasSupportFragmentInjec
     }
 
     fun constructInjector() : Injector{
-        return Injector().apply {
+        return Injector.apply {
             androidModule = AndroidModule(this@AisinatorApp)
             authModule = AuthModule()
             chatModule = ChatModule()
@@ -73,12 +73,12 @@ class AisinatorApp : Application(), HasActivityInjector, HasSupportFragmentInjec
             courseModule.networkModule = networkModule
 
             deadlineModule.authModule = authModule
-            deadlineModule.courseModule = courseModule
             deadlineModule.networkModule = networkModule
+            deadlineModule.courseModule = courseModule
 
             lessonModule.authModule = authModule
-            lessonModule.courseModule = courseModule
             lessonModule.networkModule = networkModule
+            lessonModule.courseModule = courseModule
 
             persistenceModule.androidModule = androidModule
         }
