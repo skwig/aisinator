@@ -8,9 +8,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import sk.skwig.aisinator.common.auth.AuthManager
-import javax.inject.Inject
 
-class LoginViewModel @Inject constructor(private val authManager: AuthManager) : ViewModel() {
+class LoginViewModel(private val authManager: AuthManager) : ViewModel() {
 
     private val stateRelay = BehaviorRelay.createDefault(State.INITIAL)
 

@@ -13,9 +13,6 @@ import javax.inject.Inject
 
 abstract class BaseActivity<VM : ViewModel, B : ViewDataBinding> : AppCompatActivity() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
     lateinit var viewModel: VM
     lateinit var binding: B
 
@@ -23,9 +20,4 @@ abstract class BaseActivity<VM : ViewModel, B : ViewDataBinding> : AppCompatActi
 
     protected val disposable = CompositeDisposable()
 
-    @CallSuper
-    override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
-        super.onCreate(savedInstanceState)
-    }
 }

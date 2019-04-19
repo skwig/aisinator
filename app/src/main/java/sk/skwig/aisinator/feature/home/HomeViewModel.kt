@@ -6,8 +6,7 @@ import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
 import javax.inject.Inject
 
-class HomeViewModel @Inject constructor(
-) : ViewModel() {
+class HomeViewModel : ViewModel() {
 
     private val stateRelay = BehaviorRelay.createDefault<ViewState>(ViewState.Dashboard)
 

@@ -7,7 +7,7 @@ import sk.skwig.aisinator.common.auth.AuthEvent
 import sk.skwig.aisinator.common.auth.AuthMessageBus
 import javax.inject.Inject
 
-class MainActivityViewModel @Inject constructor(authMessageBus: AuthMessageBus) : ViewModel() {
+class MainActivityViewModel(authMessageBus: AuthMessageBus) : ViewModel() {
 
     val showLoginScreen: Observable<Unit>
 

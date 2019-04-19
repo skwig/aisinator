@@ -14,20 +14,11 @@ import javax.inject.Inject
 /**
  * Created by Matej on 29. 7. 2016.
  */
-class AisinatorApp : Application(), HasActivityInjector, HasSupportFragmentInjector {
+class AisinatorApp : Application() {
 
     companion object {
         val LOG_TAG_PREFIX = "ais_"
     }
-
-    var component: AppComponent? = null
-        private set
-
-    @Inject
-    lateinit var activityInjector: DispatchingAndroidInjector<Activity>
-
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
 
     override fun onCreate() {
         super.onCreate()
@@ -39,21 +30,6 @@ class AisinatorApp : Application(), HasActivityInjector, HasSupportFragmentInjec
                 }
             })
         }
-
-        component = DaggerAppComponent.builder()
-            .androidModule(AndroidModule(this))
-            .build()
-            .also {
-                it.inject(this)
-            }
-    }
-
-    override fun activityInjector(): AndroidInjector<Activity>? {
-        return activityInjector
-    }
-
-    override fun supportFragmentInjector(): AndroidInjector<Fragment>? {
-        return fragmentInjector
     }
 
     fun constructInjector() : Injector{

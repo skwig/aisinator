@@ -9,9 +9,7 @@ import sk.skwig.aisinator.common.data.Course
 import timber.log.Timber
 import javax.inject.Inject
 
-class ActiveCoursesViewModel @Inject constructor(
-    private val courseRepository: CourseRepository
-) : ViewModel() {
+class ActiveCoursesViewModel(courseRepository: CourseRepository) : ViewModel() {
 
     val state: Observable<ViewState>
 

@@ -11,9 +11,8 @@ import sk.skwig.aisinator.common.chat.paging.ChatPagingAction
 import sk.skwig.aisinator.common.chat.paging.ChatPagingEffect
 import sk.skwig.aisinator.common.chat.paging.ChatPagingState
 import sk.skwig.aisinator.common.chat.paging.InternalAction
-import javax.inject.Inject
 
-class ChatViewModel @Inject constructor(val chatRepository: ChatRepository) : ViewModel() {
+class ChatViewModel(val chatRepository: ChatRepository) : ViewModel() {
 
     private val uiStateRelay = BehaviorRelay.create<ChatPagingState>()
 
