@@ -15,10 +15,7 @@ import timber.log.Timber
 
 class LoginFragment : BaseFragment<LoginViewModel, FragmentLoginBinding>() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(LoginViewModel::class.java)
-    }
+    override fun createViewModel() = ViewModelProviders.of(this, viewModelFactory).get(LoginViewModel::class.java)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentLoginBinding.inflate(layoutInflater, container, false)
@@ -41,7 +38,7 @@ class LoginFragment : BaseFragment<LoginViewModel, FragmentLoginBinding>() {
                         Log.d("matej", "LoginFragment.state $it")
 
                         binding.loadingOverlay.visibility =
-                                if (it == LoginViewModel.State.LOADING) View.VISIBLE else View.GONE
+                            if (it == LoginViewModel.State.LOADING) View.VISIBLE else View.GONE
 
                         when (it) {
                             LoginViewModel.State.ERROR -> Toast.makeText(

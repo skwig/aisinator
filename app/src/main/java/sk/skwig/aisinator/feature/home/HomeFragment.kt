@@ -2,15 +2,12 @@ package sk.skwig.aisinator.feature.home
 
 import android.os.Bundle
 import android.util.Log
-import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import sk.skwig.aisinator.R
@@ -23,6 +20,8 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
     override val navController: NavController
         get() = activity?.findNavController(R.id.home_nav_host_fragment)!!
 
+    override fun createViewModel() = ViewModelProviders.of(this, viewModelFactory).get(HomeViewModel::class.java)
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
 
@@ -32,18 +31,16 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(HomeViewModel::class.java).also {
-            disposable += it.state.subscribeBy(
-                onNext = {
-                    Log.d("matej", "onCreate() called $it")
-                    when (it) {
-                        is HomeViewModel.ViewState.Dashboard -> navController.navigate(R.id.action_global_dashboardFragment)
-                        is HomeViewModel.ViewState.Timetable -> navController.navigate(R.id.action_global_timetableFragment)
-                    }
-                },
-                onError = Timber::e
-            )
-        }
+        disposable += viewModel.state.subscribeBy(
+            onNext = {
+                Log.d("matej", "onCreate() called $it")
+                when (it) {
+                    is HomeViewModel.ViewState.Dashboard -> navController.navigate(R.id.action_global_dashboardFragment)
+                    is HomeViewModel.ViewState.Timetable -> navController.navigate(R.id.action_global_timetableFragment)
+                }
+            },
+            onError = Timber::e
+        )
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {

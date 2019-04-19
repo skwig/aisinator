@@ -30,10 +30,11 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
     private lateinit var deadlinesAdapter: DeadlineAdapter
     private lateinit var upcomingLessonsAdapter: UpcomingLessonsAdapter
 
+    override fun createViewModel() = ViewModelProviders.of(this, viewModelFactory).get(DashboardViewModel::class.java)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(DashboardViewModel::class.java)
         activeCoursesViewModel = ViewModelProviders.of(this, viewModelFactory).get(ActiveCoursesViewModel::class.java)
         deadlinesViewModel = ViewModelProviders.of(this, viewModelFactory).get(DeadlinesViewModel::class.java)
         upcomingLessonsViewModel = ViewModelProviders.of(this, viewModelFactory).get(UpcomingLessonsViewModel::class.java)
@@ -52,6 +53,7 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // TODO: rozbit do fragmentov + template method pre toto vsetko vvv
         activeCoursesViewModel.also {
                 disposable += it.state
                     .observeOn(AndroidSchedulers.mainThread())

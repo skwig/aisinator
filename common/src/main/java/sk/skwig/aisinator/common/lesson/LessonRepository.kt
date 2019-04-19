@@ -1,32 +1,97 @@
 package sk.skwig.aisinator.common.lesson
 
-import android.util.Log
 import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
-import sk.skwig.aisinator.common.auth.AuthManager
+import sk.skwig.aisinator.common.data.Lesson
 import sk.skwig.aisinator.common.data.UpcomingLesson
-import sk.skwig.aisinator.common.lesson.api.LessonApi
-import sk.skwig.aisinator.common.lesson.db.LessonDao
-import java.time.Instant
 
 interface LessonRepository {
     fun getTodaysUpcomingLessons(): Observable<List<UpcomingLesson>>
 }
 
+interface LessonStorage {
+    fun getLessons(): List<Lesson>?
+}
+
+interface LocalLessonStorage : LessonStorage {
+    fun putLessons(lessons: List<Lesson>)
+}
+
+class CacheLessonStorage : LocalLessonStorage {
+
+    private var cache: List<Lesson>? = null
+
+    override fun getLessons(): List<Lesson>? {
+        return cache
+    }
+
+    override fun putLessons(lessons: List<Lesson>) {
+        cache = lessons
+    }
+
+    fun invalidateCache() {
+        cache = null
+    }
+}
+
+class DatabaseLessonStorage : LocalLessonStorage {
+    override fun getLessons(): List<Lesson>? {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun putLessons(lessons: List<Lesson>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun putLesson(lesson: Lesson) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun deleteLesson(lesson: Lesson) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+}
+
+class NetworkLessonStorage : LessonStorage {
+    override fun getLessons(): List<Lesson>? {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+}
+
 internal class LessonRepositoryImpl(
-    private val authManager: AuthManager,
-    private val lessonApi: LessonApi,
-    private val lessonDao: LessonDao
+    private val cacheLessonHandler: CacheLessonStorage,
+    private val databaseLessonHandler: DatabaseLessonStorage,
+    private val networkLessonHandler: NetworkLessonStorage
 ) : LessonRepository {
 
-    override fun getTodaysUpcomingLessons(/*student*/) =
-        authManager.authentication
-            .doOnNext { Log.d("matej", "LessonRepositoryImpl.getTodaysUpcomingLessons") }
-            .switchMap {
-                Observable.just(it)
-                    .subscribeOn(Schedulers.io())
-                    .flatMapSingle { lessonApi.getLessons(it) }
-                    .concatMapCompletable { lessonDao.insertLessons(it) }
-                    .andThen(lessonDao.loadUpcomingLessons(Instant.now()))
-            }
+    fun getLessons(): List<Lesson> {
+        val cachedData = cacheLessonHandler.getLessons()
+        if (cachedData != null) {
+            return cachedData
+        }
+
+        val localDatabaseData = databaseLessonHandler.getLessons()
+        if (localDatabaseData != null) {
+            cacheLessonHandler.putLessons(localDatabaseData)
+            return localDatabaseData
+        }
+
+        val networkData = networkLessonHandler.getLessons()
+        if (networkData != null) {
+            cacheLessonHandler.putLessons(networkData)
+            databaseLessonHandler.putLessons(networkData)
+            return networkData
+        }
+
+        throw RuntimeException("Cannot")
+    }
+
+    fun saveLesson(lesson: Lesson) {
+        databaseLessonHandler.putLesson(lesson)
+        cacheLessonHandler.invalidateCache()
+    }
+
+    fun deleteLesson(lesson: Lesson) {
+        databaseLessonHandler.deleteLesson(lesson)
+        cacheLessonHandler.invalidateCache()
+    }
 }

@@ -10,7 +10,7 @@ import io.reactivex.schedulers.Schedulers
 import sk.skwig.aisinator.common.chat.paging.ChatPagingAction
 import sk.skwig.aisinator.common.chat.paging.ChatPagingEffect
 import sk.skwig.aisinator.common.chat.paging.ChatPagingState
-import sk.skwig.aisinator.common.chat.paging.MachineAction
+import sk.skwig.aisinator.common.chat.paging.InternalAction
 import javax.inject.Inject
 
 class ChatViewModel @Inject constructor(val chatRepository: ChatRepository) : ViewModel() {
@@ -47,13 +47,13 @@ class ChatViewModel @Inject constructor(val chatRepository: ChatRepository) : Vi
                     .subscribeOn(Schedulers.io())
                     .toObservable()
                     .onErrorResumeNext { throwable: Throwable ->
-                        actionRelay.accept(MachineAction.OnError(throwable))
+                        actionRelay.accept(InternalAction.OnError(throwable))
                         Observable.empty<List<ChatMessage>>()
                     }
                     .subscribeOn(Schedulers.io())
             }
             .subscribe({
-                actionRelay.accept(MachineAction.OnSuccess(it))
+                actionRelay.accept(InternalAction.OnSuccess(it))
             }, { Log.e("default", "", it) })
     }
 

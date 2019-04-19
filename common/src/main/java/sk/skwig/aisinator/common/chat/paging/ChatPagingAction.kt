@@ -11,7 +11,7 @@ sealed class UserAction : ChatPagingAction() {
     object Retry : UserAction()
 }
 
-internal sealed class MachineAction : ChatPagingAction() {
-    internal data class OnSuccess(val items: List<ChatMessage>) : MachineAction()
-    internal data class OnError(val throwable: Throwable) : MachineAction()
+internal sealed class InternalAction : ChatPagingAction() {
+    internal data class OnSuccess(val items: List<ChatMessage>) : InternalAction()
+    internal data class OnError(val throwable: Throwable) : InternalAction()
 }

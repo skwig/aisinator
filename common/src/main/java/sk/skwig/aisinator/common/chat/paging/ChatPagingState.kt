@@ -12,9 +12,7 @@ sealed class ChatPagingState {
     object InitialState : ChatPagingState() {
         override fun process(action: ChatPagingAction) =
             when (action) {
-                is UserAction.NewQuery -> NoItemState.LoadingPage(
-                    action.query
-                ) to ChatPagingEffect.Load(action.query)
+                is UserAction.NewQuery -> NoItemState.LoadingPage(action.query) to ChatPagingEffect.Load(action.query)
                 else -> noOp()
             }
     }
@@ -24,14 +22,8 @@ sealed class ChatPagingState {
         class LoadingPage(query: SearchQuery) : NoItemState(query) {
             override fun process(action: ChatPagingAction) =
                 when (action) {
-                    is MachineAction.OnSuccess -> HasItemsState.Normal(
-                        query,
-                        action.items
-                    )
-                    is MachineAction.OnError -> Error(
-                        query,
-                        action.throwable
-                    )
+                    is InternalAction.OnSuccess -> HasItemsState.Normal(query, action.items)
+                    is InternalAction.OnError -> Error(query, action.throwable)
                     else -> this
                 } to ChatPagingEffect.NoOp
         }
@@ -39,9 +31,7 @@ sealed class ChatPagingState {
         class Error(query: SearchQuery, val throwable: Throwable) : NoItemState(query) {
             override fun process(action: ChatPagingAction) =
                 when (action) {
-                    UserAction.Retry -> LoadingPage(
-                        query
-                    ) to ChatPagingEffect.Load(query)
+                    UserAction.Retry -> LoadingPage(query) to ChatPagingEffect.Load(query)
                     else -> noOp()
                 }
         }
@@ -52,12 +42,8 @@ sealed class ChatPagingState {
         class Normal(query: SearchQuery, items: List<ChatMessage>) : HasItemsState(query, items) {
             override fun process(action: ChatPagingAction) =
                 when (action) {
-                    UserAction.NextPage -> query.let {
-                        val nextPageQuery = query.getNextPageQuery()
-                        LoadingNextPage(
-                            nextPageQuery,
-                            items
-                        ) to ChatPagingEffect.Load(nextPageQuery)
+                    UserAction.NextPage -> query.getNextPageQuery().let {
+                        LoadingNextPage(it, items) to ChatPagingEffect.Load(it)
                     }
                     else -> noOp()
                 }
@@ -66,25 +52,17 @@ sealed class ChatPagingState {
         class LoadingNextPage(query: SearchQuery, items: List<ChatMessage>) : HasItemsState(query, items) {
             override fun process(action: ChatPagingAction) =
                 when (action) {
-                    is MachineAction.OnSuccess -> Normal(
-                        query,
-                        items + action.items
-                    )
-                    is MachineAction.OnError -> Error(
-                        query,
-                        items,
-                        action.throwable
-                    )
+                    is InternalAction.OnSuccess -> Normal(query, items + action.items)
+                    is InternalAction.OnError -> Error(query, items, action.throwable)
                     else -> this
                 } to ChatPagingEffect.NoOp
         }
 
-        class Error(query: SearchQuery, items: List<ChatMessage>, val throwable: Throwable) : HasItemsState(query, items) {
+        class Error(query: SearchQuery, items: List<ChatMessage>, val throwable: Throwable) :
+            HasItemsState(query, items) {
             override fun process(action: ChatPagingAction) =
                 when (action) {
-                    UserAction.Retry -> NoItemState.LoadingPage(
-                        query
-                    ) to ChatPagingEffect.Load(query)
+                    UserAction.Retry -> NoItemState.LoadingPage(query) to ChatPagingEffect.Load(query)
                     else -> noOp()
                 }
         }

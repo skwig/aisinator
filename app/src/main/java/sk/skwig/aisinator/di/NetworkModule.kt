@@ -11,7 +11,11 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import sk.skwig.aisinator.common.auth.AuthMessageBus
 import sk.skwig.aisinator.common.auth.AuthTimedOutException
+import sk.skwig.aisinator.common.auth.di.AIS
+import sk.skwig.aisinator.common.auth.di.AIS_AUTH
+import sk.skwig.aisinator.common.auth.di.DASHBOARD
 import java.net.CookieManager
+import javax.inject.Named
 import javax.inject.Singleton
 
 private const val SESSION_COOKIE_NAME = "UISAuth"
@@ -54,7 +58,8 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    @Named(AIS)
+    fun provideAisRetrofit(@Named(AIS_AUTH) okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://is.stuba.sk/")
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -64,7 +69,19 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(
+    @Named(DASHBOARD)
+    fun provideDashboardRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://aisdashboard.herokuapp.com/")
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .client(okHttpClient)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @Named(AIS_AUTH)
+    fun provideAisAuthOkHttpClient(
         sessionInterceptor: SessionInterceptor,
         authInterceptor: AuthInterceptor,
         loggingInterceptor: HttpLoggingInterceptor
@@ -74,6 +91,16 @@ class NetworkModule {
             .addInterceptor(loggingInterceptor)
             .addInterceptor(sessionInterceptor)
             .addInterceptor(authInterceptor)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor
+    ): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
             .build()
     }
 

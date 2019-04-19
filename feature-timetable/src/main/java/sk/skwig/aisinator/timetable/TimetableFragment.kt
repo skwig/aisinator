@@ -12,12 +12,7 @@ class TimetableFragment : BaseFragment<TimetableViewModel, FragmentTimetableBind
 
     private lateinit var timetableAdapter: TimetableAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(TimetableViewModel::class.java).also {}
-
-    }
+    override fun createViewModel() = ViewModelProviders.of(this, viewModelFactory).get(TimetableViewModel::class.java)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentTimetableBinding.inflate(layoutInflater, container, false)
@@ -25,10 +20,5 @@ class TimetableFragment : BaseFragment<TimetableViewModel, FragmentTimetableBind
         timetableAdapter = TimetableAdapter()
 
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
     }
 }

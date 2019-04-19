@@ -29,12 +29,12 @@ class ChatPager(private val chatRepository: ChatRepository) {
                 chatRepository.loadMessages(it.query)
                     .subscribeOn(Schedulers.io())
                     .toObservable()
-                    .map<MachineAction> {
-                        MachineAction.OnSuccess(
+                    .map<InternalAction> {
+                        InternalAction.OnSuccess(
                             it
                         )
                     }
-                    .onErrorReturn { MachineAction.OnError(it) }
+                    .onErrorReturn { InternalAction.OnError(it) }
                     .subscribeOn(Schedulers.io())
             }
             .subscribe(actionRelay)

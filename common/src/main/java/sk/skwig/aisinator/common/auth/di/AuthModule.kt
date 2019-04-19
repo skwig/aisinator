@@ -8,7 +8,12 @@ import sk.skwig.aisinator.common.auth.AuthManager
 import sk.skwig.aisinator.common.auth.AuthManagerImpl
 import sk.skwig.aisinator.common.auth.AuthMessageBus
 import sk.skwig.aisinator.common.settings.SettingsManager
+import javax.inject.Named
 import javax.inject.Singleton
+
+const val AIS = "ais"
+const val AIS_AUTH = "ais_auth"
+const val DASHBOARD = "dashboard"
 
 @Module
 class AuthModule {
@@ -27,6 +32,6 @@ class AuthModule {
 
     @Singleton
     @Provides
-    fun provideAuthApi(retrofit: Retrofit) = retrofit.create(AuthApi::class.java)
+    fun provideAuthApi(@Named(AIS) retrofit: Retrofit) = retrofit.create(AuthApi::class.java)
 
 }
