@@ -12,10 +12,14 @@ import javax.inject.Singleton
 
 class DeadlineModule {
 
+    lateinit var authModule: AuthModule
+    lateinit var networkModule: NetworkModule
+    lateinit var courseModule: CourseModule
+
     @Singleton
     val provideDeadlineRepository: DeadlineRepository by lazy {
         DeadlineRepositoryImpl(
-            authManager,
+            authModule.authManager,
             deadlineApi,
             deadlineDao
         )
@@ -28,7 +32,7 @@ class DeadlineModule {
 
     @Singleton
     val deadlineRetrofitApi by lazy {
-        retrofit.create(DeadlineRetrofitApi::class.java)
+        networkModule.aisRetrofit.create(DeadlineRetrofitApi::class.java)
     }
 
     @Singleton
@@ -45,19 +49,19 @@ class DeadlineModule {
     val deadlineDao: DeadlineDao by lazy {
         DeadlineDaoImpl(
             deadlineRoomDao,
-            courseMapper,
+            courseModule.courseMapper,
             deadlineMapper,
             deadlineWithCourseMapper
         )
     }
 
     @Singleton
-    val provideDeadlineMapper: DeadlineMapper by lazy {
+    val deadlineMapper: DeadlineMapper by lazy {
         DeadlineMapper()
     }
 
     @Singleton
     val deadlineWithCourseMapper: DeadlineWithCourseMapper by lazy {
-        DeadlineWithCourseMapper(courseMapper, deadlineMapper)
+        DeadlineWithCourseMapper(courseModule.courseMapper, deadlineMapper)
     }
 }

@@ -7,9 +7,7 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import dagger.android.support.HasSupportFragmentInjector
-import sk.skwig.aisinator.di.AndroidModule
-import sk.skwig.aisinator.di.AppComponent
-import sk.skwig.aisinator.di.DaggerAppComponent
+import sk.skwig.aisinator.di.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -56,5 +54,33 @@ class AisinatorApp : Application(), HasActivityInjector, HasSupportFragmentInjec
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment>? {
         return fragmentInjector
+    }
+
+    fun constructInjector() : Injector{
+        return Injector().apply {
+            androidModule = AndroidModule(this@AisinatorApp)
+            authModule = AuthModule()
+            chatModule = ChatModule()
+            courseModule = CourseModule()
+            deadlineModule = DeadlineModule()
+            lessonModule = LessonModule()
+            persistenceModule = PersistenceModule()
+            timetableModule = TimetableModule()
+
+            authModule.networkModule = networkModule
+
+            courseModule.authModule = authModule
+            courseModule.networkModule = networkModule
+
+            deadlineModule.authModule = authModule
+            deadlineModule.courseModule = courseModule
+            deadlineModule.networkModule = networkModule
+
+            lessonModule.authModule = authModule
+            lessonModule.courseModule = courseModule
+            lessonModule.networkModule = networkModule
+
+            persistenceModule.androidModule = androidModule
+        }
     }
 }

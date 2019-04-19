@@ -12,13 +12,16 @@ const val DASHBOARD = "dashboard"
 
 class AuthModule {
 
-    @Singleton
-    val provideAuthManager: AuthManager by lazy { AuthManagerImpl(authMessageBus, authApi, settingsManager) }
+    lateinit var networkModule: NetworkModule
+    lateinit var settingsModule : SettingsModule
 
     @Singleton
-    val authEventBus by lazy { AuthMessageBus() }
+    val authManager: AuthManager by lazy { AuthManagerImpl(authMessageBus, authApi, settingsModule.settingsManager) }
 
     @Singleton
-    val authApi by lazy { aisRetrofit.create(AuthApi::class.java)}
+    val authMessageBus by lazy { AuthMessageBus() }
+
+    @Singleton
+    val authApi by lazy { networkModule.aisRetrofit.create(AuthApi::class.java)}
 
 }

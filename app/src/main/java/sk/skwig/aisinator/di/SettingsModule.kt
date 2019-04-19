@@ -6,7 +6,9 @@ import javax.inject.Singleton
 
 class SettingsModule {
 
+    lateinit var androidModule: AndroidModule
+
     @Singleton
-    val settingsManager: SettingsManager by lazy { SettingsManagerImpl(context) }
+    val settingsManager: SettingsManager by lazy { SettingsManagerImpl(androidModule.applicationContext) }
 
 }

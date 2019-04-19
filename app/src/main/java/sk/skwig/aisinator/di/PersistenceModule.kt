@@ -7,9 +7,11 @@ import javax.inject.Singleton
 
 class PersistenceModule {
 
+    lateinit var androidModule: AndroidModule
+
     @Singleton
     val appDatabase: AisinatorDatabase by lazy {
-        Room.databaseBuilder(context, AisinatorDatabase::class.java, APP_DATABASE_NAME)
+        Room.databaseBuilder(androidModule.applicationContext, AisinatorDatabase::class.java, APP_DATABASE_NAME)
             .build()
     }
 }

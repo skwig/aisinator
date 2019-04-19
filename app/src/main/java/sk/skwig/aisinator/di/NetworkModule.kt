@@ -17,6 +17,8 @@ private const val SESSION_COOKIE_NAME = "UISAuth"
 
 class NetworkModule {
 
+    lateinit var authModule: AuthModule
+
     class SessionInterceptor : Interceptor {
 
         private val cookieManager = CookieManager()
@@ -101,6 +103,6 @@ class NetworkModule {
 
     @Singleton
     val authInterceptor: AuthInterceptor by lazy {
-        AuthInterceptor(authMessageBus)
+        AuthInterceptor(authModule.authMessageBus)
     }
 }

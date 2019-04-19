@@ -10,10 +10,13 @@ import javax.inject.Singleton
 
 class CourseModule {
 
+    lateinit var authModule: AuthModule
+    lateinit var networkModule: NetworkModule
+
     @Singleton
     val courseRepository: CourseRepository by lazy {
         CourseRepositoryImpl(
-            authManager,
+            authModule.authManager,
             courseApi,
             courseDao
         )
@@ -26,7 +29,7 @@ class CourseModule {
 
     @Singleton
     val courseRetrofitApi: CourseRetrofitApi by lazy {
-        retrofit.create(
+        networkModule.aisRetrofit.create(
             CourseRetrofitApi::class.java
         )
     }

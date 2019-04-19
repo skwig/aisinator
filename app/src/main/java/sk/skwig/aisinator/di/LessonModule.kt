@@ -13,10 +13,14 @@ import javax.inject.Singleton
 
 class LessonModule {
 
+    lateinit var authModule: AuthModule
+    lateinit var networkModule: NetworkModule
+    lateinit var courseModule: CourseModule
+
     @Singleton
     val lessonRepository: LessonRepository by lazy {
         LessonRepositoryImpl(
-            authManager,
+            authModule.authManager,
             lessonApi,
             lessonDao
         )
@@ -29,13 +33,13 @@ class LessonModule {
 
     @Singleton
     val lessonRetrofitApi: LessonRetrofitApi by lazy {
-        retrofit.create(
+        networkModule.aisRetrofit.create(
             LessonRetrofitApi::class.java
         )
     }
 
     @Singleton
-    val deadlineApi: LessonApi by lazy {
+    val lessonApi: LessonApi by lazy {
         LessonApiImpl(lessonRetrofitApi, lessonHtmlParser)
     }
 
@@ -49,7 +53,7 @@ class LessonModule {
     val lessonDao: LessonDao by lazy {
         LessonDaoImpl(
             lessonRoomDao,
-            courseMapper,
+            courseModule.courseMapper,
             lessonMapper,
             upcomingLessonWithCourseMapper
         )
@@ -62,12 +66,12 @@ class LessonModule {
     }
 
     @Singleton
-    val provideLessonTimeMapper by lazy { LessonTimeMapper() }
+    val lessonTimeMapper by lazy { LessonTimeMapper() }
 
     @Singleton
     val upcomingLessonWithCourseMapper by lazy {
         UpcomingLessonWithCourseMapper(
-            courseMapper,
+            courseModule.courseMapper,
             lessonMapper,
             lessonTimeMapper
         )
