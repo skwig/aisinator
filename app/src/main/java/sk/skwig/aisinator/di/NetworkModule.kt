@@ -1,7 +1,5 @@
 package sk.skwig.aisinator.di
 
-import dagger.Module
-import dagger.Provides
 import okhttp3.Interceptor
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
@@ -11,16 +9,12 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import sk.skwig.aisinator.common.auth.AuthMessageBus
 import sk.skwig.aisinator.common.auth.AuthTimedOutException
-import sk.skwig.aisinator.common.auth.di.AIS
-import sk.skwig.aisinator.common.auth.di.AIS_AUTH
-import sk.skwig.aisinator.common.auth.di.DASHBOARD
 import java.net.CookieManager
 import javax.inject.Named
 import javax.inject.Singleton
 
 private const val SESSION_COOKIE_NAME = "UISAuth"
 
-@Module
 class NetworkModule {
 
     class SessionInterceptor : Interceptor {
@@ -56,37 +50,30 @@ class NetworkModule {
         }
     }
 
-    @Provides
     @Singleton
     @Named(AIS)
-    fun provideAisRetrofit(@Named(AIS_AUTH) okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
+    val aisRetrofit : Retrofit by lazy {
+        Retrofit.Builder()
             .baseUrl("https://is.stuba.sk/")
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .client(okHttpClient)
+            .client(aisAuthOkHttpClient)
             .build()
     }
 
-    @Provides
     @Singleton
     @Named(DASHBOARD)
-    fun provideDashboardRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
+    val dashboardRetrofit: Retrofit by lazy {
+        Retrofit.Builder()
             .baseUrl("https://aisdashboard.herokuapp.com/")
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .client(okHttpClient)
             .build()
     }
 
-    @Provides
     @Singleton
     @Named(AIS_AUTH)
-    fun provideAisAuthOkHttpClient(
-        sessionInterceptor: SessionInterceptor,
-        authInterceptor: AuthInterceptor,
-        loggingInterceptor: HttpLoggingInterceptor
-    ): OkHttpClient {
-        return OkHttpClient.Builder()
+    val aisAuthOkHttpClient: OkHttpClient by lazy {
+        OkHttpClient.Builder()
             .cookieJar(sessionInterceptor.cookieJar)
             .addInterceptor(loggingInterceptor)
             .addInterceptor(sessionInterceptor)
@@ -94,32 +81,26 @@ class NetworkModule {
             .build()
     }
 
-    @Provides
     @Singleton
-    fun provideOkHttpClient(
-        loggingInterceptor: HttpLoggingInterceptor
-    ): OkHttpClient {
-        return OkHttpClient.Builder()
+    val okHttpClient: OkHttpClient by lazy {
+        OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .build()
     }
 
-    @Provides
     @Singleton
-    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor()
+    val loggingInterceptor: HttpLoggingInterceptor by lazy {
+        HttpLoggingInterceptor()
             .setLevel(HttpLoggingInterceptor.Level.BASIC)
     }
 
-    @Provides
     @Singleton
-    fun provideSessionInterceptor(): SessionInterceptor {
-        return SessionInterceptor()
+    val sessionInterceptor: SessionInterceptor by lazy {
+        SessionInterceptor()
     }
 
-    @Provides
     @Singleton
-    fun provideAuthInterceptor(authMessageBus: AuthMessageBus): AuthInterceptor {
-        return AuthInterceptor(authMessageBus)
+    val authInterceptor: AuthInterceptor by lazy {
+        AuthInterceptor(authMessageBus)
     }
 }

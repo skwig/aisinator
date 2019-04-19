@@ -9,13 +9,11 @@ import dagger.Provides
 @Module
 class AndroidModule(val application: Application) {
 
-    @Provides
-    fun provideApplicationContext(): Context {
-        return application
+    val applicationContext: Context by lazy {
+        application
     }
 
-    @Provides
-    fun provideResources(context: Context): Resources {
-        return context.resources
+    val resources: Resources by lazy {
+        context.resources
     }
 }
