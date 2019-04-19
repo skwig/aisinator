@@ -44,12 +44,6 @@ class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBind
         upcomingLessonsAdapter = UpcomingLessonsAdapter()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentDashboardBinding.inflate(layoutInflater, container, false)
-
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

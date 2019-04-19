@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import sk.skwig.aisinator.common.util.setAll
 
-abstract class BaseAdapter<T, VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
+abstract class BaseAdapter<T, VH : BaseViewHolder> : RecyclerView.Adapter<VH>() {
 
     protected val data = mutableListOf<T>()
 

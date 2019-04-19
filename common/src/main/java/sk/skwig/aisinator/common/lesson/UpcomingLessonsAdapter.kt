@@ -3,16 +3,16 @@ package sk.skwig.aisinator.common.lesson
 import android.text.format.DateUtils
 import android.view.ViewGroup
 import androidx.annotation.StringRes
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
-import sk.skwig.aisinator.common.BaseAdapter
+import sk.skwig.aisinator.common.BaseViewHolder
 import sk.skwig.aisinator.common.R
+import sk.skwig.aisinator.common.SimpleDiffCallback
 import sk.skwig.aisinator.common.data.UpcomingLesson
 import sk.skwig.aisinator.common.databinding.ItemUpcomingLessonBinding
 import sk.skwig.aisinator.common.util.layoutInflater
+import sk.skwig.aisinator.common.util.listing.ListingAdapter
 import java.time.Instant
 
-class UpcomingLessonsAdapter : BaseAdapter<UpcomingLesson, UpcomingLessonViewHolder>() {
+class UpcomingLessonsAdapter : ListingAdapter<UpcomingLesson, UpcomingLessonViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UpcomingLessonViewHolder {
         return ItemUpcomingLessonBinding.inflate(parent.layoutInflater, parent, false)
@@ -48,23 +48,7 @@ class UpcomingLessonsAdapter : BaseAdapter<UpcomingLesson, UpcomingLessonViewHol
         }
     }
 
-    override fun getDiffCallback(items: List<UpcomingLesson>): DiffUtil.Callback {
-        return object : DiffUtil.Callback() {
-            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return data[oldItemPosition] == items[newItemPosition]
-            }
-
-            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return data[oldItemPosition] == items[newItemPosition]
-            }
-
-            override fun getOldListSize() = data.size
-
-            override fun getNewListSize() = items.size
-        }
-    }
+    override fun getDiffCallback(items: List<UpcomingLesson>) = SimpleDiffCallback(items, data)
 }
 
-
-data class UpcomingLessonViewHolder(val binding: ItemUpcomingLessonBinding) :
-    RecyclerView.ViewHolder(binding.root)
+data class UpcomingLessonViewHolder(override val binding: ItemUpcomingLessonBinding) : BaseViewHolder(binding)

@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import sk.skwig.aisinator.common.BaseAdapter
+import sk.skwig.aisinator.common.BaseViewHolder
 import sk.skwig.aisinator.common.data.Course
 import sk.skwig.aisinator.common.databinding.ItemCourseBinding
 import sk.skwig.aisinator.common.util.layoutInflater
@@ -40,5 +41,4 @@ class CourseAdapter : BaseAdapter<Course, CourseViewHolder>() {
     }
 }
 
-
-data class CourseViewHolder(val binding: ItemCourseBinding) : RecyclerView.ViewHolder(binding.root)
+data class CourseViewHolder(override val binding: ItemCourseBinding) : BaseViewHolder(binding)
