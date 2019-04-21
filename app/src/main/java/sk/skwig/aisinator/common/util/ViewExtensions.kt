@@ -8,5 +8,7 @@ val View.layoutInflater: LayoutInflater
     get() = LayoutInflater.from(context)
 
 fun ViewAnimator.showChild(view: View) {
-    this.displayedChild = indexOfChild(view)
+    indexOfChild(view)
+        .takeIf { it != -1 }
+        ?.also { displayedChild = it }
 }

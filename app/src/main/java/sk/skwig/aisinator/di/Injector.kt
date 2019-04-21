@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import sk.skwig.aisinator.feature.auth.di.AuthModule
-import sk.skwig.aisinator.feature.chat.ChatViewModel
 import sk.skwig.aisinator.feature.chat.di.ChatModule
 import sk.skwig.aisinator.feature.chat.viewmodel.ChatroomListViewModel
 import sk.skwig.aisinator.feature.chat.viewmodel.ChatroomViewModel
@@ -81,7 +80,7 @@ object Injector {
             .get(ChatroomListViewModel::class.java)
 
     fun injectChatroomViewModel(fragment: Fragment, chatroomId: Long) =
-        ViewModelProviders.of(fragment, SimpleViewModelFactory { ChatroomViewModel(chatroomId, chatModule.chatRepository) })
+        ViewModelProviders.of(fragment, SimpleViewModelFactory { ChatroomViewModel(chatroomId, chatModule.chatPager) })
             .get(ChatroomViewModel::class.java)
 
 }

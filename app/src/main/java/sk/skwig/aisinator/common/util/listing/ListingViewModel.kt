@@ -1,5 +1,6 @@
 package sk.skwig.aisinator.common.util.listing
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Completable
@@ -18,20 +19,16 @@ abstract class ListingViewModel<T> : ViewModel() {
 
     protected val disposable = CompositeDisposable()
 
-    protected fun Observable<List<T>>.toViewState(): Observable<ViewState<T>> {
-        return this.map<ViewState<T>> {
-            ViewState.Displaying(
-                it
-            )
-        }
-            .onErrorReturn { ViewState.Error(it) }
-            .startWith(ViewState.Loading())
+    protected fun Observable<List<T>>.toViewState(@StringRes title: Int): Observable<ViewState<T>> {
+        return this.map<ViewState<T>> { ViewState.Displaying(title, it) }
+            .onErrorReturn { ViewState.Error(title, it) }
+            .startWith(ViewState.Loading(title))
     }
 
-    sealed class ViewState<T> {
-        class Loading<T> : ViewState<T>()
-        data class Displaying<T>(val items: List<T>) : ViewState<T>()
-        data class Error<T>(val throwable: Throwable) : ViewState<T>()
+    sealed class ViewState<T>(@StringRes val title: Int) {
+        class Loading<T>(@StringRes title: Int) : ViewState<T>(title)
+        class Displaying<T>(@StringRes title: Int, val items: List<T>) : ViewState<T>(title)
+        class Error<T>(@StringRes title: Int, val throwable: Throwable) : ViewState<T>(title)
     }
 }
 

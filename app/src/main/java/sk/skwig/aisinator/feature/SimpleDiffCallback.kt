@@ -10,10 +10,10 @@ class SimpleDiffCallback<T>(
 ) : DiffUtil.Callback() {
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-        itemComparator(newItems[oldItemPosition], oldItems[newItemPosition])
+        itemComparator(oldItems[oldItemPosition], newItems[newItemPosition])
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-        contentComparator(newItems[oldItemPosition], oldItems[newItemPosition])
+        contentComparator(oldItems[oldItemPosition], newItems[newItemPosition])
 
     override fun getOldListSize(): Int =
         oldItems.size

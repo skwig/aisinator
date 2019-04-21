@@ -1,6 +1,8 @@
 package sk.skwig.aisinator.feature.chat.paging
 
+import android.util.Log
 import com.jakewharton.rxrelay2.BehaviorRelay
+import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -11,7 +13,7 @@ class ChatPager(private val chatRepository: ChatRepository) {
 
     val state: Observable<ChatPagingState>
 
-    private val actionRelay = BehaviorRelay.create<ChatPagingAction>()
+    private val actionRelay = PublishRelay.create<ChatPagingAction>()
     private val disposable = CompositeDisposable()
 
     init {
@@ -26,14 +28,11 @@ class ChatPager(private val chatRepository: ChatRepository) {
             .map { it.second }
             .ofType(ChatPagingEffect.Load::class.java)
             .concatMap {
+                Log.d("matej", "ChatNextPage")
                 chatRepository.loadMessages(it.query)
                     .subscribeOn(Schedulers.io())
                     .toObservable()
-                    .map<InternalAction> {
-                        InternalAction.OnSuccess(
-                            it
-                        )
-                    }
+                    .map<InternalAction> { InternalAction.OnSuccess(it) }
                     .onErrorReturn { InternalAction.OnError(it) }
                     .subscribeOn(Schedulers.io())
             }
@@ -42,5 +41,9 @@ class ChatPager(private val chatRepository: ChatRepository) {
         state = chatPagingState
             .map { it.first }
             .distinctUntilChanged()
+    }
+
+    fun process(userAction: UserAction) {
+        actionRelay.accept(userAction)
     }
 }

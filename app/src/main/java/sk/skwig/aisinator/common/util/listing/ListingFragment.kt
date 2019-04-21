@@ -7,18 +7,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.fragment_listing.*
 import sk.skwig.aisinator.common.util.showChild
 import sk.skwig.aisinator.databinding.FragmentListingBinding
 import sk.skwig.aisinator.feature.BaseFragment
 import sk.skwig.aisinator.feature.BaseViewHolder
 import timber.log.Timber
 
+class A<T> : ListingViewModel<T>()
+
 abstract class ListingFragment<VM : ListingViewModel<T>, A : ListingAdapter<T, VH>, VH : BaseViewHolder, T> :
-    BaseFragment<VM, FragmentListingBinding>() {
+    BaseFragment<VM, FragmentListingBinding>(){
 
     protected val adapter: A by lazy(::createAdapter)
 
@@ -29,27 +31,28 @@ abstract class ListingFragment<VM : ListingViewModel<T>, A : ListingAdapter<T, V
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        disposable += viewModel.state
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(
-                onNext = {
-                    when (it) {
-                        is ListingViewModel.ViewState.Displaying<T> -> {
-                            binding.viewAnimator.showChild(binding.recyclerView)
-                            adapter.submitList(it.items)
-                        }
-                        is ListingViewModel.ViewState.Loading<T> -> {
-                            binding.viewAnimator.showChild(binding.progressBar)
-                        }
-                    }
-                },
-                onError = Timber::e
-            )
-
         binding.apply {
-            title.text = "Lol"
+
             recyclerView.adapter = adapter
             recyclerView.layoutManager = createLayoutManager()
+
+            disposable += viewModel.state
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(
+                    onNext = {
+                        title.setText(it.title)
+                        when (it) {
+                            is ListingViewModel.ViewState.Displaying<T> -> {
+                                viewAnimator.showChild(recyclerView)
+                                adapter.submitList(it.items)
+                            }
+                            is ListingViewModel.ViewState.Loading<T> -> {
+                                viewAnimator.showChild(progressBar)
+                            }
+                        }
+                    },
+                    onError = Timber::e
+                )
         }
     }
 

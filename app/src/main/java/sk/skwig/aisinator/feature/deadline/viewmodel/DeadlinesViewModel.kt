@@ -1,6 +1,7 @@
 package sk.skwig.aisinator.feature.deadline.viewmodel
 
 import io.reactivex.rxkotlin.plusAssign
+import sk.skwig.aisinator.R
 import sk.skwig.aisinator.feature.deadline.Deadline
 import sk.skwig.aisinator.feature.deadline.DeadlineRepository
 import sk.skwig.aisinator.common.util.listing.DismissableListingViewModel
@@ -9,7 +10,7 @@ class DeadlinesViewModel(private val deadlineRepository: DeadlineRepository) : D
 
     init {
         disposable += deadlineRepository.getActiveDeadlines()
-            .toViewState()
+            .toViewState(R.string.deadlines)
             .subscribe(stateRelay)
     }
 

@@ -1,46 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools">
+>
 
     <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:context="sk.skwig.aisinator.sk.skwig.aisinator.feature.dashboard.sk.skwig.aisinator.feature.dashboard.DashboardFragment"
-                tools:showIn="@layout/activity_main">
+                android:layout_height="wrap_content">
 
-            <include
-                    android:id="@+id/layout_upcoming_lessons"
-                    layout="@layout/layout_upcoming_lessons"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    app:layout_constraintEnd_toEndOf="parent"
+            <fragment
+                    android:id="@+id/upcoming_lessons"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            <include
-                    android:id="@+id/layout_deadlines"
-                    layout="@layout/layout_deadlines"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/layout_upcoming_lessons"/>
-
-            <include
-                    android:id="@+id/layout_active_courses"
-                    layout="@layout/layout_active_courses"
+                    app:layout_constraintTop_toTopOf="parent"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/layout_deadlines"/>
+                    android:layout_height="wrap_content"
+                    android:name="sk.skwig.aisinator.feature.lesson.UpcomingLessonsFragment"/>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/fab"
