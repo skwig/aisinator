@@ -23,7 +23,9 @@ class ChatroomFragment : BaseFragment<ChatroomViewModel, FragmentChatroomBinding
     protected lateinit var adapter: ChatMessageAdapter
 
     override fun createViewModel(): ChatroomViewModel {
-        return Injector.injectChatroomViewModel(this, 0L)
+        return ChatroomFragmentArgs.fromBundle(arguments!!).let {
+            Injector.injectChatroomViewModel(this, it.chatroomId)
+        }
     }
 
     override fun createBinding(layoutInflater: LayoutInflater, container: ViewGroup?): FragmentChatroomBinding {
@@ -35,6 +37,7 @@ class ChatroomFragment : BaseFragment<ChatroomViewModel, FragmentChatroomBinding
             adapter = ChatMessageAdapter(viewModel::onRetry)
         }
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
