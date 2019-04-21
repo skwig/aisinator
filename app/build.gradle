@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'androidx.navigation.safeargs'
 
 android {
     dataBinding {
@@ -34,10 +35,7 @@ android {
 
 dependencies {
 
-    implementation project(':common')
-    implementation project(':feature-timetable')
-    implementation project(':feature-dashboard')
-    implementation project(':feature-login')
+    implementation project(":slidereveallayout")
 
     // databinding
     implementation "androidx.databinding:databinding-runtime:$databindingVersion"
@@ -91,13 +89,82 @@ dependencies {
     // navigation
     implementation "android.arch.navigation:navigation-fragment-ktx:$navigationVersion"
     implementation "android.arch.navigation:navigation-ui-ktx:$navigationVersion"
+//    implementation "android.arch.navigation:navigation-safe-args-gradle-plugin:$navigationVersion"
 
     // material components
     implementation "com.google.android.material:material:$materialVersion"
+
+    // jsoup
+    implementation "org.jsoup:jsoup:$jsoupVersion"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+
+//    // databinding
+//    implementation "androidx.databinding:databinding-runtime:$databindingVersion"
+//    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
+//    kapt "androidx.databinding:databinding-compiler:$databindingVersion"
+//
+//    // appcompat
+//    implementation "androidx.appcompat:appcompat:$appcompatVersion"
+//    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+//    implementation "androidx.legacy:legacy-support-v4:$legacySupportVersion"
+//    implementation "androidx.recyclerview:recyclerview:$recyclerviewVersion"
+//
+//    // material components
+//    implementation "com.google.android.material:material:$materialVersion"
+//
+//    // okhttp
+//    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpLoggingInterceptorVersion"
+//    implementation "com.squareup.okhttp3:okhttp:$okhttpVersion"
+//    implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttpUrlConnectionVersion"
+//
+//    // retrofit
+//    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+//    implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
+//    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+//
+//    // rx
+//    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+//    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+//    implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion"
+//    implementation "com.jakewharton.rxbinding2:rxbinding-kotlin:$rxBindingKotlinVersion"
+//    implementation "com.jakewharton.rxrelay2:rxrelay:$rxRelayVersion"
+//    implementation "com.github.akarnokd:rxjava2-extensions:$rxExtensionsVersion"
+//
+//    // architecture components
+//    implementation "androidx.lifecycle:lifecycle-runtime:$architectureComponentsVersion"
+//    implementation "androidx.lifecycle:lifecycle-extensions:$architectureComponentsVersion"
+//    kapt "androidx.lifecycle:lifecycle-compiler:$architectureComponentsVersion"
+//
+//    implementation "androidx.room:room-runtime:$roomVersion"
+//    implementation "androidx.room:room-rxjava2:$roomVersion"
+//    kapt "androidx.room:room-compiler:$roomVersion"
+//
+//    // dagger
+//    implementation "com.google.dagger:dagger:$daggerVersion"
+//    implementation "com.google.dagger:dagger-android:$daggerVersion"
+//    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+//
+//    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+//    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
+//    kapt "com.google.dagger:dagger-android-support:$daggerVersion"
+//
+//    // jsoup
+//    implementation "org.jsoup:jsoup:$jsoupVersion"
+//
+//    implementation "com.jakewharton.timber:timber:$timberVersion"
+//
+//    // navigation
+//    implementation "android.arch.navigation:navigation-fragment-ktx:$navigationVersion"
+//    implementation "android.arch.navigation:navigation-ui-ktx:$navigationVersion"
+//
+//    implementation fileTree(dir: 'libs', include: ['*.jar'])
+//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+//    testImplementation 'junit:junit:4.12'
+//    androidTestImplementation 'androidx.test:runner:1.1.1'
+//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }

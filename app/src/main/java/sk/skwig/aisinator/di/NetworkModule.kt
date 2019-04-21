@@ -7,8 +7,12 @@ import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import sk.skwig.aisinator.common.auth.AuthMessageBus
-import sk.skwig.aisinator.common.auth.AuthTimedOutException
+import sk.skwig.aisinator.feature.auth.AuthMessageBus
+import sk.skwig.aisinator.feature.auth.AuthTimedOutException
+import sk.skwig.aisinator.feature.auth.di.AIS
+import sk.skwig.aisinator.feature.auth.di.AIS_AUTH
+import sk.skwig.aisinator.feature.auth.di.AuthModule
+import sk.skwig.aisinator.feature.auth.di.DASHBOARD
 import java.net.CookieManager
 import javax.inject.Named
 import javax.inject.Singleton

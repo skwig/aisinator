@@ -26,8 +26,14 @@ class HomeViewModel : ViewModel() {
         stateRelay.accept(ViewState.Timetable)
     }
 
+    fun onChatSelected() {
+        Log.d("matej", "onTimetableSelected() called")
+        stateRelay.accept(ViewState.Chat)
+    }
+
     sealed class ViewState {
         object Dashboard : ViewState()
         object Timetable : ViewState()
+        object Chat : ViewState()
     }
 }

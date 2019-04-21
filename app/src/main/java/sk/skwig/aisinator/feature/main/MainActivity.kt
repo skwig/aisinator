@@ -8,7 +8,7 @@ import androidx.navigation.fragment.findNavController
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import sk.skwig.aisinator.R
-import sk.skwig.aisinator.common.BaseActivity
+import sk.skwig.aisinator.feature.BaseActivity
 import sk.skwig.aisinator.di.Injector
 import timber.log.Timber
 

@@ -3,12 +3,15 @@ package sk.skwig.aisinator
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import sk.skwig.aisinator.common.course.db.CourseDaoProvider
-import sk.skwig.aisinator.common.data.db.CourseEntity
-import sk.skwig.aisinator.common.data.db.DeadlineEntity
-import sk.skwig.aisinator.common.data.db.LessonEntity
-import sk.skwig.aisinator.common.deadline.db.DeadlineDaoProvider
-import sk.skwig.aisinator.common.lesson.db.LessonDaoProvider
+import sk.skwig.aisinator.common.util.DayOfWeekConverter
+import sk.skwig.aisinator.common.util.InstantConverter
+import sk.skwig.aisinator.common.util.LocalTimeConverter
+import sk.skwig.aisinator.feature.course.db.CourseDaoProvider
+import sk.skwig.aisinator.feature.course.db.CourseEntity
+import sk.skwig.aisinator.feature.deadline.db.DeadlineEntity
+import sk.skwig.aisinator.feature.lesson.LessonEntity
+import sk.skwig.aisinator.feature.deadline.db.DeadlineDaoProvider
+import sk.skwig.aisinator.feature.lesson.db.LessonDaoProvider
 
 const val APP_DATABASE_NAME = "aisinator-database"
 

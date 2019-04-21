@@ -6,12 +6,25 @@
 
     <fragment
             android:id="@+id/dashboardFragment"
-            android:name="sk.skwig.aisinator.dashboard.DashboardFragment"
+            android:name="sk.skwig.aisinator.feature.dashboard.DashboardFragment"
             android:label="DashboardFragment"/>
     <fragment
             android:id="@+id/timetableFragment"
-            android:name="sk.skwig.aisinator.timetable.TimetableFragment"
+            android:name="sk.skwig.aisinator.feature.timetable.TimetableFragment"
             android:label="TimetableFragment"/>
-    <action android:id="@+id/action_global_timetableFragment" app:destination="@id/timetableFragment"/>
+    <fragment
+            android:id="@+id/chatroomListFragment"
+            android:name="sk.skwig.aisinator.feature.chat.ChatroomListFragment"
+            android:label="TimetableFragment">
+        <action android:id="@+id/action_chatroomListFragment_to_chatroomFragment"
+                app:destination="@id/chatroomFragment"/>
+    </fragment>
+
     <action android:id="@+id/action_global_dashboardFragment" app:destination="@id/dashboardFragment"/>
+    <action android:id="@+id/action_global_timetableFragment" app:destination="@id/timetableFragment"/>
+    <action android:id="@+id/action_global_chatroomListFragment" app:destination="@id/chatroomListFragment"/>
+    <fragment android:id="@+id/chatroomFragment" android:name="sk.skwig.aisinator.feature.chat.ChatroomFragment"
+              android:label="ChatroomFragment">
+        <argument android:name="chatroom_id" app:argType="long"/>
+    </fragment>
 </navigation>

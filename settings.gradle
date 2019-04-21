@@ -1,1 +1,1 @@
-include ':app', ':slidereveallayout', ':common', ':feature-dashboard', ':feature-login', ':feature-timetable'
+include ':app', ':slidereveallayout'

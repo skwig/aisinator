@@ -1,15 +1,15 @@
 package sk.skwig.aisinator
 
-import android.app.Activity
 import android.app.Application
-import androidx.fragment.app.Fragment
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
-import dagger.android.support.HasSupportFragmentInjector
 import sk.skwig.aisinator.di.*
+import sk.skwig.aisinator.feature.auth.di.AuthModule
+import sk.skwig.aisinator.feature.chat.di.ChatModule
+import sk.skwig.aisinator.feature.course.di.CourseModule
+import sk.skwig.aisinator.feature.deadline.di.DeadlineModule
+import sk.skwig.aisinator.feature.lesson.di.LessonModule
+import sk.skwig.aisinator.feature.settings.di.SettingsModule
+import sk.skwig.aisinator.feature.timetable.di.TimetableModule
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * Created by Matej on 29. 7. 2016.
@@ -30,9 +30,11 @@ class AisinatorApp : Application() {
                 }
             })
         }
+
+        setupInjectorGraph()
     }
 
-    fun constructInjector() : Injector{
+    fun setupInjectorGraph() : Injector{
         return Injector.apply {
             androidModule = AndroidModule(this@AisinatorApp)
             authModule = AuthModule()
@@ -42,21 +44,31 @@ class AisinatorApp : Application() {
             lessonModule = LessonModule()
             persistenceModule = PersistenceModule()
             timetableModule = TimetableModule()
+            networkModule = NetworkModule()
+            settingsModule = SettingsModule()
 
             authModule.networkModule = networkModule
+            authModule.settingsModule = settingsModule
 
             courseModule.authModule = authModule
             courseModule.networkModule = networkModule
+            courseModule.persistenceModule = persistenceModule
 
             deadlineModule.authModule = authModule
             deadlineModule.networkModule = networkModule
+            deadlineModule.persistenceModule = persistenceModule
             deadlineModule.courseModule = courseModule
 
             lessonModule.authModule = authModule
             lessonModule.networkModule = networkModule
+            lessonModule.persistenceModule = persistenceModule
             lessonModule.courseModule = courseModule
 
             persistenceModule.androidModule = androidModule
+
+            networkModule.authModule = authModule
+
+            settingsModule.androidModule = androidModule
         }
     }
 }

@@ -6,7 +6,7 @@
 
     <fragment
             android:id="@+id/loginFragment"
-            android:name="sk.skwig.aisinator.login.LoginFragment"
+            android:name="sk.skwig.aisinator.feature.login.LoginFragment"
             android:label="LoginFragment"/>
     <fragment
             android:id="@+id/homeFragment"

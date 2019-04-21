@@ -14,6 +14,6 @@ class AndroidModule(val application: Application) {
     }
 
     val resources: Resources by lazy {
-        context.resources
+        applicationContext.resources
     }
 }

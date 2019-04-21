@@ -5,27 +5,26 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import sk.skwig.aisinator.R
-import sk.skwig.aisinator.common.BaseFragment
 import sk.skwig.aisinator.databinding.FragmentHomeBinding
+import sk.skwig.aisinator.di.Injector
+import sk.skwig.aisinator.feature.BaseFragment
 import timber.log.Timber
 
 class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
 
-    override val navController: NavController
-        get() = activity?.findNavController(R.id.home_nav_host_fragment)!!
+    override fun createViewModel() = Injector.injectHomeViewModel(this)
 
-    override fun createViewModel() = ViewModelProviders.of(this, viewModelFactory).get(HomeViewModel::class.java)
+    override fun createBinding(layoutInflater: LayoutInflater, container: ViewGroup?): FragmentHomeBinding {
+        return FragmentHomeBinding.inflate(layoutInflater, container, false)
+    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
-
-        return binding.root
+    override fun createNavController(): NavController {
+        return activity?.findNavController(R.id.home_nav_host_fragment)!!
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,6 +36,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
                 when (it) {
                     is HomeViewModel.ViewState.Dashboard -> navController.navigate(R.id.action_global_dashboardFragment)
                     is HomeViewModel.ViewState.Timetable -> navController.navigate(R.id.action_global_timetableFragment)
+                    is HomeViewModel.ViewState.Chat-> navController.navigate(R.id.action_global_chatroomListFragment)
                 }
             },
             onError = Timber::e
@@ -50,6 +50,10 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
                 }
                 R.id.menu_timetable -> {
                     viewModel.onTimetableSelected()
+                    true
+                }
+                R.id.menu_chat -> {
+                    viewModel.onChatSelected()
                     true
                 }
                 else -> false
