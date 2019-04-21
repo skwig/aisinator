@@ -1,6 +1,5 @@
 package sk.skwig.aisinator.feature.chat
 
-import android.util.Log
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
@@ -14,7 +13,7 @@ import sk.skwig.aisinator.feature.BaseViewHolder
 import sk.skwig.aisinator.feature.SimpleDiffCallback
 import sk.skwig.aisinator.feature.chat.paging.ChatPagingState
 
-class ChatMessageAdapter : RecyclerView.Adapter<ChatMessageItemViewHolder>() {
+class ChatMessageAdapter(private val onError: () -> Unit) : RecyclerView.Adapter<ChatMessageItemViewHolder>() {
 
     private val data = mutableListOf<ChatMessage>()
 
@@ -28,7 +27,8 @@ class ChatMessageAdapter : RecyclerView.Adapter<ChatMessageItemViewHolder>() {
                 isExtraItem && willBeExtraItem && field != value -> notifyItemChanged(data.size)
                 isExtraItem && !willBeExtraItem -> notifyItemRemoved(data.size)
                 !isExtraItem && willBeExtraItem -> notifyItemInserted(data.size)
-                !isExtraItem && !willBeExtraItem -> { /*noop*/ }
+                !isExtraItem && !willBeExtraItem -> { /*noop*/
+                }
             }
 
             field = value
@@ -42,6 +42,9 @@ class ChatMessageAdapter : RecyclerView.Adapter<ChatMessageItemViewHolder>() {
                 .let(::ChatLoadingViewHolder)
             ViewType.ERROR.ordinal -> ItemChatmessageErrorBinding.inflate(parent.layoutInflater, parent, false)
                 .let(::ChatErrorViewHolder)
+                .apply {
+                    binding.errorButton.setOnClickListener { onError() }
+                }
             else -> throw RuntimeException()
         }
     }
@@ -107,5 +110,7 @@ class ChatMessageAdapter : RecyclerView.Adapter<ChatMessageItemViewHolder>() {
 sealed class ChatMessageItemViewHolder(binding: ViewDataBinding) : BaseViewHolder(binding)
 
 data class ChatMessageViewHolder(override val binding: ItemChatmessageBinding) : ChatMessageItemViewHolder(binding)
-data class ChatLoadingViewHolder(override val binding: ItemChatmessageLoadingBinding) : ChatMessageItemViewHolder(binding)
+data class ChatLoadingViewHolder(override val binding: ItemChatmessageLoadingBinding) :
+    ChatMessageItemViewHolder(binding)
+
 data class ChatErrorViewHolder(override val binding: ItemChatmessageErrorBinding) : ChatMessageItemViewHolder(binding)

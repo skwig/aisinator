@@ -32,7 +32,7 @@ class ChatroomFragment : BaseFragment<ChatroomViewModel, FragmentChatroomBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return super.onCreateView(inflater, container, savedInstanceState).also {
-            adapter = ChatMessageAdapter()
+            adapter = ChatMessageAdapter(viewModel::onRetry)
         }
     }
 
@@ -41,8 +41,9 @@ class ChatroomFragment : BaseFragment<ChatroomViewModel, FragmentChatroomBinding
 
         binding.apply {
 
-            val func = { viewModel.onNextPage() }
-            val layoutManager = LinearLayoutManager(context).apply { reverseLayout = false }
+            val onNextPage = viewModel::onNextPage
+            val layoutManager = LinearLayoutManager(context)
+                .apply { reverseLayout = true }
 
             recyclerView.adapter = adapter
             recyclerView.layoutManager = layoutManager
@@ -51,9 +52,8 @@ class ChatroomFragment : BaseFragment<ChatroomViewModel, FragmentChatroomBinding
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     val currentLastVisiblePosition = layoutManager.findLastVisibleItemPosition()
-                    if (dy > 0 && currentLastVisiblePosition >= adapter.itemCount - 3) {
-
-                        func()
+                    if (dy < 0 && currentLastVisiblePosition >= adapter.itemCount - 3) {
+                        onNextPage()
                     }
                 }
             })
@@ -72,8 +72,8 @@ class ChatroomFragment : BaseFragment<ChatroomViewModel, FragmentChatroomBinding
 
                                 // automatically get next page if cant scroll (screen isnt filled)
                                 if (it is ChatPagingState.HasItemsState.Normal) {
-                                    if (!recyclerView.canScrollVertically(1)) {
-                                        func()
+                                    if (!recyclerView.canScrollVertically(-1)) {
+                                        onNextPage()
                                     }
                                 }
                             }
