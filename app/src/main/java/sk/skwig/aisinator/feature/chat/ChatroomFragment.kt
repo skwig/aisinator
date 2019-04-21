@@ -64,24 +64,18 @@ class ChatroomFragment : BaseFragment<ChatroomViewModel, FragmentChatroomBinding
                     onNext = {
                         when (it) {
                             ChatPagingState.InitialState,
-                            is ChatPagingState.NoItemState.LoadingPage -> {
-                                viewAnimator.showChild(progressBar)
-                            }
-                            is ChatPagingState.NoItemState.Error -> {
-                                viewAnimator.showChild(error)
-                            }
-                            is ChatPagingState.HasItemsState.Normal -> {
+                            is ChatPagingState.NoItemState.LoadingPage -> viewAnimator.showChild(progressBar)
+                            is ChatPagingState.NoItemState.Error -> viewAnimator.showChild(error)
+                            is ChatPagingState.HasItemsState -> {
                                 viewAnimator.showChild(recyclerView)
-                                adapter.submitList(it.items)
-                                if (!recyclerView.canScrollVertically(1)) {
-                                    func()
+                                adapter.submitState(it)
+
+                                // automatically get next page if cant scroll (screen isnt filled)
+                                if (it is ChatPagingState.HasItemsState.Normal) {
+                                    if (!recyclerView.canScrollVertically(1)) {
+                                        func()
+                                    }
                                 }
-                            }
-                            is ChatPagingState.HasItemsState.LoadingNextPage -> {
-                                viewAnimator.showChild(recyclerView)
-                            }
-                            is ChatPagingState.HasItemsState.Error -> {
-                                viewAnimator.showChild(recyclerView)
                             }
                         }
                     },
