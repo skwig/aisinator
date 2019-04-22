@@ -53,7 +53,7 @@ data class LessonTimeEntity(
 
 data class UpcomingLessonEntity(
     @Embedded
-    val lesson: LessonEntity,
+    val lessonWithCourse: LessonWithCourse,
 
     @ColumnInfo(name = "upcoming_start")
     val startTime: Instant,
@@ -63,10 +63,10 @@ data class UpcomingLessonEntity(
 )
 
 // join je potrebne robit rucne
-data class UpcomingLessonWithCourse(
+data class LessonWithCourse(
 
     @Embedded
-    val upcomingLesson: UpcomingLessonEntity,
+    val lesson: LessonEntity,
 
     @Embedded
     val course: CourseEntity

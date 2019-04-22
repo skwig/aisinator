@@ -9,7 +9,7 @@ import sk.skwig.aisinator.common.util.listing.ListingViewModel
 class UpcomingLessonsViewModel(lessonRepository: LessonRepository) : ListingViewModel<UpcomingLesson>() {
 
     init {
-        disposable += lessonRepository.getTodaysUpcomingLessons()
+        disposable += lessonRepository.getUpcomingLessons()
             .toViewState(R.string.upcoming_lessons)
             .subscribe(stateRelay)
     }

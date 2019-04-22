@@ -10,6 +10,7 @@
             android:layout_height="match_parent"
             tools:context="sk.skwig.aisinator.feature.home.HomeFragment">
 
+
         <fragment
                 android:id="@+id/home_nav_host_fragment"
                 android:name="androidx.navigation.fragment.NavHostFragment"

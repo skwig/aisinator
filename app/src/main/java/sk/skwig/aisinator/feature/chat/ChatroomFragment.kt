@@ -38,7 +38,6 @@ class ChatroomFragment : BaseFragment<ChatroomViewModel, FragmentChatroomBinding
         }
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

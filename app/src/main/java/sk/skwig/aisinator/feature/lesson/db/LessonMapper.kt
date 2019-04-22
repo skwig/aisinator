@@ -5,7 +5,7 @@ import sk.skwig.aisinator.feature.SimpleEntityMapper
 import sk.skwig.aisinator.feature.course.db.CourseMapper
 import sk.skwig.aisinator.feature.lesson.*
 
-// TODO: cleanup v lesson mapperoch
+// TODO: cleanup v lessonWithCourse mapperoch
 
 class LessonMapper(private val lessonTimeMapper: LessonTimeMapper) :
     EntityMapper<LessonEntity, Lesson>() {
@@ -35,36 +35,46 @@ class LessonTimeMapper : SimpleEntityMapper<LessonTimeEntity, LessonTime>() {
         )
 }
 
-class UpcomingLessonWithCourseMapper(
+class LessonWithCourseMapper(
     private val courseMapper: CourseMapper,
+    private val lessonMapper: LessonMapper,
     private val lessonTimeMapper: LessonTimeMapper
-) : SimpleEntityMapper<UpcomingLessonWithCourse, UpcomingLesson>() {
-    override fun fromEntity(entity: UpcomingLessonWithCourse): UpcomingLesson {
+) : SimpleEntityMapper<LessonWithCourse, Lesson>() {
+    override fun toEntity(domain: Lesson): LessonWithCourse {
+        return LessonWithCourse(lessonMapper.toEntity(domain), courseMapper.toEntity(domain.course))
+    }
 
-        val lesson = entity.let {
-            if (it.upcomingLesson.lesson.isLecture) {
+    override fun fromEntity(entity: LessonWithCourse): Lesson {
+        return entity.let {
+            if (it.lesson.isLecture) {
                 Lesson.Lecture(
                     courseMapper.fromEntity(it.course),
-                    lessonTimeMapper.fromEntity(it.upcomingLesson.lesson.startTime),
-                    lessonTimeMapper.fromEntity(it.upcomingLesson.lesson.endTime),
-                    it.upcomingLesson.lesson.teacher,
-                    it.upcomingLesson.lesson.room
+                    lessonTimeMapper.fromEntity(it.lesson.startTime),
+                    lessonTimeMapper.fromEntity(it.lesson.endTime),
+                    it.lesson.teacher,
+                    it.lesson.room
                 )
             } else {
                 Lesson.Seminar(
                     courseMapper.fromEntity(it.course),
-                    lessonTimeMapper.fromEntity(it.upcomingLesson.lesson.startTime),
-                    lessonTimeMapper.fromEntity(it.upcomingLesson.lesson.endTime),
-                    it.upcomingLesson.lesson.teacher,
-                    it.upcomingLesson.lesson.room
+                    lessonTimeMapper.fromEntity(it.lesson.startTime),
+                    lessonTimeMapper.fromEntity(it.lesson.endTime),
+                    it.lesson.teacher,
+                    it.lesson.room
                 )
             }
         }
+    }
+}
 
+class UpcomingLessonMapper(
+    private val lessonWithCourseMapper: LessonWithCourseMapper
+) : SimpleEntityMapper<UpcomingLessonEntity, UpcomingLesson>() {
+    override fun fromEntity(entity: UpcomingLessonEntity): UpcomingLesson {
         return UpcomingLesson(
-            lesson,
-            entity.upcomingLesson.startTime,
-            entity.upcomingLesson.endTime
+            lessonWithCourseMapper.fromEntity(entity.lessonWithCourse),
+            entity.startTime,
+            entity.endTime
         )
     }
 

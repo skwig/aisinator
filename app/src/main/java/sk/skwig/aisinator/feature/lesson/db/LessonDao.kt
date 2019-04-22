@@ -10,13 +10,15 @@ import java.time.Instant
 interface LessonDao {
     fun insertLessons(lessons: List<Lesson>): Completable
     fun loadUpcomingLessons(instant: Instant): Observable<List<UpcomingLesson>>
+    fun loadLessons(): Observable<List<Lesson>>
 }
 
 internal class LessonDaoImpl(
     private val dao: LessonRoomDao,
     private val courseMapper: CourseMapper,
     private val lessonMapper: LessonMapper,
-    private val upcomingLessonWithCourseMapper: UpcomingLessonWithCourseMapper
+    private val lessonWithCourseMapper: LessonWithCourseMapper,
+    private val upcomingLessonMapper: UpcomingLessonMapper
 ) : LessonDao {
 
     override fun insertLessons(lessons: List<Lesson>): Completable =
@@ -29,6 +31,9 @@ internal class LessonDaoImpl(
 
     override fun loadUpcomingLessons(instant: Instant): Observable<List<UpcomingLesson>> =
         dao.loadUpcomingLessons(instant)
-            .map { upcomingLessonWithCourseMapper.fromEntityList(it) }
+            .map { upcomingLessonMapper.fromEntityList(it) }
 
+    override fun loadLessons(): Observable<List<Lesson>> =
+        dao.loadLessons()
+            .map { lessonWithCourseMapper.fromEntityList(it) }
 }

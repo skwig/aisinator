@@ -3,20 +3,15 @@ package sk.skwig.aisinator.feature.lesson.di
 import sk.skwig.aisinator.common.util.storage.CacheStorage
 import sk.skwig.aisinator.common.util.storage.DatabaseStorage
 import sk.skwig.aisinator.common.util.storage.NetworkStorage
-import sk.skwig.aisinator.feature.auth.di.AuthModule
-import sk.skwig.aisinator.feature.course.di.CourseModule
 import sk.skwig.aisinator.di.NetworkModule
 import sk.skwig.aisinator.di.PersistenceModule
+import sk.skwig.aisinator.feature.auth.di.AuthModule
+import sk.skwig.aisinator.feature.course.di.CourseModule
 import sk.skwig.aisinator.feature.lesson.Lesson
-import sk.skwig.aisinator.feature.lesson.db.LessonMapper
-import sk.skwig.aisinator.feature.lesson.db.LessonTimeMapper
-import sk.skwig.aisinator.feature.lesson.db.UpcomingLessonWithCourseMapper
 import sk.skwig.aisinator.feature.lesson.LessonRepository
 import sk.skwig.aisinator.feature.lesson.LessonRepositoryImpl
 import sk.skwig.aisinator.feature.lesson.api.*
-import sk.skwig.aisinator.feature.lesson.db.LessonDao
-import sk.skwig.aisinator.feature.lesson.db.LessonDaoImpl
-import sk.skwig.aisinator.feature.lesson.db.LessonRoomDao
+import sk.skwig.aisinator.feature.lesson.db.*
 import javax.inject.Singleton
 
 class LessonModule {
@@ -30,6 +25,8 @@ class LessonModule {
     val lessonRepository: LessonRepository by lazy {
         LessonRepositoryImpl(
             authModule.authManager,
+            lessonDao,
+            lessonApi,
             lessonCacheStorage,
             lessonDatabaseStorage,
             lessonNetworkStorage
@@ -80,6 +77,7 @@ class LessonModule {
             lessonRoomDao,
             courseModule.courseMapper,
             lessonMapper,
+            lessonWithCourseMapper,
             upcomingLessonWithCourseMapper
         )
     }
@@ -94,10 +92,18 @@ class LessonModule {
     val lessonTimeMapper by lazy { LessonTimeMapper() }
 
     @Singleton
-    val upcomingLessonWithCourseMapper by lazy {
-        UpcomingLessonWithCourseMapper(
+    val lessonWithCourseMapper by lazy {
+        LessonWithCourseMapper(
             courseModule.courseMapper,
+            lessonMapper,
             lessonTimeMapper
+        )
+    }
+
+    @Singleton
+    val upcomingLessonWithCourseMapper by lazy {
+        UpcomingLessonMapper(
+            lessonWithCourseMapper
         )
     }
 }
