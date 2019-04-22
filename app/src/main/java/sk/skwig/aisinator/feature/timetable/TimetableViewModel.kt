@@ -74,7 +74,7 @@ data class TypeTimetableFilteringStrategy(
 ) : TimetableFilteringStrategy {
     override fun allows(timetableItem: TimetableItem): Boolean {
         return timetableItem.lesson.let {
-            val isItemAllowed = true // filterState.isShowingCustomItems == it.isCustom
+            val isItemAllowed = isShowingCustomItems == it.isCustom
 
             return@let isItemAllowed && when (it) {
                 is Lesson.Seminar -> isShowingSeminars

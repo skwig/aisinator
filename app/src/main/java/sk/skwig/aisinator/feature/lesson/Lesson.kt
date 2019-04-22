@@ -9,7 +9,8 @@ sealed class Lesson(
     open val startTime: LessonTime,
     open val endTime: LessonTime,
     open val teacher: String,
-    open val room: String
+    open val room: String,
+    open val isCustom: Boolean = false
 ) {
     data class Seminar(
         override val course: Course,
