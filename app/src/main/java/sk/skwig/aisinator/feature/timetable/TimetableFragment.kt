@@ -19,7 +19,7 @@ import timber.log.Timber
 class TimetableFragment : BaseFragment<TimetableViewModel, FragmentTimetableBinding>() {
 
     private lateinit var timetableAdapter: TimetableAdapter
-    private lateinit var filterState: TimetableFilterState
+    private lateinit var filterState: TypeTimetableFilteringStrategy
 
     override fun createViewModel() = Injector.injectTimetableViewModel(this)
 
@@ -51,9 +51,9 @@ class TimetableFragment : BaseFragment<TimetableViewModel, FragmentTimetableBind
                         it.dontDismissOnClick(context)
 
                         when (it.itemId) {
-                            R.id.show_lectures -> viewModel.onFilterChanged(filterState.copy(isShowingLectures = it.isChecked))
-                            R.id.show_seminars -> viewModel.onFilterChanged(filterState.copy(isShowingSeminars = it.isChecked))
-                            R.id.show_custom -> viewModel.onFilterChanged(filterState.copy(isShowingCustomItems = it.isChecked))
+                            R.id.show_lectures -> viewModel.onFilterTimetable(filterState.copy(isShowingLectures = it.isChecked))
+                            R.id.show_seminars -> viewModel.onFilterTimetable(filterState.copy(isShowingSeminars = it.isChecked))
+                            R.id.show_custom -> viewModel.onFilterTimetable(filterState.copy(isShowingCustomItems = it.isChecked))
                         }
 
                         false

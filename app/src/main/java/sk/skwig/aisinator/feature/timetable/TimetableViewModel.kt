@@ -1,6 +1,5 @@
 package sk.skwig.aisinator.feature.timetable
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Observable
@@ -18,15 +17,15 @@ class TimetableViewModel(
     private val settingsManager: SettingsManager
 ) : ViewModel() {
 
-    // TODO: live template na toto
-    private val filterStateRelay = BehaviorRelay.createDefault(
-        TimetableFilterState(
+    private val filteringStrategyRelay = BehaviorRelay.createDefault<TimetableFilteringStrategy>(
+        TypeTimetableFilteringStrategy(
             settingsManager.isTimetableShowingLectures,
             settingsManager.isTimetableShowingSeminars,
             settingsManager.isTimetableShowingCustom
         )
     )
 
+    // TODO: live template na toto
     private val uiStateRelay = BehaviorRelay.create<ViewState>()
 
     val uiState: Observable<ViewState>
@@ -35,7 +34,8 @@ class TimetableViewModel(
     private val disposable = CompositeDisposable()
 
     init {
-        disposable += filterStateRelay
+        disposable += filteringStrategyRelay
+            .map { it as TypeTimetableFilteringStrategy }
             .doOnNext {
                 settingsManager.isTimetableShowingLectures = it.isShowingLectures
                 settingsManager.isTimetableShowingSeminars = it.isShowingSeminars
@@ -45,7 +45,6 @@ class TimetableViewModel(
             .switchMap { filterState ->
                 lessonRepository.getLessons()
                     .distinctUntilChanged()
-                    .doOnNext { Log.d("matej", "itemz $it") }
                     .map { it.map { TimetableItem(it) } }
                     .map { it.filter { filterState.allows(it) } }
                     .map<ViewState> { ViewState.Normal(filterState, it) }
@@ -55,25 +54,25 @@ class TimetableViewModel(
             .subscribe(uiStateRelay)
     }
 
-    fun onFilterChanged(filterState: TimetableFilterState) {
-        filterStateRelay.accept(filterState)
+    fun onFilterTimetable(filterState: TimetableFilteringStrategy) {
+        filteringStrategyRelay.accept(filterState)
     }
 
-    sealed class ViewState(val filterState: TimetableFilterState) {
-        class Loading(filterState: TimetableFilterState) : ViewState(filterState)
-        class Normal(filterState: TimetableFilterState, val timetableItems: List<TimetableItem>) :
+    sealed class ViewState(val filterState: TypeTimetableFilteringStrategy) {
+        class Loading(filterState: TypeTimetableFilteringStrategy) : ViewState(filterState)
+        class Normal(filterState: TypeTimetableFilteringStrategy, val timetableItems: List<TimetableItem>) :
             ViewState(filterState)
 
-        class Error(filterState: TimetableFilterState, val throwable: Throwable) : ViewState(filterState)
+        class Error(filterState: TypeTimetableFilteringStrategy, val throwable: Throwable) : ViewState(filterState)
     }
 }
 
-data class TimetableFilterState(
+data class TypeTimetableFilteringStrategy(
     val isShowingLectures: Boolean = true,
     val isShowingSeminars: Boolean = true,
     val isShowingCustomItems: Boolean = true
-) {
-    fun allows(timetableItem: TimetableItem): Boolean {
+) : TimetableFilteringStrategy {
+    override fun allows(timetableItem: TimetableItem): Boolean {
         return timetableItem.lesson.let {
             val isItemAllowed = true // filterState.isShowingCustomItems == it.isCustom
 
