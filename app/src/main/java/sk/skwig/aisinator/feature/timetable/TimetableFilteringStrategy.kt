@@ -1,5 +1,7 @@
 package sk.skwig.aisinator.feature.timetable
 
+import sk.skwig.aisinator.feature.lesson.Lesson
+
 interface TimetableFilteringStrategy {
     fun allows(timetableItem: TimetableItem): Boolean
 }
@@ -10,7 +12,7 @@ class DefaultTimetableFilteringStrategy : TimetableFilteringStrategy {
     }
 }
 
-class NameTimetableFilteringStrategy(
+class CourseNameTimetableFilteringStrategy(
     private val requiredSubstring: String,
     private val ignoreCase: Boolean = true
 ) : TimetableFilteringStrategy {
@@ -18,3 +20,4 @@ class NameTimetableFilteringStrategy(
         return timetableItem.lesson.course.name.contains(requiredSubstring, ignoreCase)
     }
 }
+
