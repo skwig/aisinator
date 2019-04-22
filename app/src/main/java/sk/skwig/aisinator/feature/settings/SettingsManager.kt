@@ -8,6 +8,9 @@ import java.security.InvalidKeyException
 interface SettingsManager {
     var login: String
     var password: String
+    var isTimetableShowingLectures: Boolean
+    var isTimetableShowingSeminars: Boolean
+    var isTimetableShowingCustom: Boolean
 }
 
 class SettingsManagerImpl(private val context: Context) : SettingsManager {
@@ -22,19 +25,26 @@ class SettingsManagerImpl(private val context: Context) : SettingsManager {
         get() = getString(PrefKey.PASSWORD, "")
         set(value) = putString(PrefKey.PASSWORD, value)
 
+    override var isTimetableShowingLectures: Boolean
+        get() = getBoolean(PrefKey.TIMETABLE_SHOW_LECTURES, true)
+        set(value) = putBoolean(PrefKey.TIMETABLE_SHOW_LECTURES, value)
+
+    override var isTimetableShowingSeminars: Boolean
+        get() = getBoolean(PrefKey.TIMETABLE_SHOW_SEMINARS, true)
+        set(value) = putBoolean(PrefKey.TIMETABLE_SHOW_SEMINARS, value)
+
+    override var isTimetableShowingCustom: Boolean
+        get() = getBoolean(PrefKey.TIMETABLE_SHOW_CUSTOM, true)
+        set(value) = putBoolean(PrefKey.TIMETABLE_SHOW_CUSTOM, value)
+
     @StringRes
     private fun getPrefRes(prefKey: PrefKey): Int {
         return when (prefKey) {
-            PrefKey.LOGIN -> R.string.prefKey_login
-            PrefKey.PASSWORD -> R.string.prefKey_password
-        }
-    }
-
-    private fun getPrefKey(@StringRes prefRes: Int): PrefKey {
-        return when (prefRes) {
-            R.string.prefKey_login -> PrefKey.LOGIN
-            R.string.prefKey_password -> PrefKey.PASSWORD
-            else -> throw InvalidKeyException()
+            PrefKey.LOGIN -> R.string.pref_key_login
+            PrefKey.PASSWORD -> R.string.pref_key_password
+            PrefKey.TIMETABLE_SHOW_LECTURES -> R.string.pref_key_timetable_show_lectures
+            PrefKey.TIMETABLE_SHOW_SEMINARS -> R.string.pref_key_timetable_show_seminars
+            PrefKey.TIMETABLE_SHOW_CUSTOM -> R.string.pref_key_timetable_show_custom
         }
     }
 

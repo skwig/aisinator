@@ -8,14 +8,25 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import sk.skwig.aisinator.feature.lesson.Lesson
 import sk.skwig.aisinator.feature.lesson.LessonRepository
+import sk.skwig.aisinator.feature.settings.SettingsManager
 
 // TODO: checkboxy na prednasky a cvicenia
 // TODO: prazdne columny & rowy collapsnut nech nezaberaju tolko miesta
 
-class TimetableViewModel(private val lessonRepository: LessonRepository) : ViewModel() {
+class TimetableViewModel(
+    private val lessonRepository: LessonRepository,
+    private val settingsManager: SettingsManager
+) : ViewModel() {
 
     // TODO: live template na toto
-    private val filterStateRelay = BehaviorRelay.createDefault(TimetableFilterState())
+    private val filterStateRelay = BehaviorRelay.createDefault(
+        TimetableFilterState(
+            settingsManager.isTimetableShowingLectures,
+            settingsManager.isTimetableShowingSeminars,
+            settingsManager.isTimetableShowingCustom
+        )
+    )
+
     private val uiStateRelay = BehaviorRelay.create<ViewState>()
 
     val uiState: Observable<ViewState>
@@ -25,6 +36,11 @@ class TimetableViewModel(private val lessonRepository: LessonRepository) : ViewM
 
     init {
         disposable += filterStateRelay
+            .doOnNext {
+                settingsManager.isTimetableShowingLectures = it.isShowingLectures
+                settingsManager.isTimetableShowingSeminars = it.isShowingSeminars
+                settingsManager.isTimetableShowingCustom = it.isShowingCustomItems
+            }
             .distinctUntilChanged()
             .switchMap { filterState ->
                 lessonRepository.getLessons()

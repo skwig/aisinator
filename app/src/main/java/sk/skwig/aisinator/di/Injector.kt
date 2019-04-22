@@ -60,7 +60,7 @@ object Injector {
             .get(LoginViewModel::class.java)
 
     fun injectTimetableViewModel(fragment: Fragment) =
-        ViewModelProviders.of(fragment, SimpleViewModelFactory { TimetableViewModel(lessonModule.lessonRepository) })
+        ViewModelProviders.of(fragment, SimpleViewModelFactory { TimetableViewModel(lessonModule.lessonRepository, settingsModule.settingsManager) })
             .get(TimetableViewModel::class.java)
 
     fun injectHomeViewModel(fragment: Fragment) =

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="prefKey_login">prefKey_login</string>
-    <string name="prefKey_password">prefKey_password</string>
+    <string name="pref_key_login">prefKey_login</string>
+    <string name="pref_key_password">prefKey_password</string>
+    <string name="pref_key_timetable_show_lectures">pref_key_timetable_show_lectures</string>
+    <string name="pref_key_timetable_show_seminars">pref_key_timetable_show_seminars</string>
+    <string name="pref_key_timetable_show_custom">pref_key_timetable_show_custom</string>
 
 </resources>
