@@ -18,11 +18,11 @@ internal class CourseApiImpl(
 ) : CourseApi {
 
     override fun getActiveCourses(authentication: Authentication): Single<List<Course>> =
-        api.getActiveCourses(authentication.cookie)
+        api.getCurrentCourses(authentication.cookie)
             .map { htmlParser.parseActiveCourses(it.toDocument()) }
 
     override fun getCoursework(authentication: Authentication, course: Course): Single<Coursework> =
-        api.getCoursework(authentication.cookie, course = course.id)
+        api.getCurrentCoursework(authentication.cookie, course = course.id)
             .map { htmlParser.parseCoursework(it.toDocument()) }
 
 }

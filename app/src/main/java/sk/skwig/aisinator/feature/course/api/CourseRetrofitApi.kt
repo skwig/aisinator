@@ -10,17 +10,29 @@ import sk.skwig.aisinator.feature.auth.COOKIE_HEADER
 interface CourseRetrofitApi {
 
     @GET("auth/student/list.pl")
-    fun getActiveCourses(
+    fun getCourses(
         @Header(COOKIE_HEADER) sessionCookie: String,
-        @Query("studium") study: Long = 151408,
-        @Query("obdobi") term: Long = 526
+        @Query("studium") study: Long,
+        @Query("obdobi") term: Long
     ): Single<ResponseBody>
 
     @GET("auth/student/list.pl")
     fun getCoursework(
         @Header(COOKIE_HEADER) sessionCookie: String,
-        @Query("studium") study: Long = 151408,
-        @Query("obdobi") term: Long = 526,
+        @Query("studium") study: Long,
+        @Query("obdobi") term: Long,
+        @Query("predmet") course: Long,
+        @Query("zobraz_prubezne") show: Long = 1
+    ): Single<ResponseBody>
+
+    @GET("auth/student/list.pl")
+    fun getCurrentCourses(
+        @Header(COOKIE_HEADER) sessionCookie: String
+    ): Single<ResponseBody>
+
+    @GET("auth/student/list.pl")
+    fun getCurrentCoursework(
+        @Header(COOKIE_HEADER) sessionCookie: String,
         @Query("predmet") course: Long,
         @Query("zobraz_prubezne") show: Long = 1
     ): Single<ResponseBody>

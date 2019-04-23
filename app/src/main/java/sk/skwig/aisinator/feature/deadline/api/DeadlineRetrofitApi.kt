@@ -12,7 +12,12 @@ interface DeadlineRetrofitApi {
     @GET("auth/student/odevzdavarny.pl")
     fun getDeadlines(
         @Header(COOKIE_HEADER) sessionCookie: String,
-        @Query("studium") study: Long = 151408,
-        @Query("obdobi") term: Long = 526
+        @Query("studium") study: Long,
+        @Query("obdobi") term: Long
+    ): Single<ResponseBody>
+
+    @GET("auth/student/odevzdavarny.pl")
+    fun getCurrentDeadlines(
+        @Header(COOKIE_HEADER) sessionCookie: String
     ): Single<ResponseBody>
 }

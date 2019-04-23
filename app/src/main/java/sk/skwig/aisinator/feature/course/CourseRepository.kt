@@ -9,6 +9,7 @@ import sk.skwig.aisinator.feature.course.db.CourseDao
 
 interface CourseRepository {
     fun getActiveCourses(): Observable<List<Course>>
+    fun getActiveCoursesWithoutLessons(): Observable<List<Course>>
     fun getCoursework(course: Course): Observable<Coursework>
 }
 
@@ -20,7 +21,7 @@ internal class CourseRepositoryImpl(
 
     override fun getActiveCourses(): Observable<List<Course>> =
         authManager.authentication
-            .doOnNext { Log.d("matej", "CourseRepositoryImpl.getDeadlines") }
+            .doOnNext { Log.d("matej", "CourseRepositoryImpl.getCurrentDeadlines") }
             .switchMap {
                 Observable.just(it)
                     .subscribeOn(Schedulers.io())
@@ -29,9 +30,20 @@ internal class CourseRepositoryImpl(
                     .andThen(courseDao.loadAllCourses())
             }
 
+    override fun getActiveCoursesWithoutLessons(): Observable<List<Course>> =
+        authManager.authentication
+            .doOnNext { Log.d("matej", "CourseRepositoryImpl.getActiveCoursesWithoutLessons") }
+            .switchMap {
+                Observable.just(it)
+                    .subscribeOn(Schedulers.io())
+                    .flatMapSingle { courseApi.getActiveCourses(it) }
+                    .concatMapCompletable { courseDao.insertCourses(it) }
+                    .andThen(courseDao.loadAllCoursesWithoutLessons())
+            }
+
     override fun getCoursework(course: Course) =
         authManager.authentication
-            .doOnNext { Log.d("matej", "CourseRepositoryImpl.getCoursework") }
+            .doOnNext { Log.d("matej", "CourseRepositoryImpl.getCurrentCoursework") }
             .switchMap {
                 Observable.just(it)
                     .subscribeOn(Schedulers.io())

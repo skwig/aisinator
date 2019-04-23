@@ -61,6 +61,8 @@ class TimetableFragment : BaseFragment<TimetableViewModel, FragmentTimetableBind
                 }.show()
             }
 
+            newEntry.setOnClickListener { viewModel.onTimetableItemSelection() }
+
             disposable += viewModel.uiState
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
@@ -72,6 +74,15 @@ class TimetableFragment : BaseFragment<TimetableViewModel, FragmentTimetableBind
                                 title.text = it.timetableItems.joinToString(separator = "\n")
                             }
                         }
+                    },
+                    onError = Timber::e
+                )
+
+            disposable += viewModel.openTimetableItemSelection
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(
+                    onNext = {
+                        navController.navigate(TimetableFragmentDirections.actionTimetableFragmentToTimetableCourseSelectFragment())
                     },
                     onError = Timber::e
                 )

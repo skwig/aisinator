@@ -15,7 +15,7 @@ internal class DeadlineApiImpl(
 ) : DeadlineApi {
 
     override fun getDeadlines(authentication: Authentication): Single<List<Deadline>> =
-        api.getDeadlines(authentication.cookie)
+        api.getCurrentDeadlines(authentication.cookie)
             .map { htmlParser.parseDeadlines(it.toDocument()) }
 
 }

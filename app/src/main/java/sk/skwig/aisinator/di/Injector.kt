@@ -21,6 +21,7 @@ import sk.skwig.aisinator.feature.main.MainActivityViewModel
 import sk.skwig.aisinator.feature.settings.di.SettingsModule
 import sk.skwig.aisinator.feature.timetable.TimetableViewModel
 import sk.skwig.aisinator.feature.timetable.di.TimetableModule
+import sk.skwig.aisinator.feature.timetable.newentry.TimetableCourseSelectViewModel
 
 object Injector {
 
@@ -82,5 +83,9 @@ object Injector {
     fun injectChatroomViewModel(fragment: Fragment, chatroomId: Long) =
         ViewModelProviders.of(fragment, SimpleViewModelFactory { ChatroomViewModel(chatroomId, chatModule.chatPager) })
             .get(ChatroomViewModel::class.java)
+
+    fun injectTimetableCourseSelectViewModel(fragment: Fragment) =
+        ViewModelProviders.of(fragment, SimpleViewModelFactory { TimetableCourseSelectViewModel(courseModule.courseRepository) })
+            .get(TimetableCourseSelectViewModel::class.java)
 
 }

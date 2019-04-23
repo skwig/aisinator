@@ -20,7 +20,7 @@ internal class DeadlineRepositoryImpl(
 ) : DeadlineRepository {
     override fun getActiveDeadlines(): Observable<List<Deadline>> =
         authManager.authentication
-            .doOnNext { Log.d("matej", "DeadlineRepositoryImpl.getDeadlines") }
+            .doOnNext { Log.d("matej", "DeadlineRepositoryImpl.getCurrentDeadlines") }
             .switchMap {
                 Observable.just(it)
                     .subscribeOn(Schedulers.io())

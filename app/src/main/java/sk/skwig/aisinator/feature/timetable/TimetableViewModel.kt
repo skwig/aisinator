@@ -2,6 +2,7 @@ package sk.skwig.aisinator.feature.timetable
 
 import androidx.lifecycle.ViewModel
 import com.jakewharton.rxrelay2.BehaviorRelay
+import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -16,6 +17,11 @@ class TimetableViewModel(
     private val lessonRepository: LessonRepository,
     private val settingsManager: SettingsManager
 ) : ViewModel() {
+
+    private val openTimetableItemSelectionRelay = PublishRelay.create<Unit>()
+
+    val openTimetableItemSelection: Observable<Unit>
+        get() = openTimetableItemSelectionRelay
 
     private val filteringStrategyRelay = BehaviorRelay.createDefault<TimetableFilteringStrategy>(
         TypeTimetableFilteringStrategy(
@@ -58,6 +64,10 @@ class TimetableViewModel(
         filteringStrategyRelay.accept(filterState)
     }
 
+    fun onTimetableItemSelection() {
+        openTimetableItemSelectionRelay.accept(Unit)
+    }
+
     sealed class ViewState(val filterState: TypeTimetableFilteringStrategy) {
         class Loading(filterState: TypeTimetableFilteringStrategy) : ViewState(filterState)
         class Normal(filterState: TypeTimetableFilteringStrategy, val timetableItems: List<TimetableItem>) :
@@ -74,12 +84,15 @@ data class TypeTimetableFilteringStrategy(
 ) : TimetableFilteringStrategy {
     override fun allows(timetableItem: TimetableItem): Boolean {
         return timetableItem.lesson.let {
-            val isItemAllowed = isShowingCustomItems == it.isCustom
 
-            return@let isItemAllowed && when (it) {
+            val isItemType = when (it) {
                 is Lesson.Seminar -> isShowingSeminars
                 is Lesson.Lecture -> isShowingLectures
             }
+
+            val isCustomItemAllowed = isShowingCustomItems && it.isCustom
+
+            return@let isItemType || isCustomItemAllowed
         }
     }
 }

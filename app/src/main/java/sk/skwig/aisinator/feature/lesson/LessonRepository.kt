@@ -27,16 +27,15 @@ internal class LessonRepositoryImpl(
         return Observable.never()
     }
 
-    override fun getLessons(/*student*/) = lessonDao.loadLessons()
-//        authManager.authentication
-//            .doOnNext { Log.d("matej", "LessonRepository.getLessons") }
-//            .switchMap {
-//                lessonDao.loadLessons()
-////                Observable.just(it)
-////                    .flatMapSingle { lessonApi.getLessons(it) }
-////                    .concatMapCompletable { lessonDao.insertLessons(it) }
-////                    .andThen(lessonDao.loadLessons())
-//            }
+    override fun getLessons(/*student*/) = // lessonDao.loadLessons()
+        authManager.authentication
+            .doOnNext { Log.d("matej", "LessonRepository.getLessons") }
+            .switchMap {
+                Observable.just(it)
+                    .flatMapSingle { lessonApi.getLessons(it) }
+                    .concatMapCompletable { lessonDao.insertLessons(it) }
+                    .andThen(lessonDao.loadLessons())
+            }
 
     fun fooGetLessons(): List<Lesson> {
         val cachedData = cacheLessonStorage.getItems()

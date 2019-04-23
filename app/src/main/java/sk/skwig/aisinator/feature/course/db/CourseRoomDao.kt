@@ -19,4 +19,6 @@ interface CourseRoomDao {
     @Query("SELECT * FROM courses")
     fun loadAllCourses(): Observable<List<CourseEntity>>
 
+    @Query("SELECT * FROM courses c LEFT JOIN lessons l ON c.course_id = l.fk_course_id WHERE l.fk_course_id IS NULL")
+    fun loadAllCoursesWithoutLessons(): Observable<List<CourseEntity>>
 }

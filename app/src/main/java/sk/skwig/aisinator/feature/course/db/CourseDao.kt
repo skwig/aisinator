@@ -8,6 +8,7 @@ interface CourseDao {
     fun insertCourse(course: Course): Completable
     fun insertCourses(courses: List<Course>): Completable
     fun loadAllCourses(): Observable<List<Course>>
+    fun loadAllCoursesWithoutLessons(): Observable<List<Course>>
 }
 
 internal class CourseDaoImpl(
@@ -21,4 +22,5 @@ internal class CourseDaoImpl(
 
     override fun loadAllCourses(): Observable<List<Course>> = dao.loadAllCourses().map { mapper.fromEntityList(it) }
 
+    override fun loadAllCoursesWithoutLessons(): Observable<List<Course>> = dao.loadAllCoursesWithoutLessons().map { mapper.fromEntityList(it) }
 }

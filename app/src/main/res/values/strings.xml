@@ -15,4 +15,5 @@
     <string name="available_chat_rooms">Available chat rooms</string>
     <string name="deadlines">Deadlines</string>
     <string name="upcoming_lessons">Upcoming lessons</string>
+    <string name="available_courses">Available courses</string>
 </resources>
