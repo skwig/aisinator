@@ -9,7 +9,7 @@ import sk.skwig.aisinator.feature.course.db.CourseEntity
 interface DeadlineRoomDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertCourseworkDeadlines(deadlines: List<DeadlineEntity>): Completable
+    fun insertDeadlines(deadlines: List<DeadlineEntity>): Completable
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)

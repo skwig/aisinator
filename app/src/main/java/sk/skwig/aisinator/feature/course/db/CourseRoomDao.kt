@@ -6,6 +6,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import io.reactivex.Completable
 import io.reactivex.Observable
+import sk.skwig.aisinator.FooState
+import sk.skwig.aisinator.TestEntity
 
 @Dao
 interface CourseRoomDao {
@@ -21,4 +23,7 @@ interface CourseRoomDao {
 
     @Query("SELECT * FROM courses c LEFT JOIN lessons l ON c.course_id = l.fk_course_id WHERE l.fk_course_id IS NULL")
     fun loadAllCoursesWithoutLessons(): Observable<List<CourseEntity>>
+
+    @Query("SELECT * FROM testentity te WHERE te.state = :state")
+    fun loadFoo(state: FooState) : Observable<List<TestEntity>>
 }

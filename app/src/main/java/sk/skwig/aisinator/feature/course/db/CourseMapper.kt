@@ -2,7 +2,6 @@ package sk.skwig.aisinator.feature.course.db
 
 import sk.skwig.aisinator.feature.SimpleEntityMapper
 import sk.skwig.aisinator.feature.course.Course
-import sk.skwig.aisinator.feature.course.db.CourseEntity
 
 class CourseMapper : SimpleEntityMapper<CourseEntity, Course>() {
 
@@ -16,6 +15,11 @@ class CourseMapper : SimpleEntityMapper<CourseEntity, Course>() {
         )
 
     override fun fromEntity(entity: CourseEntity): Course =
-        Course(entity.id, entity.tag, entity.name, entity.time, entity.isActive)
-
+        Course(
+            entity.id,
+            entity.tag,
+            entity.name,
+            entity.time,
+            entity.isActive
+        )
 }

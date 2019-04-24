@@ -22,38 +22,25 @@ import java.time.LocalTime
         )
     ]
 )
+
 data class LessonEntity(
-    @ColumnInfo(name = "fk_course_id")
-    val courseId: Long,
-
-    @ColumnInfo(name = "lesson_room")
-    val room: String,
-
-    @ColumnInfo(name = "lesson_teacher")
-    val teacher: String,
-
-    @ColumnInfo(name = "lesson_is_lecture")
-    val isLecture: Boolean,
-
-    @Embedded(prefix = "lesson_start_")
-    val startTime: LessonTimeEntity,
-
-    @Embedded(prefix = "lesson_end_")
-    val endTime: LessonTimeEntity
+    @ColumnInfo(name = "fk_course_id") val courseId: Long,
+    @ColumnInfo(name = "lesson_room") val room: String,
+    @ColumnInfo(name = "lesson_teacher") val teacher: String,
+    @ColumnInfo(name = "lesson_is_lecture") val isLecture: Boolean,
+    @Embedded(prefix = "lesson_start_") val startTime: LessonTimeEntity,
+    @Embedded(prefix = "lesson_end_") val endTime: LessonTimeEntity
 )
 
 
 data class LessonTimeEntity(
-    @ColumnInfo(name = "day_of_week")
-    val dayOfWeek: DayOfWeek,
-
-    @ColumnInfo(name = "time")
-    val time: LocalTime
+    @ColumnInfo(name = "day_of_week") val dayOfWeek: DayOfWeek,
+    @ColumnInfo(name = "time") val time: LocalTime
 )
 
 data class UpcomingLessonEntity(
     @Embedded
-    val lessonWithCourse: LessonWithCourse,
+    val lessonWithCourse: LessonWithCourseEntity,
 
     @ColumnInfo(name = "upcoming_start")
     val startTime: Instant,
@@ -63,7 +50,7 @@ data class UpcomingLessonEntity(
 )
 
 // join je potrebne robit rucne
-data class LessonWithCourse(
+data class LessonWithCourseEntity(
 
     @Embedded
     val lesson: LessonEntity,

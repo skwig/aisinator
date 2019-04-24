@@ -61,18 +61,7 @@ class NetworkModule {
     val aisRetrofit : Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl("https://is.stuba.sk/")
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .client(aisAuthOkHttpClient)
-            .build()
-    }
-
-    @Singleton
-    @Named(DASHBOARD)
-    val dashboardRetrofit: Retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl("https://aisdashboard.herokuapp.com/")
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .client(okHttpClient)
             .build()
     }
 
@@ -84,6 +73,15 @@ class NetworkModule {
             .addInterceptor(loggingInterceptor)
             .addInterceptor(sessionInterceptor)
             .addInterceptor(authInterceptor)
+            .build()
+    }
+
+    @Singleton
+    @Named(DASHBOARD)
+    val dashboardRetrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl("https://ooans.000.webhostapp.com/prod/")
+            .client(okHttpClient)
             .build()
     }
 

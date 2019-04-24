@@ -18,18 +18,17 @@ class TimetableViewModel(
     private val settingsManager: SettingsManager
 ) : ViewModel() {
 
+    private val filteringStrategyRelay = BehaviorRelay.createDefault<TimetableFilteringStrategy>(
+        DefaultTimetableFilteringStrategy()
+    )
+
+
+
+
     private val openTimetableItemSelectionRelay = PublishRelay.create<Unit>()
 
     val openTimetableItemSelection: Observable<Unit>
         get() = openTimetableItemSelectionRelay
-
-    private val filteringStrategyRelay = BehaviorRelay.createDefault<TimetableFilteringStrategy>(
-        TypeTimetableFilteringStrategy(
-            settingsManager.isTimetableShowingLectures,
-            settingsManager.isTimetableShowingSeminars,
-            settingsManager.isTimetableShowingCustom
-        )
-    )
 
     // TODO: live template na toto
     private val uiStateRelay = BehaviorRelay.create<ViewState>()

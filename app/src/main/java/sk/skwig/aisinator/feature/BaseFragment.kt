@@ -18,14 +18,21 @@ abstract class BaseFragment<VM : ViewModel, B : ViewDataBinding> : Fragment() {
     protected open val binding: B by lazy { createBinding(layoutInflater, null) }
     protected open val navController: NavController by lazy { createNavController() }
 
-    protected val disposable = CompositeDisposable()
-
     protected abstract fun createViewModel(): VM
     protected abstract fun createBinding(layoutInflater: LayoutInflater, container: ViewGroup?): B
-    open fun createNavController() = findNavController()
+    protected open fun createNavController() = findNavController()
 
-    @CallSuper
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return binding.root
     }
 }
+
+
+
+
+
+
+
+
+
+

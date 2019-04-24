@@ -39,12 +39,12 @@ class LessonWithCourseMapper(
     private val courseMapper: CourseMapper,
     private val lessonMapper: LessonMapper,
     private val lessonTimeMapper: LessonTimeMapper
-) : SimpleEntityMapper<LessonWithCourse, Lesson>() {
-    override fun toEntity(domain: Lesson): LessonWithCourse {
-        return LessonWithCourse(lessonMapper.toEntity(domain), courseMapper.toEntity(domain.course))
+) : SimpleEntityMapper<LessonWithCourseEntity, Lesson>() {
+    override fun toEntity(domain: Lesson): LessonWithCourseEntity {
+        return LessonWithCourseEntity(lessonMapper.toEntity(domain), courseMapper.toEntity(domain.course))
     }
 
-    override fun fromEntity(entity: LessonWithCourse): Lesson {
+    override fun fromEntity(entity: LessonWithCourseEntity): Lesson {
         return entity.let {
             if (it.lesson.isLecture) {
                 Lesson.Lecture(
