@@ -48,8 +48,7 @@ class TimetableViewModel(
             }
             .distinctUntilChanged()
             .switchMap { filterState ->
-                lessonRepository.getLessons()
-                    .distinctUntilChanged()
+                Observable.just(lessonRepository.getLessons())
                     .map { it.map { TimetableItem(it) } }
                     .map { it.filter { filterState.allows(it) } }
                     .map<ViewState> { ViewState.Normal(filterState, it) }

@@ -11,10 +11,12 @@ class ChatModule {
     lateinit var networkModule: NetworkModule
 
     @Singleton
-    val chatRepository: ChatRepository by lazy { ChatRepository() }
+    val chatRepository: ChatRepository by lazy { ChatRepository().apply{chatRetrofitApi} }
 
     @Singleton
-    val chatRetrofitApi : ChatRetrofitApi by lazy { networkModule.dashboardRetrofit.create(ChatRetrofitApi::class.java) }
+    val chatRetrofitApi : ChatRetrofitApi by lazy {
+        networkModule.dashboardRetrofit.create(ChatRetrofitApi::class.java)
+    }
 
     val chatPager
         get() = ChatPager(chatRepository)

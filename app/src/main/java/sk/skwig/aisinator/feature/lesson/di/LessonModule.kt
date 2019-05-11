@@ -24,9 +24,6 @@ class LessonModule {
     @Singleton
     val lessonRepository: LessonRepository by lazy {
         LessonRepositoryImpl(
-            authModule.authManager,
-            lessonDao,
-            lessonApi,
             lessonCacheStorage,
             lessonDatabaseStorage,
             lessonNetworkStorage
@@ -55,9 +52,7 @@ class LessonModule {
 
     @Singleton
     val lessonRetrofitApi: LessonRetrofitApi by lazy {
-        networkModule.aisRetrofit.create(
-            LessonRetrofitApi::class.java
-        )
+        networkModule.aisRetrofit.create(LessonRetrofitApi::class.java)
     }
 
     @Singleton
@@ -75,10 +70,10 @@ class LessonModule {
     val lessonDao: LessonDao by lazy {
         LessonDaoImpl(
             lessonRoomDao,
-            courseModule.courseMapper,
-            lessonMapper,
             lessonWithCourseMapper,
-            upcomingLessonWithCourseMapper
+            upcomingLessonWithCourseMapper,
+            lessonMapper,
+            courseModule.courseMapper
         )
     }
 

@@ -1,5 +1,6 @@
 package sk.skwig.aisinator.feature.lesson.db
 
+import sk.skwig.aisinator.feature.course.db.CourseMapper
 import sk.skwig.aisinator.feature.lesson.Lesson
 import sk.skwig.aisinator.feature.lesson.UpcomingLesson
 import java.time.Instant
@@ -13,12 +14,15 @@ interface LessonDao {
 internal class LessonDaoImpl(
     private val dao: LessonRoomDao,
     private val lessonWithCourseMapper: LessonWithCourseMapper,
-    private val upcomingLessonMapper: UpcomingLessonMapper
+    private val upcomingLessonMapper: UpcomingLessonMapper,
+    private val lessonMapper: LessonMapper,
+    private val courseMapper: CourseMapper
 ) : LessonDao {
 
     override fun insertLessons(lessons: List<Lesson>) =
         dao.insertLessonsWithCourses(
-            lessonWithCourseMapper.toEntityList(lessons)
+            courseMapper.toEntityList(lessons.map { it.course }),
+            lessonMapper.toEntityList(lessons)
         )
 
     override fun loadUpcomingLessons(instant: Instant) =

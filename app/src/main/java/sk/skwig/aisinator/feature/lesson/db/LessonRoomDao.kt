@@ -1,6 +1,7 @@
 package sk.skwig.aisinator.feature.lesson.db
 
 import androidx.room.*
+import sk.skwig.aisinator.feature.course.db.CourseEntity
 import sk.skwig.aisinator.feature.lesson.LessonEntity
 import sk.skwig.aisinator.feature.lesson.LessonWithCourseEntity
 import sk.skwig.aisinator.feature.lesson.UpcomingLessonEntity
@@ -12,8 +13,13 @@ interface LessonRoomDao {
     @Insert
     fun insertLessons(deadlines: List<LessonEntity>)
 
-    @Insert
-    fun insertLessonsWithCourses(lessons: List<LessonWithCourseEntity>)
+    @Transaction
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertLessonsWithCourses(
+        courses: List<CourseEntity>,
+        lessons: List<LessonEntity>
+    ): Unit // TODO: zmenit na Completable ked to fixnu v Room libke
+
 
     @Query("""SELECT *,
             strftime('%s', datetime(date(:instant, 'unixepoch'), time(lesson_start_time), 'weekday ' || lesson_start_day_of_week )) AS upcoming_start,
